@@ -86,6 +86,7 @@ const
 var
   i: integer;
 begin
+  result := '';
   for i:= 1 to length(str) do
   begin
      if Pos(str[i],simbolo)=0 Then
