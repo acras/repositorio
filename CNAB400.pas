@@ -12,6 +12,8 @@ interface
 uses
   Dialogs, classes, SysUtils, DBClient, DB;
 type
+  TTipoArquivo = (taRemessa, taRetorno);
+
   TCNAB400 = class
   private
     FRazaoSocial: string;
@@ -19,6 +21,7 @@ type
     FSequencialArquivo: integer;
     FAgenciaEmpresa: integer;
     FContaEmpresa: integer;
+    FTipoArquivo: TTipoArquivo;
     function getCodigoEmpresa: String;
     function getRazaoSocial: String;
     function getCodigoBanco: String;
@@ -38,6 +41,9 @@ type
     function getTextoPrimeiraMensagem: string;
     function getTextoSegundaMensagem: string;
     function getNumSeqRegistro: string;
+    function getTrailer: string;
+    function getUltimoSequencial: string;
+    procedure abrirArquivo(sNomeArquivo: string);
   protected
     function getHeader: String;
   public
@@ -56,7 +62,7 @@ type
     property ContaEmpresa: integer read FContaEmpresa write FContaEmpresa;
     property SequencialArquivo: integer read FSequencialArquivo
       write FSequencialArquivo;
-
+    property tipoArquivo: TTipoArquivo read FTipoArquivo;
     constructor Create;
     destructor Destroy; override;
     procedure SalvarArquivo;
@@ -79,6 +85,8 @@ const
 
 constructor TCNAB400.Create;
 begin
+  FTipoArquivo := taRemessa;
+
   FClientDataSetTitulos := TClientDataSet.Create(nil);
 
   with TIntegerField.Create(FClientDataSetTitulos) do
@@ -203,9 +211,23 @@ begin
       add(getLinhaBoleto);
       FClientDataSetTitulos.Next;
     end;
+    add(getTrailer);
     SaveToFile('c:\testecnab400.txt');
     free
   end;
+end;
+
+function TCNAB400.getTrailer: string;
+begin
+  result := '9';
+  result := result + stringOfChar(' ', 393);
+  result := result + getUltimoSequencial;
+end;
+
+function TCNAB400.getUltimoSequencial: string;
+begin
+  result := IntToStr(FClientDataSetTitulos.fieldByName('Sequencial').asInteger);
+  result := stringOfChar('0',6-length(result));
 end;
 
 function TCNAB400.getNomebanco: string;
@@ -378,6 +400,27 @@ begin
   result := result + FClientDataSetTitulos.fieldByName('CEP').AsString;
   result := result + getTextoSegundaMensagem;
   result := result + getNumSeqRegistro;
+end;
+
+procedure TCNAB400.abrirArquivo(sNomeArquivo: string);
+var
+  conteudo: TStringList;
+  sHeader, sSegmentoT, sSegmentoU: string;
+  iLinhaAtual: integer;
+begin
+  conteudo := TStringList.Create;
+  try
+    conteudo.LoadFromFile(sNomeArquivo);
+
+    //Interpretar a primeira linha do arquivo
+    //A primeira linha do arquivo é o Header de Arquivo
+    //Adicionados apenas campos com uso prático detectado, caso necessite
+    //mais campos basta consultar a documentação do CNAB40 e adiciona-los
+    sHeader := conteudo[0];
+    
+  finally
+    FreeAndNil(conteudo);
+  end;
 end;
 
 end.

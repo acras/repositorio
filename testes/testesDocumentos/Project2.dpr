@@ -1,10 +1,8 @@
-program Project1;
+program Project2;
 
 uses
   Forms,
   Unit1 in 'Unit1.pas' {Form1},
-  CNAB240 in '..\..\CNAB240.pas',
-  CNAB400 in '..\..\CNAB400.pas',
   ValidaDocumentos in '..\..\ValidaDocumentos.pas';
 
 {$R *.res}

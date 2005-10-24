@@ -62,7 +62,7 @@ begin
     if Execute then
     begin
       c.abrirArquivo(FileName);
-      if c.tipoArquivo=taRemessa then
+      if c.tipoArquivo=CNAB240.taRemessa then
         label6.Caption := 'Remessa'
       else
         label6.Caption := 'Retorno';
