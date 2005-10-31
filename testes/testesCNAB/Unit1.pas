@@ -33,10 +33,21 @@ type
     Edit6: TEdit;
     Edit7: TEdit;
     Button3: TButton;
+    TabSheet3: TTabSheet;
+    Button4: TButton;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    DataSource3: TDataSource;
+    DBGrid3: TDBGrid;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
   private
     { Private declarations }
     FCNAB400: TCNAB400;
@@ -89,12 +100,37 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   FCNAB400 := TCNAB400.Create;
-  DataSource2.DataSet := FCNAB400.FClientDataSetTitulos;
+  DataSource2.DataSet := FCNAB400.dataSet;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
+  FCNAB400.AgenciaEmpresa := 3451;
+  FCNAB400.ContaEmpresa := 1158007;
   FCNAB400.testar
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+var
+  c: tcnab400;
+begin
+  c := TCNAB400.Create;
+  with OpenDialog1 do
+  begin
+    if Execute then
+    begin
+      c.abrirArquivo(FileName);
+      if c.tipoArquivo=CNAB400.taRemessa then
+        label8.Caption := 'Remessa'
+      else
+        label8.Caption := 'Retorno';
+      label11.Caption := FormatDateTime('dd/mm/yyyy hh:nn:ss', c.dataGeracaoArquivo);
+      label12.Caption := IntToStr(c.SequencialArquivo);
+
+      DataSource3.DataSet := c.dataSet;
+    end;
+  end;
+
 end;
 
 end.

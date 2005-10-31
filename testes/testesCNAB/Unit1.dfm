@@ -193,6 +193,74 @@ object Form1: TForm1
         OnClick = Button3Click
       end
     end
+    object TabSheet3: TTabSheet
+      Caption = 'TabSheet3'
+      ImageIndex = 2
+      object Label7: TLabel
+        Left = 192
+        Top = 24
+        Width = 78
+        Height = 13
+        Caption = 'Tipo de Arquivo:'
+      end
+      object Label8: TLabel
+        Left = 328
+        Top = 24
+        Width = 32
+        Height = 13
+        Caption = 'Label6'
+      end
+      object Label9: TLabel
+        Left = 192
+        Top = 48
+        Width = 95
+        Height = 13
+        Caption = 'Data/Hora Gera'#231#227'o'
+      end
+      object Label10: TLabel
+        Left = 192
+        Top = 72
+        Width = 107
+        Height = 13
+        Caption = 'Sequencial do Arquivo'
+      end
+      object Label11: TLabel
+        Left = 328
+        Top = 48
+        Width = 32
+        Height = 13
+        Caption = 'Label3'
+      end
+      object Label12: TLabel
+        Left = 328
+        Top = 72
+        Width = 32
+        Height = 13
+        Caption = 'Label4'
+      end
+      object Button4: TButton
+        Left = 56
+        Top = 40
+        Width = 75
+        Height = 25
+        Caption = 'Button4'
+        TabOrder = 0
+        OnClick = Button4Click
+      end
+      object DBGrid3: TDBGrid
+        Left = 24
+        Top = 232
+        Width = 609
+        Height = 120
+        DataSource = DataSource3
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'MS Sans Serif'
+        TitleFont.Style = []
+      end
+    end
   end
   object OpenDialog1: TOpenDialog
     Left = 600
@@ -205,5 +273,9 @@ object Form1: TForm1
   object DataSource2: TDataSource
     Left = 572
     Top = 64
+  end
+  object DataSource3: TDataSource
+    Left = 84
+    Top = 176
   end
 end

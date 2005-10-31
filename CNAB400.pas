@@ -10,18 +10,26 @@ unit CNAB400;
 interface
 
 uses
-  Dialogs, classes, SysUtils, DBClient, DB;
+  Dialogs, classes, SysUtils, DBClient, DB, DateUtils;
 type
   TTipoArquivo = (taRemessa, taRetorno);
 
   TCNAB400 = class
   private
+    FClientDataSetTitulos: TClientDataSet;
     FRazaoSocial: string;
     FCodigoEmpresa: integer;
     FSequencialArquivo: integer;
     FAgenciaEmpresa: integer;
     FContaEmpresa: integer;
     FTipoArquivo: TTipoArquivo;
+    FdataGeracaoArquivo: TDateTime;
+    FMensagem1: string;
+    FMensagem4: string;
+    FMensagem2: string;
+    FMensagem3: string;
+    FSeqRegistro: integer;
+    FValorBoleto: currency;
     function getCodigoEmpresa: String;
     function getRazaoSocial: String;
     function getCodigoBanco: String;
@@ -29,7 +37,6 @@ type
     function getSequencialArquivo: string;
     function getStrDataGeracao: string;
     function getItentificacaoEmpresa: string;
-    function getLinhaBoleto: string;
     function getTextoSequencialBoleto: string;
     function getNumDocumentoBoleto: string;
     function getTextoDatavencimentoBoleto: string;
@@ -43,26 +50,43 @@ type
     function getNumSeqRegistro: string;
     function getTrailer: string;
     function getUltimoSequencial: string;
-    procedure abrirArquivo(sNomeArquivo: string);
+    function getLinhaBoleto: string;
+    function getLinhaMensagem: string;
   protected
     function getHeader: String;
   public
-    FClientDataSetTitulos: TClientDataSet;
+    procedure abrirArquivo(sNomeArquivo: string);
     procedure adicionarBoleto(sequencial: integer;
                               numDocumento: string;
                               datavencimento: TDateTime;
                               valor: Currency;
+                              valorDiaAtraso: currency;
                               CPFCNPJ: string;
                               nomeSacado: string;
                               enderecoCompleto: string;
                               CEP: string);
     property RazaoSocial: string read FRazaoSocial write FRazaoSocial;
     property CodigoEmpresa: integer read FCodigoEmpresa write FCodigoEmpresa;
-    property AgenciaEmpresa: integer read FAgenciaEmpresa write FAgenciaEmpresa;
-    property ContaEmpresa: integer read FContaEmpresa write FContaEmpresa;
     property SequencialArquivo: integer read FSequencialArquivo
       write FSequencialArquivo;
     property tipoArquivo: TTipoArquivo read FTipoArquivo;
+    property dataGeracaoArquivo: TDateTime read FdataGeracaoArquivo write FdataGeracaoArquivo;
+    property dataSet: TClientDataSet read FClientDataSetTitulos;
+
+    property mensagem1: string read FMensagem1 write FMensagem1;
+    property mensagem2: string read FMensagem2 write FMensagem2;
+    property mensagem3: string read FMensagem3 write FMensagem3;
+    property mensagem4: string read FMensagem4 write FMensagem4;
+
+    //as propriedades carteira, agencia e conta são geradas para cada boleto
+    //mas como nos casos detectados era sempre o mesmo ficaram como dados
+    //da classe, se preisar diferente, mude.
+    //carteira sempre é 009 (até agora) então ficou como const
+    property AgenciaEmpresa: integer read FAgenciaEmpresa write FAgenciaEmpresa;
+    property ContaEmpresa: integer read FContaEmpresa write FContaEmpresa;
+
+    property ValorBoleto: currency read FValorBoleto write FValorBoleto;
+
     constructor Create;
     destructor Destroy; override;
     procedure SalvarArquivo;
@@ -85,8 +109,9 @@ const
 
 constructor TCNAB400.Create;
 begin
+  FValorBoleto := 0;
   FTipoArquivo := taRemessa;
-
+  FSeqRegistro := 1;
   FClientDataSetTitulos := TClientDataSet.Create(nil);
 
   with TIntegerField.Create(FClientDataSetTitulos) do
@@ -138,6 +163,12 @@ begin
     DataSet   := FClientDataSetTitulos;
   end;
 
+  with TCurrencyField.Create(FClientDataSetTitulos) do
+  begin
+    FieldName := 'ValorDiaAtraso';
+    DataSet := FClientDataSetTitulos;
+  end;
+
   FClientDataSetTitulos.CreateDataSet;
 end;
 
@@ -172,13 +203,14 @@ begin
                            //será desconsiderado. Por isso fica sempre MX
   Result := Result + getSequencialArquivo;
   result := Result + StringOfChar(' ', 277); //277 brancos
-  result := Result + '000001'; //seq do registro está fixo até desvendar
+  result := Result + getNumSeqRegistro;
 end;
 
 procedure TCNAB400.SalvarArquivo;
 var
   conteudoArquivo: TStringList;
 begin
+  FSeqRegistro := 1;
   with TOpenDialog.Create(nil) do
   begin
     if Execute then
@@ -189,8 +221,11 @@ begin
         FClientDataSetTitulos.First;
         while not FClientDataSetTitulos.Eof do
         begin
+          conteudoArquivo.add(getLinhaBoleto);
+          conteudoArquivo.add(getLinhaMensagem);
           FClientDataSetTitulos.Next;
         end;
+        conteudoArquivo.add(getTrailer);
         conteudoArquivo.SaveToFile(FileName);
       finally
         FreeAndNil(conteudoArquivo);
@@ -208,7 +243,6 @@ begin
     FClientDataSetTitulos.First;
     while not FClientDataSetTitulos.Eof do
     begin
-      add(getLinhaBoleto);
       FClientDataSetTitulos.Next;
     end;
     add(getTrailer);
@@ -226,7 +260,7 @@ end;
 
 function TCNAB400.getUltimoSequencial: string;
 begin
-  result := IntToStr(FClientDataSetTitulos.fieldByName('Sequencial').asInteger);
+  result := IntToStr(FSeqRegistro-1);
   result := stringOfChar('0',6-length(result));
 end;
 
@@ -248,8 +282,7 @@ end;
 
 function TCNAB400.getItentificacaoEmpresa: string;
 begin
-
-  result := '0' + FCarteira +
+  result := FCarteira +
     FormatFloat('00000', FAgenciaEmpresa) +
     FormatFloat('00000000', FContaEmpresa)
 end;
@@ -259,6 +292,7 @@ procedure TCNAB400.adicionarBoleto(
   numDocumento: string;
   datavencimento: TDateTime;
   valor: Currency;
+  valorDiaAtraso: Currency;
   CPFCNPJ: string;
   nomeSacado: string;
   enderecoCompleto: string;
@@ -274,6 +308,8 @@ begin
     datavencimento;
   FClientDataSetTitulos.FieldByName('Valor').AsFloat :=
     valor;
+  FClientDataSetTitulos.FieldByName('ValorDiaAtraso').AsFloat :=
+    valorDiaAtraso;
   FClientDataSetTitulos.FieldByName('CPFCNPJ').AsString :=
     CPFCNPJ;
   FClientDataSetTitulos.FieldByName('NomeSacado').AsString :=
@@ -288,7 +324,7 @@ end;
 function TCNAB400.getTextoNomeSacado: string;
 begin
   result := FClientDataSetTitulos.fieldByName('NomeSacado').AsString;
-  result := stringOfChar(' ', 40-length(result)) + result;
+  result := result + stringOfChar(' ', 40-length(result));
 end;
 
 function TCNAB400.getTextoEnderecoCompleto: string;
@@ -322,7 +358,7 @@ var
   valFrac: integer;
   valFloat: double;
 begin
-  valFloat := FClientDataSetTitulos.fieldByName('Valor').AsFloat;
+  valFloat := FClientDataSetTitulos.fieldByName('Valor').AsFloat + FValorBoleto;
   valInteiro := trunc(valFloat);
   valFrac := trunc((valFloat - trunc(valFloat))*100);
   Result := FormatFloat('00000000000',valInteiro) +
@@ -343,18 +379,19 @@ end;
 
 function TCNAB400.getTextoPrimeiraMensagem: string;
 begin
-  result := 'PRIMEIRAMENS';
+  result := stringOfChar(' ', 12);
 end;
 
 function TCNAB400.getTextoSegundaMensagem: string;
 begin
-  result := 'mensagem a ser impressa no boleto';
+  result := '';
   result := result + stringOfChar(' ', 60-length(result));
 end;
 
 function TCNAB400.getNumSeqRegistro: string;
 begin
-  result := IntToStr(FClientDataSetTitulos.RecNo);
+  result := IntToStr(FSeqRegistro);
+  inc(FSeqRegistro);
   result := stringOfChar('0', 6-length(result)) + result;
 end;
 
@@ -363,13 +400,13 @@ begin
   result := '1';
   result := result + stringOfChar(' ', 19); //19 espaços. esta parte deverá ser
                         //preenchida caso se queira contemplar o débito em conta
-  result := Result + getItentificacaoEmpresa;
+  result := Result + '0' + getItentificacaoEmpresa;
   result := result + getTextoSequencialBoleto;
   result := result + FCodigoBanco;
   result := result + stringOfChar('0', 5); //5 zeros, fixo
   result := result + stringOfChar('0', 12); //12 zeros, assim a papeleta do
                         //boleto é emitida pelo banco
-  result := result + stringOfChar(' ', 10); //zero de desconto, se quiser tem
+  result := result + stringOfChar('0', 10); //zero de desconto, se quiser tem
                         //que mudar
   result := result + '1'; //banco emite a papeleta, mudar caso precise que o
                         //cliente emita. Mudar pra algo não fixo, claro.
@@ -384,7 +421,7 @@ begin
     getTextoValorBoleto;
   result := result + '000'; //banco encarregado
   result := result + '00000'; //agencia depositária
-  result := result + '99'; //espécie do título = 99 -> outros
+  result := result + '01'; //espécie do título = 99 -> DM
   result := result + 'N';  //o que significa Aceito?
   result := result + FormatDateTime('ddmmyy', date); //data da emissão do título
   result := result + getInstrucaoProtesto; //instrucoes de protesto
@@ -399,6 +436,20 @@ begin
   result := result + getTextoPrimeiraMensagem;
   result := result + FClientDataSetTitulos.fieldByName('CEP').AsString;
   result := result + getTextoSegundaMensagem;
+  result := result + getNumSeqRegistro;
+end;
+
+
+function TCNAB400.getLinhaMensagem: string;
+begin
+  result := '2';
+  result := result + FMensagem1 + StringOfChar(' ',80-length(FMensagem1));
+  result := result + FMensagem2 + StringOfChar(' ',80-length(FMensagem2));
+  result := result + FMensagem3 + StringOfChar(' ',80-length(FMensagem3));
+  result := result + FMensagem4 + StringOfChar(' ',80-length(FMensagem4));
+  result := result + stringOfChar(' ', 45);
+  result := result + getItentificacaoEmpresa;
+  result := result + stringOfChar('0',12);
   result := result + getNumSeqRegistro;
 end;
 
@@ -417,10 +468,24 @@ begin
     //Adicionados apenas campos com uso prático detectado, caso necessite
     //mais campos basta consultar a documentação do CNAB40 e adiciona-los
     sHeader := conteudo[0];
-    
+
+    FtipoArquivo := taRetorno;
+
+    FdataGeracaoArquivo := EncodeDate(
+      2000 + StrToInt(copy(sHeader,99,2)),
+      StrToInt(copy(sHeader,97,2)),
+      StrToInt(copy(sHeader,95,2))
+      );
+
+    FSequencialArquivo := StrToInt(copy(sHeader,395,6));
+
   finally
     FreeAndNil(conteudo);
   end;
 end;
+
+
+
+
 
 end.
