@@ -24,10 +24,6 @@ type
     FContaEmpresa: integer;
     FTipoArquivo: TTipoArquivo;
     FdataGeracaoArquivo: TDateTime;
-    FMensagem1: string;
-    FMensagem4: string;
-    FMensagem2: string;
-    FMensagem3: string;
     FSeqRegistro: integer;
     FValorBoleto: currency;
     function getCodigoEmpresa: String;
@@ -52,6 +48,7 @@ type
     function getUltimoSequencial: string;
     function getLinhaBoleto: string;
     function getLinhaMensagem: string;
+    function getTextoValorMultaDia: string;
   protected
     function getHeader: String;
   public
@@ -64,7 +61,12 @@ type
                               CPFCNPJ: string;
                               nomeSacado: string;
                               enderecoCompleto: string;
-                              CEP: string);
+                              CEP: string;
+                              mensagem1: string;
+                              mensagem2: string;
+                              mensagem3: string;
+                              mensagem4: string
+                              );
     property RazaoSocial: string read FRazaoSocial write FRazaoSocial;
     property CodigoEmpresa: integer read FCodigoEmpresa write FCodigoEmpresa;
     property SequencialArquivo: integer read FSequencialArquivo
@@ -72,11 +74,6 @@ type
     property tipoArquivo: TTipoArquivo read FTipoArquivo;
     property dataGeracaoArquivo: TDateTime read FdataGeracaoArquivo write FdataGeracaoArquivo;
     property dataSet: TClientDataSet read FClientDataSetTitulos;
-
-    property mensagem1: string read FMensagem1 write FMensagem1;
-    property mensagem2: string read FMensagem2 write FMensagem2;
-    property mensagem3: string read FMensagem3 write FMensagem3;
-    property mensagem4: string read FMensagem4 write FMensagem4;
 
     //as propriedades carteira, agencia e conta são geradas para cada boleto
     //mas como nos casos detectados era sempre o mesmo ficaram como dados
@@ -162,6 +159,35 @@ begin
     FieldName := 'CEP';
     DataSet   := FClientDataSetTitulos;
   end;
+
+  with TStringField.Create(FClientDataSetTitulos) do
+  begin
+    FieldName := 'Mensagem1';
+    Size := 80;
+    DataSet   := FClientDataSetTitulos;
+  end;
+
+  with TStringField.Create(FClientDataSetTitulos) do
+  begin
+    FieldName := 'Mensagem2';
+    Size := 80;
+    DataSet   := FClientDataSetTitulos;
+  end;
+
+  with TStringField.Create(FClientDataSetTitulos) do
+  begin
+    FieldName := 'Mensagem3';
+    Size := 80;
+    DataSet   := FClientDataSetTitulos;
+  end;
+
+  with TStringField.Create(FClientDataSetTitulos) do
+  begin
+    FieldName := 'Mensagem4';
+    Size := 80;
+    DataSet   := FClientDataSetTitulos;
+  end;
+
 
   with TCurrencyField.Create(FClientDataSetTitulos) do
   begin
@@ -255,7 +281,7 @@ function TCNAB400.getTrailer: string;
 begin
   result := '9';
   result := result + stringOfChar(' ', 393);
-  result := result + getUltimoSequencial;
+  result := result + getNumSeqRegistro;
 end;
 
 function TCNAB400.getUltimoSequencial: string;
@@ -296,7 +322,11 @@ procedure TCNAB400.adicionarBoleto(
   CPFCNPJ: string;
   nomeSacado: string;
   enderecoCompleto: string;
-  CEP: string
+  CEP: string;
+  mensagem1: string;
+  mensagem2: string;
+  mensagem3: string;
+  mensagem4: string
   );
 begin
   FClientDataSetTitulos.Append;
@@ -318,6 +348,14 @@ begin
     enderecoCompleto;
   FClientDataSetTitulos.FieldByName('CEP').AsString :=
     CEP;
+  FClientDataSetTitulos.FieldByName('Mensagem1').AsString :=
+    Mensagem1;
+  FClientDataSetTitulos.FieldByName('Mensagem2').AsString :=
+    Mensagem2;
+  FClientDataSetTitulos.FieldByName('Mensagem3').AsString :=
+    Mensagem3;
+  FClientDataSetTitulos.FieldByName('Mensagem4').AsString :=
+    Mensagem4;
   FClientDataSetTitulos.Post;
 end;
 
@@ -330,7 +368,7 @@ end;
 function TCNAB400.getTextoEnderecoCompleto: string;
 begin
   result := FClientDataSetTitulos.fieldByName('EnderecoCompleto').AsString;
-  result := stringOfChar(' ', 40-length(result)) + result;
+  result := result + stringOfChar(' ', 40-length(result));
 end;
 
 function TCNAB400.getTextoSequencialBoleto: string;
@@ -359,6 +397,19 @@ var
   valFloat: double;
 begin
   valFloat := FClientDataSetTitulos.fieldByName('Valor').AsFloat + FValorBoleto;
+  valInteiro := trunc(valFloat);
+  valFrac := trunc((valFloat - trunc(valFloat))*100);
+  Result := FormatFloat('00000000000',valInteiro) +
+    FormatFloat('00',valFrac);
+end;
+
+function TCNAB400.getTextoValorMultaDia: string;
+var
+  valInteiro: integer;
+  valFrac: integer;
+  valFloat: double;
+begin
+  valFloat := FClientDataSetTitulos.fieldByName('ValorDiaAtraso').AsFloat;
   valInteiro := trunc(valFloat);
   valFrac := trunc((valFloat - trunc(valFloat))*100);
   Result := FormatFloat('00000000000',valInteiro) +
@@ -398,7 +449,7 @@ end;
 function TCNAB400.getLinhaBoleto: string;
 begin
   result := '1';
-  result := result + stringOfChar(' ', 19); //19 espaços. esta parte deverá ser
+  result := result + stringOfChar('0', 19); //19 zeros. esta parte deverá ser
                         //preenchida caso se queira contemplar o débito em conta
   result := Result + '0' + getItentificacaoEmpresa;
   result := result + getTextoSequencialBoleto;
@@ -425,8 +476,9 @@ begin
   result := result + 'N';  //o que significa Aceito?
   result := result + FormatDateTime('ddmmyy', date); //data da emissão do título
   result := result + getInstrucaoProtesto; //instrucoes de protesto
-  result := result + stringOfChar('0',32); //32 zeros fixos
-                     //aqui está a multa mora dia e os valores dos descontos
+  result := result + getTextoValorMultaDia;
+  result := result + stringOfChar('0',19); //32 zeros fixos
+                     //aqui estão os valores dos descontos
   result := result + stringOfChar('0',13); //13 zeros. IOF, só deve ser
                      //preenchido quando a cedente for administradora de seguros
   result := result + stringOfChar('0',13); //13 zeros. abatimento
@@ -443,10 +495,10 @@ end;
 function TCNAB400.getLinhaMensagem: string;
 begin
   result := '2';
-  result := result + FMensagem1 + StringOfChar(' ',80-length(FMensagem1));
-  result := result + FMensagem2 + StringOfChar(' ',80-length(FMensagem2));
-  result := result + FMensagem3 + StringOfChar(' ',80-length(FMensagem3));
-  result := result + FMensagem4 + StringOfChar(' ',80-length(FMensagem4));
+  result := result + trim(FClientDataSetTitulos.fieldByName('Mensagem1').AsString) + StringOfChar(' ',80-length(trim(FClientDataSetTitulos.fieldByName('Mensagem1').AsString)));
+  result := result + trim(FClientDataSetTitulos.fieldByName('Mensagem2').AsString) + StringOfChar(' ',80-length(trim(FClientDataSetTitulos.fieldByName('Mensagem2').AsString)));
+  result := result + trim(FClientDataSetTitulos.fieldByName('Mensagem3').AsString) + StringOfChar(' ',80-length(trim(FClientDataSetTitulos.fieldByName('Mensagem3').AsString)));
+  result := result + trim(FClientDataSetTitulos.fieldByName('Mensagem4').AsString) + StringOfChar(' ',80-length(trim(FClientDataSetTitulos.fieldByName('Mensagem4').AsString)));
   result := result + stringOfChar(' ', 45);
   result := result + getItentificacaoEmpresa;
   result := result + stringOfChar('0',12);
