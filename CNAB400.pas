@@ -531,6 +531,8 @@ begin
 
     FSequencialArquivo := StrToInt(copy(sHeader,395,6));
 
+    
+
   finally
     FreeAndNil(conteudo);
   end;

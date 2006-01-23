@@ -92,8 +92,8 @@ begin
     RazaoSocial := 'ABMH Curitiba';
     CodigoEmpresa := 123456;
     SequencialArquivo := 287;
-    adicionarBoleto(strToInt(edit1.text), edit2.text, DateTimePicker1.Date,
-      StrToCurr(edit3.Text), edit4.Text, edit5.Text, edit6.Text, edit7.Text);
+//    adicionarBoleto(strToInt(edit1.text), edit2.text, DateTimePicker1.Date,
+//      StrToCurr(edit3.Text), StrToCurr(edit4.Text), edit5.Text, edit6.Text, edit7.Text);
   end;
 end;
 
