@@ -13,7 +13,7 @@ function getStrField(str: string; delimiter: char; index: integer): string;
 var
   strL: TStringList;
 begin
-  strL := TStringList.Create;
+  strL := TStringList.Create; 
   try
     str := '"' + AnsiReplaceStr(str, '|', '"|"') + '"';
     strL.Delimiter := delimiter;
