@@ -99,7 +99,7 @@ uses TypInfo;
 
 const
   FNomeBanco = 'Bradesco';
-  FCodigoBanco = '237';
+  FCodigoBanco = '000';
   FCarteira = '009';
 
 { TCNAB400 }
