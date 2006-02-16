@@ -86,7 +86,7 @@ type
 
     constructor Create;
     destructor Destroy; override;
-    procedure SalvarArquivo;
+    function SalvarArquivo(nomeArquivo: string): boolean;
 
 
     procedure testar;
@@ -232,15 +232,18 @@ begin
   result := Result + getNumSeqRegistro;
 end;
 
-procedure TCNAB400.SalvarArquivo;
+function TCNAB400.SalvarArquivo(nomeArquivo: string): boolean;
 var
   conteudoArquivo: TStringList;
 begin
+  result := false;
   FSeqRegistro := 1;
   with TOpenDialog.Create(nil) do
   begin
+    FileName := nomeArquivo;
     if Execute then
     begin
+      result := true;
       conteudoArquivo := TStringList.Create;
       try
         conteudoArquivo.Add(getHeader);
