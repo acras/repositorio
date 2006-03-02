@@ -26,6 +26,8 @@ type
     FdataGeracaoArquivo: TDateTime;
     FSeqRegistro: integer;
     FValorBoleto: currency;
+    FDataHoraGeracao: TDateTime;
+    FClientDataSetRetorno: TClientDataSet;
     function getCodigoEmpresa: String;
     function getRazaoSocial: String;
     function getCodigoBanco: String;
@@ -49,6 +51,7 @@ type
     function getLinhaBoleto: string;
     function getLinhaMensagem: string;
     function getTextoValorMultaDia: string;
+    procedure criarDataSetRetorno;
   protected
     function getHeader: String;
   public
@@ -74,6 +77,7 @@ type
     property tipoArquivo: TTipoArquivo read FTipoArquivo;
     property dataGeracaoArquivo: TDateTime read FdataGeracaoArquivo write FdataGeracaoArquivo;
     property dataSet: TClientDataSet read FClientDataSetTitulos;
+    property dataSetRetorno: TClientDataSet read FClientDataSetRetorno;
 
     //as propriedades carteira, agencia e conta são geradas para cada boleto
     //mas como nos casos detectados era sempre o mesmo ficaram como dados
@@ -84,12 +88,15 @@ type
 
     property ValorBoleto: currency read FValorBoleto write FValorBoleto;
 
-    constructor Create;
+    property dataHoraGeracao: TDateTime read FDataHoraGeracao write FDataHoraGeracao;
+
     destructor Destroy; override;
     function SalvarArquivo(nomeArquivo: string): boolean;
 
 
     procedure testar;
+  public
+    constructor Create;
   end;
 
 implementation
@@ -101,6 +108,13 @@ const
   FNomeBanco = 'Bradesco';
   FCodigoBanco = '000';
   FCarteira = '009';
+
+  //constantes para os tipos de operação
+  toEntradaConfirmada = 2;
+  toLiquidacaoNormal  = 6;
+  toEntradaRejeitada  = 3;
+
+
 
 { TCNAB400 }
 
@@ -201,7 +215,112 @@ end;
 destructor TCNAB400.Destroy;
 begin
   FClientDataSetTitulos.Free;
+  if FClientDataSetRetorno<>nil then
+    FreeAndNil(FClientDataSetRetorno);
 end;
+
+procedure TCNAB400.criarDataSetRetorno;
+begin
+  FClientDataSetRetorno := TClientDataSet.Create(nil);
+
+  with TIntegerField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'Sequencial';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
+  with TIntegerField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'TipoOcorrencia';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
+  with TCurrencyField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'ValorBoleto';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
+  with TCurrencyField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'ValorPago';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
+  with TStringField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'MotivoRecusa';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
+  FClientDataSetRetorno.CreateDataSet;
+end;
+
+procedure TCNAB400.abrirArquivo(sNomeArquivo: string);
+var
+  conteudo: TStringList;
+  sHeader, linhaAtual: string;
+  iLinhaAtual: integer;
+begin
+  conteudo := TStringList.Create;
+  try
+    conteudo.LoadFromFile(sNomeArquivo);
+
+    //Interpretar a primeira linha do arquivo
+    //A primeira linha do arquivo é o Header de Arquivo
+    //Adicionados apenas campos com uso prático detectado, caso necessite
+    //mais campos basta consultar a documentação do CNAB40 e adiciona-los
+    sHeader := conteudo[0];
+
+    if copy(sHeader, 2,1) = '1' then
+      FTipoArquivo := taRemessa
+    else
+    begin
+      FTipoArquivo := taRetorno;
+      criarDataSetRetorno;
+    end;
+
+    FDataHoraGeracao := EncodeDateTime(
+      2000+StrToInt(copy(sHeader,99,2)),
+      StrToInt(copy(sHeader,97,2)),
+      StrToInt(copy(sHeader,95,2)),
+      0,
+      0,
+      0,
+      0
+      );
+
+    //pulando o header do lote por que não foi encontrado uso prático para
+    //o arquivo de retorno, caso encontre pode adicionar aqui o código de
+    //interpretação desta linha
+
+    //interpretar as linhas do boleto, cada linha é um boleto
+    iLinhaAtual := 1;
+    while iLinhaAtual < conteudo.Count do
+    begin
+      linhaAtual := conteudo[iLinhaAtual];
+      if copy(linhaAtual,1,1) = '1' then
+      begin
+        FClientDataSetRetorno.Append;
+        FClientDataSetRetorno.FieldByName('Sequencial').AsInteger :=
+          strToInt(copy(linhaAtual,38,25));
+        FClientDataSetRetorno.FieldByName('TipoOcorrencia').AsInteger :=
+          strToInt(copy(linhaAtual,109,2));
+        FClientDataSetRetorno.FieldByName('ValorBoleto').AsCurrency :=
+          StrToFloat(copy(linhaAtual, 176, 11)+','+copy(linhaAtual, 187, 2));
+        FClientDataSetRetorno.FieldByName('ValorPago').AsCurrency :=
+          StrToFloat(copy(linhaAtual, 254, 11)+','+copy(linhaAtual, 265, 2));
+        FClientDataSetRetorno.FieldByName('MotivoRecusa').AsInteger :=
+          strToInt(copy(linhaAtual,319,10));
+        FClientDataSetRetorno.Post;
+      end;
+      inc(iLinhaAtual);
+    end;
+  finally
+    FreeAndNil(conteudo);
+  end;
+end;
+
 
 function TCNAB400.getCodigoEmpresa: String;
 begin
@@ -508,38 +627,6 @@ begin
   result := result + getNumSeqRegistro;
 end;
 
-procedure TCNAB400.abrirArquivo(sNomeArquivo: string);
-var
-  conteudo: TStringList;
-  sHeader, sSegmentoT, sSegmentoU: string;
-  iLinhaAtual: integer;
-begin
-  conteudo := TStringList.Create;
-  try
-    conteudo.LoadFromFile(sNomeArquivo);
-
-    //Interpretar a primeira linha do arquivo
-    //A primeira linha do arquivo é o Header de Arquivo
-    //Adicionados apenas campos com uso prático detectado, caso necessite
-    //mais campos basta consultar a documentação do CNAB40 e adiciona-los
-    sHeader := conteudo[0];
-
-    FtipoArquivo := taRetorno;
-
-    FdataGeracaoArquivo := EncodeDate(
-      2000 + StrToInt(copy(sHeader,99,2)),
-      StrToInt(copy(sHeader,97,2)),
-      StrToInt(copy(sHeader,95,2))
-      );
-
-    FSequencialArquivo := StrToInt(copy(sHeader,395,6));
-
-    
-
-  finally
-    FreeAndNil(conteudo);
-  end;
-end;
 
 
 

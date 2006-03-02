@@ -43,11 +43,22 @@ type
     Label12: TLabel;
     DataSource3: TDataSource;
     DBGrid3: TDBGrid;
+    TabSheet4: TTabSheet;
+    Button5: TButton;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    DBGrid4: TDBGrid;
+    dsRetorno400: TDataSource;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     { Private declarations }
     FCNAB400: TCNAB400;
@@ -128,6 +139,29 @@ begin
       label12.Caption := IntToStr(c.SequencialArquivo);
 
       DataSource3.DataSet := c.dataSet;
+    end;
+  end;
+
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+var
+  c: tcnab400;
+begin
+  c := TCNAB400.Create;
+  with OpenDialog1 do
+  begin
+    if Execute then
+    begin
+      c.abrirArquivo(FileName);
+      if c.tipoArquivo=CNAB400.taRemessa then
+        label8.Caption := 'Remessa'
+      else
+        label8.Caption := 'Retorno';
+      label11.Caption := FormatDateTime('dd/mm/yyyy hh:nn:ss', c.dataGeracaoArquivo);
+      label12.Caption := IntToStr(c.SequencialArquivo);
+
+      dsRetorno400.DataSet := c.dataSetRetorno;
     end;
   end;
 

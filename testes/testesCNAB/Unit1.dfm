@@ -19,7 +19,7 @@ object Form1: TForm1
     Top = 0
     Width = 688
     Height = 446
-    ActivePage = TabSheet3
+    ActivePage = TabSheet4
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -261,6 +261,74 @@ object Form1: TForm1
         TitleFont.Style = []
       end
     end
+    object TabSheet4: TTabSheet
+      Caption = 'Retorno CNAB400'
+      ImageIndex = 3
+      object Label13: TLabel
+        Left = 192
+        Top = 24
+        Width = 78
+        Height = 13
+        Caption = 'Tipo de Arquivo:'
+      end
+      object Label14: TLabel
+        Left = 328
+        Top = 24
+        Width = 32
+        Height = 13
+        Caption = 'Label6'
+      end
+      object Label15: TLabel
+        Left = 192
+        Top = 48
+        Width = 95
+        Height = 13
+        Caption = 'Data/Hora Gera'#231#227'o'
+      end
+      object Label16: TLabel
+        Left = 328
+        Top = 48
+        Width = 32
+        Height = 13
+        Caption = 'Label3'
+      end
+      object Label17: TLabel
+        Left = 192
+        Top = 72
+        Width = 107
+        Height = 13
+        Caption = 'Sequencial do Arquivo'
+      end
+      object Label18: TLabel
+        Left = 328
+        Top = 72
+        Width = 32
+        Height = 13
+        Caption = 'Label4'
+      end
+      object Button5: TButton
+        Left = 56
+        Top = 40
+        Width = 75
+        Height = 25
+        Caption = 'v'
+        TabOrder = 0
+        OnClick = Button5Click
+      end
+      object DBGrid4: TDBGrid
+        Left = 24
+        Top = 232
+        Width = 609
+        Height = 120
+        DataSource = dsRetorno400
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'MS Sans Serif'
+        TitleFont.Style = []
+      end
+    end
   end
   object OpenDialog1: TOpenDialog
     Left = 600
@@ -275,7 +343,11 @@ object Form1: TForm1
     Top = 64
   end
   object DataSource3: TDataSource
-    Left = 84
-    Top = 176
+    Left = 508
+    Top = 32
+  end
+  object dsRetorno400: TDataSource
+    Left = 508
+    Top = 88
   end
 end
