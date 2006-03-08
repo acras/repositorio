@@ -99,11 +99,6 @@ type
     constructor Create;
   end;
 
-implementation
-
-
-uses TypInfo;
-
 const
   FNomeBanco = 'Bradesco';
   FCodigoBanco = '000';
@@ -112,7 +107,16 @@ const
   //constantes para os tipos de operação
   toEntradaConfirmada = 2;
   toLiquidacaoNormal  = 6;
-  toEntradaRejeitada  = 3;
+  toEntradaRejeitada  = 3;  
+
+implementation
+
+
+
+
+uses TypInfo;
+
+
 
 
 
@@ -253,6 +257,12 @@ begin
     DataSet   := FClientDataSetRetorno;
   end;
 
+  with TDateTimeField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'DataPagamento';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
   FClientDataSetRetorno.CreateDataSet;
 end;
 
@@ -311,6 +321,13 @@ begin
         FClientDataSetRetorno.FieldByName('ValorPago').AsCurrency :=
           StrToFloat(copy(linhaAtual, 254, 11)+','+copy(linhaAtual, 265, 2));
         FClientDataSetRetorno.FieldByName('MotivoRecusa').AsInteger :=
+          strToInt(copy(linhaAtual,319,10));
+        FClientDataSetRetorno.FieldByName('DataPagamento').AsDateTime :=
+          encodedate(
+            strToInt(copy(linhaAtual, 111, 2)),
+            strToInt(copy(linhaAtual, 113, 2)),
+            strToInt(copy(linhaAtual, 115, 2))
+          );
           strToInt(copy(linhaAtual,319,10));
         FClientDataSetRetorno.Post;
       end;
