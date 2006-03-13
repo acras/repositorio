@@ -4,7 +4,7 @@ interface
 
 
 uses
-  classes, StrUtils, SysUtils;
+  classes, StrUtils, SysUtils, ComCTrls;
 
 Type
   TInfoPalavra = class
@@ -18,6 +18,8 @@ function RemoveAcento(str: String): String;
 function RemoveSimbolo(str: String): String;
 function extraiPalavras(texto: string): TStringList;
 function achaPalavra(texto, palavra: string): integer;
+procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
+
 
 implementation
 
@@ -25,7 +27,7 @@ function getStrField(str: string; delimiter: char; index: integer): string;
 var
   strL: TStringList;
 begin
-  strL := TStringList.Create; 
+  strL := TStringList.Create;
   try
     str := '"' + AnsiReplaceStr(str, '|', '"|"') + '"';
     strL.Delimiter := delimiter;
@@ -122,5 +124,33 @@ begin
     strL.add(palavra);
   result := strL;
 end;
+
+{-------------------------------------------------------------------------
+ Objetivo   > Substituir todas as ocorrências de fromText por ocorrências
+                de toText sem perder a formatação RTF. 
+ Parâmetros > rtf: Componente RichEdit que contém o texto a ser substituído
+              fromText: trecho de texto a ser substituído
+              toText: trecho de texto a substituir
+ Retorno    >
+ Criação    > 11/03/2006 - Ricardo N. Acras
+ Observações>
+ Atualização>
+ ------------------------------------------------------------------------}
+procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
+var
+  index: integer;
+begin
+  index := rtf.FindText(fromText, 0, length(rtf.Lines.GetText), []);
+  while index<>-1 do
+  begin
+    rtf.SelStart := index;
+    rtf.SelLength := length(fromText);
+    rtf.SelText := toText;
+
+    index := rtf.FindText(fromText, index+1, length(rtf.Lines.GetText), []);
+  end;
+end;
+
+
 end.
 
