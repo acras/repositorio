@@ -147,7 +147,7 @@ begin
     DataSet   := FClientDataSetTitulos;
   end;
 
-  with TCurrencyField.Create(FClientDataSetTitulos) do
+  with TFloatField.Create(FClientDataSetTitulos) do
   begin
     FieldName := 'Valor';
     currency := True;
@@ -536,10 +536,7 @@ var
   valFloat: double;
 begin
   valFloat := FClientDataSetTitulos.fieldByName('Valor').AsFloat + FValorBoleto;
-  valInteiro := trunc(valFloat);
-  valFrac := trunc((valFloat - trunc(valFloat))*100);
-  Result := FormatFloat('00000000000',valInteiro) +
-    FormatFloat('00',valFrac);
+  Result := FormatFloat('0000000000000',valFloat*100);
 end;
 
 function TCNAB400.getTextoValorMultaDia: string;
