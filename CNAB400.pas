@@ -101,7 +101,7 @@ type
 
 const
   FNomeBanco = 'Bradesco';
-  FCodigoBanco = '000';
+  FCodigoBanco = '237';
   FCarteira = '009';
 
   //constantes para os tipos de operação
@@ -589,7 +589,7 @@ begin
                         //preenchida caso se queira contemplar o débito em conta
   result := Result + '0' + getItentificacaoEmpresa;
   result := result + getTextoSequencialBoleto;
-  result := result + FCodigoBanco;
+  result := result + '000';
   result := result + stringOfChar('0', 5); //5 zeros, fixo
   result := result + stringOfChar('0', 12); //12 zeros, assim a papeleta do
                         //boleto é emitida pelo banco

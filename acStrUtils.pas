@@ -4,7 +4,7 @@ interface
 
 
 uses
-  classes, StrUtils, SysUtils, ComCTrls;
+  classes, StrUtils, SysUtils, ComCTrls, wwriched;
 
 Type
   TInfoPalavra = class
@@ -19,6 +19,7 @@ function RemoveSimbolo(str: String): String;
 function extraiPalavras(texto: string): TStringList;
 function achaPalavra(texto, palavra: string): integer;
 procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
+procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
 
 
 implementation
@@ -137,6 +138,32 @@ end;
  Atualização>
  ------------------------------------------------------------------------}
 procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
+var
+  index: integer;
+begin
+  index := rtf.FindText(fromText, 0, length(rtf.Lines.GetText), []);
+  while index<>-1 do
+  begin
+    rtf.SelStart := index;
+    rtf.SelLength := length(fromText);
+    rtf.SelText := toText;
+
+    index := rtf.FindText(fromText, index+1, length(rtf.Lines.GetText), []);
+  end;
+end;
+
+{-------------------------------------------------------------------------
+ Objetivo   > Substituir todas as ocorrências de fromText por ocorrências
+                de toText sem perder a formatação RTF.
+ Parâmetros > rtf: Componente RichEdit que contém o texto a ser substituído
+              fromText: trecho de texto a ser substituído
+              toText: trecho de texto a substituir
+ Retorno    >
+ Criação    > 11/03/2006 - Ricardo N. Acras
+ Observações>
+ Atualização>
+ ------------------------------------------------------------------------}
+procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
 var
   index: integer;
 begin
