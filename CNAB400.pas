@@ -270,7 +270,8 @@ procedure TCNAB400.abrirArquivo(sNomeArquivo: string);
 var
   conteudo: TStringList;
   sHeader, linhaAtual: string;
-  iLinhaAtual: integer;
+  iLinhaAtual, i, codMotivo: integer;
+  mensagem: string;
 begin
   conteudo := TStringList.Create;
   try
@@ -309,7 +310,8 @@ begin
     while iLinhaAtual < conteudo.Count do
     begin
       linhaAtual := conteudo[iLinhaAtual];
-      if copy(linhaAtual,1,1) = '1' then
+      //se é linha de retonro e o sequencial não é zero
+      if (copy(linhaAtual,1,1) = '1') AND (strToInt(copy(linhaAtual,38,25))<>0) then
       begin
         FClientDataSetRetorno.Append;
         FClientDataSetRetorno.FieldByName('Sequencial').AsInteger :=
@@ -320,15 +322,23 @@ begin
           StrToFloat(copy(linhaAtual, 176, 11)+','+copy(linhaAtual, 187, 2));
         FClientDataSetRetorno.FieldByName('ValorPago').AsCurrency :=
           StrToFloat(copy(linhaAtual, 254, 11)+','+copy(linhaAtual, 265, 2));
-        FClientDataSetRetorno.FieldByName('MotivoRecusa').AsInteger :=
-          strToInt(copy(linhaAtual,319,10));
         FClientDataSetRetorno.FieldByName('DataPagamento').AsDateTime :=
           encodedate(
             strToInt(copy(linhaAtual, 111, 2)),
             strToInt(copy(linhaAtual, 113, 2)),
             strToInt(copy(linhaAtual, 115, 2))
           );
-          strToInt(copy(linhaAtual,319,10));
+        mensagem := '';
+        for i := 0 to 4 do
+        begin
+          codMotivo := strToInt(copy(linhaAtual,319+i*2,2));
+          if codMotivo <> 0 then
+          case codMotivo of
+            48: mensagem := mensagem + 'CEP Inválido. ';
+          end;
+        end;
+        FClientDataSetRetorno.fieldByName('MotivoRecusa').AsString :=
+          mensagem;
         FClientDataSetRetorno.Post;
       end;
       inc(iLinhaAtual);
