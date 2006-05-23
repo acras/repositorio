@@ -48,7 +48,7 @@ begin
   adicionouEspaco := false;
   for i := 1 to length(str) do
   begin
-    if (str[i]<>' ') then
+    if (str[i]<>' ') and (str[i]<> #13) and (str[i]<> #10) then
     begin
       result := result + str[i];
       adicionouEspaco := False;
