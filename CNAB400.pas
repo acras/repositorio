@@ -164,11 +164,14 @@ begin
   begin
     FieldName := 'NomeSacado';
     DataSet   := FClientDataSetTitulos;
+    size := 40;
   end;
 
   with TStringField.Create(FClientDataSetTitulos) do
   begin
     FieldName := 'EnderecoCompleto';
+    Size := 40;
+    DisplayWidth := 40;
     DataSet   := FClientDataSetTitulos;
   end;
 
