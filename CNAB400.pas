@@ -91,7 +91,7 @@ type
     property dataHoraGeracao: TDateTime read FDataHoraGeracao write FDataHoraGeracao;
 
     destructor Destroy; override;
-    function SalvarArquivo(nomeArquivo: string): boolean;
+    function SalvarArquivo(var nomeArquivo: string): boolean;
 
 
     procedure testar;
@@ -304,9 +304,9 @@ begin
       0
       );
 
-    //pulando o header do lote por que não foi encontrado uso prático para
-    //o arquivo de retorno, caso encontre pode adicionar aqui o código de
-    //interpretação desta linha
+    //processar campos de interesse no header
+    linhaAtual := conteudo[0];
+    FSequencialArquivo := StrToInt(copy(linhaAtual,109,5));
 
     //interpretar as linhas do boleto, cada linha é um boleto
     iLinhaAtual := 1;
@@ -327,9 +327,9 @@ begin
           StrToFloat(copy(linhaAtual, 254, 11)+','+copy(linhaAtual, 265, 2));
         FClientDataSetRetorno.FieldByName('DataPagamento').AsDateTime :=
           encodedate(
-            strToInt(copy(linhaAtual, 111, 2)),
+            2000+strToInt(copy(linhaAtual, 115, 2)),
             strToInt(copy(linhaAtual, 113, 2)),
-            strToInt(copy(linhaAtual, 115, 2))
+            strToInt(copy(linhaAtual, 111, 2))
           );
         mensagem := '';
         for i := 0 to 4 do
@@ -381,7 +381,7 @@ begin
   result := Result + getNumSeqRegistro;
 end;
 
-function TCNAB400.SalvarArquivo(nomeArquivo: string): boolean;
+function TCNAB400.SalvarArquivo(var nomeArquivo: string): boolean;
 var
   conteudoArquivo: TStringList;
 begin
@@ -405,6 +405,7 @@ begin
         end;
         conteudoArquivo.add(getTrailer);
         conteudoArquivo.SaveToFile(FileName);
+        nomeArquivo := FileName;
       finally
         FreeAndNil(conteudoArquivo);
       end;
