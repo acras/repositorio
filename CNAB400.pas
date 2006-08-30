@@ -279,6 +279,12 @@ begin
     DataSet   := FClientDataSetRetorno;
   end;
 
+  with TCurrencyField.Create(FClientDataSetRetorno) do
+  begin
+    FieldName := 'Mora';
+    DataSet   := FClientDataSetRetorno;
+  end;
+
   with TStringField.Create(FClientDataSetRetorno) do
   begin
     FieldName := 'MotivoRecusa';
@@ -351,6 +357,8 @@ begin
           StrToFloat(copy(linhaAtual, 176, 11)+','+copy(linhaAtual, 187, 2));
         FClientDataSetRetorno.FieldByName('ValorPago').AsCurrency :=
           StrToFloat(copy(linhaAtual, 254, 11)+','+copy(linhaAtual, 265, 2));
+        FClientDataSetRetorno.FieldByName('Mora').AsCurrency :=
+          StrToFloat(copy(linhaAtual, 267, 11)+','+copy(linhaAtual, 278, 2));
         FClientDataSetRetorno.FieldByName('DataPagamento').AsDateTime :=
           encodedate(
             2000+strToInt(copy(linhaAtual, 115, 2)),
