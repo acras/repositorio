@@ -1,3 +1,12 @@
+{-------------------------------------------------------------------------------
+                             AGUARDE FORM
+
+ OBJETIVO:    Pequena janela de aguarde
+ CRIACAO:     Ricardo N. Acras
+ OBSERVACOES:
+ ATUALIZACOES:
+-------------------------------------------------------------------------------}
+
 unit AguardeFormUn;
 
 interface
@@ -33,12 +42,29 @@ implementation
 
 {$R *.dfm}
 
+{-------------------------------------------------------------------------
+ Objetivo   > Esconde a janela de aguarde
+ Parâmetros > Conforme documentação
+ Retorno    >
+ Criação    > Ricardo N. Acras
+ Observações>
+ Atualização>
+ ------------------------------------------------------------------------}
 procedure TAguardeForm.esconder;
 begin
   screen.Cursor := crArrow;
   Hide;
-end;
+end; //TAguardeForm.esconder
 
+{-------------------------------------------------------------------------
+ Objetivo   > Mostra a janela de aguarde. Muda o desenho do cursos, apresentando
+              a ampulheta.
+ Parâmetros > mostrarProgress: boolean que diz se a barra deve ser exibida ou nao
+ Retorno    >
+ Criação    > Ricardo N. Acras
+ Observações>
+ Atualização>
+ ------------------------------------------------------------------------}
 procedure TAguardeForm.mostrar(aviso: TCaption; height: integer = 0;
   width:integer = 0; mostrarProgress: boolean = false);
 begin
@@ -56,20 +82,36 @@ begin
 
   AguardeForm.show;
   aguardeForm.Repaint;
-end;
+end; //TAguardeForm.mostrar
 
+{-------------------------------------------------------------------------
+ Objetivo   > Transforma um valor em moeda
+ Parâmetros > Value: Integer com o valor a ser transformado em moeda
+ Retorno    >
+ Criação    > Ricardo N. Acras
+ Observações>
+ Atualização>
+ ------------------------------------------------------------------------}
 procedure TAguardeForm.Setcurrent(const Value: integer);
 begin
   Fcurrent := Value;
   ProgressBar.Position := value;
   if total <> 0 then
     self.caption := 'Aguarde... ('+ formatFloat('0.00%',(value/total)*100) +')';
-end;
+end; //TAguardeForm.Setcurrent
 
+{-------------------------------------------------------------------------
+ Objetivo   >
+ Parâmetros > Value: Integer com o valor a ser mostrado
+ Retorno    >
+ Criação    > Ricardo N. Acras
+ Observações>
+ Atualização>
+ ------------------------------------------------------------------------}
 procedure TAguardeForm.Settotal(const Value: integer);
 begin
   Ftotal := Value;
   ProgressBar.Max := value;
-end;
+end; //TAguardeForm.Settotal
 
 end.
