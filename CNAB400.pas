@@ -139,7 +139,7 @@ implementation
 
 
 
-uses TypInfo;
+uses TypInfo, acStrUtils;
 
 
 
@@ -830,19 +830,19 @@ begin
   FClientDataSetTitulos.FieldByName('CPFCNPJ').AsString :=
     CPFCNPJ;
   FClientDataSetTitulos.FieldByName('NomeSacado').AsString :=
-    nomeSacado;
+    RemoveAcento(nomeSacado);
   FClientDataSetTitulos.FieldByName('EnderecoCompleto').AsString :=
-    enderecoCompleto;
+    RemoveAcento(enderecoCompleto);
   FClientDataSetTitulos.FieldByName('CEP').AsString :=
     CEP;
   FClientDataSetTitulos.FieldByName('Mensagem1').AsString :=
-    Mensagem1;
+    RemoveAcento(Mensagem1);
   FClientDataSetTitulos.FieldByName('Mensagem2').AsString :=
-    Mensagem2;
+    RemoveAcento(Mensagem2);
   FClientDataSetTitulos.FieldByName('Mensagem3').AsString :=
-    Mensagem3;
+    RemoveAcento(Mensagem3);
   FClientDataSetTitulos.FieldByName('Mensagem4').AsString :=
-    Mensagem4;
+    RemoveAcento(Mensagem4);
   FClientDataSetTitulos.Post;
 end;
 
