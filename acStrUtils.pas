@@ -14,7 +14,7 @@ Type
 
 function getStrField(str: string; delimiter: char; index: integer): string;
 function retiraEspacos(str: String): String;
-function RemoveAcento(str: String): String;
+function removeAcento(str: String): String;
 function RemoveSimbolo(str: String): String;
 function extraiPalavras(texto: string): TStringList;
 function achaPalavra(texto, palavra: string): integer;
