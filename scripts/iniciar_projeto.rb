@@ -11,8 +11,11 @@ nome_projeto = $*[0]
 
 puts "Iniciando"
 puts "Criando repositorio"
-`svn mkdir http://acrassistemas.no-ip.info:8080/svn/#{nome_projeto} -m "Criando projeto #{nome_projeto}"`
-`svn co http://acrassistemas.no-ip.info:8080/svn/#{nome_projeto}`
+`svn mkdir http://svn.acras.com.br/#{nome_projeto} -m "Criando projeto #{nome_projeto}"`
+`svn mkdir http://svn.acras.com.br/#{nome_projeto}/trunk -m "Criando trunk"`
+`svn mkdir http://svn.acras.com.br/#{nome_projeto}/branches -m "Criando branches"`
+`svn mkdir http://svn.acras.com.br/#{nome_projeto}/tags -m "Criando tags"`
+`svn co http://svn.acras.com.br/#{nome_projeto}/trunk #{nome_projeto}`
 
 puts "Criando aplicacao rails"
 `rails.bat -d mysql #{nome_projeto}`
@@ -36,17 +39,17 @@ puts "Commitando projeto iniciado"
 
 puts "Instalando plugins"
 plugins = %w{
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/redhillonrails_core/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/foreign_key_migrations/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/validates_existence/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/rspec/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/rspec-rails
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/ac_core_extensions/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/ac_jasper_report/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/engines
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/ac_resources_permission/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/calendar_date_select/
-http://acrassistemas.no-ip.info:8080/svn/rails_plugins/trunk/vendor/plugins/acts_as_tree/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/redhillonrails_core/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/foreign_key_migrations/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/validates_existence/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/rspec/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/rspec-rails
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/ac_core_extensions/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/ac_jasper_report/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/engines
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/ac_resources_permission/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/calendar_date_select/
+http://svn.acras.com.br/rails_plugins/trunk/vendor/plugins/acts_as_tree/
 }
 plugins.each do | p |
     `ruby script/plugin install -x #{p}`
