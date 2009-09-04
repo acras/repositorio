@@ -22,9 +22,24 @@ procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
 procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
 function strip(value: string; delimiter: string = ' '): TStringList;
 function numeroIncluidoNaRegra(numero: integer; regra: string): boolean;
+function strVezes(str: string; vezes: integer): string;
+procedure stringListSubstText(strl: TStringList; fromText, toText: string);
 
 
 implementation
+
+uses fastString;
+
+function strVezes(str: string; vezes: integer): string;
+var
+  i: integer;
+begin
+  result := '';
+  for i := 1 to vezes do
+  begin
+    result := result + str;
+  end;
+end;
 
 function getStrField(str: string; delimiter: char; index: integer): string;
 var
@@ -182,6 +197,16 @@ begin
 
     index := rtf.FindText(fromText, index+1, length(rtf.Lines.GetText), []);
   end;
+end;
+
+procedure stringListSubstText(strl: TStringList; fromText, toText: string);
+begin
+  strl.Text := FastReplace(strl.Text, fromText, toText);
+{  for i :
+  while strl.Find(fromText) do
+  begin
+    strl.IndexOf()
+  end;}
 end;
 
 function strip(value: string; delimiter: string = ' '): TStringList;
