@@ -14,6 +14,7 @@ Type
 
 function getStrField(str: string; delimiter: char; index: integer): string;
 function retiraEspacos(str: String): String;
+function tiraPontos(str: String): String;
 function removeAcento(str: String): String;
 function RemoveSimbolo(str: String): String;
 function extraiPalavras(texto: string): TStringList;
@@ -24,6 +25,8 @@ function strip(value: string; delimiter: string = ' '): TStringList;
 function numeroIncluidoNaRegra(numero: integer; regra: string): boolean;
 function strVezes(str: string; vezes: integer): string;
 procedure stringListSubstText(strl: TStringList; fromText, toText: string);
+function simpleCrypt(str: string): string;
+function simpleDecrypt(str: string): string;
 
 
 implementation
@@ -47,6 +50,7 @@ var
 begin
   strL := TStringList.Create;
   try
+    str := AnsiReplaceStr(str, ';', '"|"');
     str := '"' + AnsiReplaceStr(str, '|', '"|"') + '"';
     strL.Delimiter := delimiter;
     strL.DelimitedText := str;
@@ -57,6 +61,18 @@ begin
   finally
     FreeAndNil(strL);
   end;
+end;
+
+
+function tiraPontos(str: String): String;
+var
+  i: integer;
+  adicionouEspaco: boolean;
+begin
+  result := '';
+  for i := 1 to length(str) do
+    if (str[i]<>'.') then
+      result := result + str[i];
 end;
 
 function retiraEspacos(str: string): String;
@@ -213,6 +229,7 @@ function strip(value: string; delimiter: string = ' '): TStringList;
 var
   tmpStrList: TStringList;
 begin
+  value := '"' + AnsiReplaceStr(value, delimiter, '"' + delimiter + '"') + '"';
   tmpStrList := TStringList.Create;
   tmpStrList.Delimiter := delimiter[1];
   tmpStrList.DelimitedText := value;
@@ -245,6 +262,35 @@ begin
     end;
   end;
 end;
+
+//simpleCrypt e deCrypt só devem ser chamados para strings
+//simples e pequenas e é uma criptografia extremamente fraca
+//apenas para proteger informações não muito sensíveis e de usuários leigos
+function simpleCrypt(str: string): string;
+var
+  i: integer;
+begin
+  result := '';
+  for i := 1 to length(str) do
+  begin
+    result := result + FormatFloat('0000', ord(str[i]) + i);
+  end;
+end;
+
+function simpleDecrypt(str: string): string;
+var
+  i, num, posInicial: integer;
+begin
+  result := '';
+  for i := 1 to (length(str) div 4) do
+  begin
+    posInicial := (i-1)*4+1;
+    num := strToInt(copy(str, posInicial, 4));
+    num := num - i;
+    result := result + char(num);
+  end;
+end;
+
 
 end.
 
