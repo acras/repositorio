@@ -58,6 +58,7 @@ type
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
     function RemoverItemPeloNumero(numero: integer): IPDVTransactionState;
+    function numeroUltimoCupom: integer;
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -387,6 +388,15 @@ begin
   SetLength(num, 20);
   checkStatus(FBematech.numeroSerie(num));
   result := num;
+end;
+
+function TBematechPrinter.numeroUltimoCupom: integer;
+var
+  num: string;
+begin
+  SetLength(num, 6);
+  checkStatus(FBematech.numeroCupom(num));
+  result := strToInt(num);
 end;
 
 { TBematechAliquotaList }

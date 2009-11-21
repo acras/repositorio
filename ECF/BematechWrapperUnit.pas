@@ -7,6 +7,7 @@ uses
 
 type
   TBematechWrapper = class(TInterfacedObject, IBematech)
+  private
   public
     function ProgramaAliquota(var Aliquota: string; Vinculo: Integer): Integer;
 
@@ -42,6 +43,7 @@ type
     function AbrePortaSerial: integer;
 
     function NumeroSerie(var num: string): integer;
+    function numeroCupom(var numeroCupom: string): integer;
   end;
 
 implementation
@@ -175,6 +177,11 @@ end;
 function TBematechWrapper.NumeroSerie(var num: string): Integer;
 begin
   result := Bematech_FI_NumeroSerie(num);
+end;
+
+function TBematechWrapper.numeroCupom(var numeroCupom: string): integer;
+begin
+  result := Bematech_FI_NumeroCupom(numeroCupom);
 end;
 
 end.

@@ -80,6 +80,7 @@ type
         Desconto: Currency): IPDVTransactionState;
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
+    function numeroUltimoCupom: integer;
   end;
 
   { Interface a ser implementada por cada método transacional. }

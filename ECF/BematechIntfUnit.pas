@@ -43,6 +43,7 @@ type
     function AbrePortaSerial: integer;
 
     function numeroSerie(var num: string): integer;
+    function numeroCupom(var num: string): integer;
   end;
 
 implementation
