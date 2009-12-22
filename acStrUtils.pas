@@ -27,7 +27,9 @@ function strVezes(str: string; vezes: integer): string;
 procedure stringListSubstText(strl: TStringList; fromText, toText: string);
 function simpleCrypt(str: string): string;
 function simpleDecrypt(str: string): string;
-
+function toTxtField(value: string; size: integer): string; overload;
+function toTxtField(value: integer; size: integer): string; overload;
+function currencyToTxtField(value: double; size: integer): string;
 
 implementation
 
@@ -290,6 +292,28 @@ begin
     result := result + char(num);
   end;
 end;
+
+function toTxtField(value: string; size: integer): string;
+var
+  tam: integer;
+begin
+  tam := length(value);
+  if tam < size then
+    result := strVezes(' ', size - tam) + value;
+  if tam >= size then
+    result := copy(value, 1, size);
+end;
+
+function toTxtField(value: integer; size: integer): string;
+begin
+  result := FormatFloat(strVezes('0', size), value);
+end;
+
+function currencyToTxtField(value: double; size: integer): string;
+begin
+  result := FormatFloat(strVezes('0', size), value*100);
+end;
+
 
 
 end.

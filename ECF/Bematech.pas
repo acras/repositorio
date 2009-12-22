@@ -2,9 +2,14 @@ unit Bematech;
 
 interface
 
-// Funções de Inicialização 
-function Bematech_FI_AlteraSimboloMoeda( SimboloMoeda: String ): Integer; StdCall; External 'BEMAFI32.DLL'; 
-function Bematech_FI_ProgramaAliquota( Aliquota: String; ICMS_ISS: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
+uses Windows, SysUtils;
+
+//As funções abaixo estão comentadas pois foi feito um esquema para load dinâmico das funções
+//  somente quando necessário. Se precisar de alguma destas funções deve-se escrevê-la no
+//  esquema em que as outras estão escritas mais abaixo
+
+{// Funções de Inicialização
+function Bematech_FI_AlteraSimboloMoeda( SimboloMoeda: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ProgramaHorarioVerao: Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NomeiaDepartamento( Indice: Integer; Departamento: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NomeiaTotalizadorNaoSujeitoIcms( Indice: Integer; Totalizador: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -15,26 +20,14 @@ function Bematech_FI_EspacoEntreLinhas( Dots: Integer ): Integer; StdCall; Exter
 function Bematech_FI_ForcaImpactoAgulhas( ForcaImpacto: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 
 // Funções do Cupom Fiscal
-function Bematech_FI_AbreCupom( CGC_CPF: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_VendeItem( Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_VendeItemDepartamento( Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CancelaItemAnterior: Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_CancelaItemGenerico( NumeroItem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_CancelaCupom: Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_FechaCupomResumido( FormaPagamento: String; Mensagem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_FechaCupom( FormaPagamento: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorPago: String; Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_ResetaImpressora: Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_IniciaFechamentoCupom( AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_EfetuaFormaPagamento( FormaPagamento: String; ValorFormaPagamento: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_EfetuaFormaPagamentoDescricaoForma( FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string ): integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_TerminaFechamentoCupom( Mensagem: String): Integer; StdCall; External 'BEMAFI32.DLL';
+
 function Bematech_FI_EstornoFormasPagamento( FormaOrigem: String; FormaDestino: String; Valor: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_UsaUnidadeMedida( UnidadeMedida: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_AumentaDescricaoItem( Descricao: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 
 // Funções dos Relatórios Fiscais
-function Bematech_FI_LeituraX: Integer; StdCall; External 'BEMAFI32.DLL' ;
-function Bematech_FI_ReducaoZ( Data: String; Hora: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_RelatorioGerencial( Texto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_RelatorioGerencialTEF( Texto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_FechaRelatorioGerencial: Integer; StdCall; External 'BEMAFI32.DLL';
@@ -54,9 +47,7 @@ function Bematech_FI_Suprimento( Valor: String; FormaPagamento: String ): Intege
 
 // Funções de Informações da Impressora
 function Bematech_FI_ModeloImpressora( Modelo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_NumeroSerie( NumeroSerie: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_SubTotal( SubTotal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_NumeroCupom( NumeroCupom: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraXSerial: Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VersaoFirmware( VersaoFirmware: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CGC_IE( CGC: String; IE: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -77,12 +68,10 @@ function Bematech_FI_MinutosLigada( Minutos: String ): Integer; StdCall; Externa
 function Bematech_FI_MinutosImprimindo( Minutos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaModoOperacao( Modo: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaEpromConectada( Flag: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_FlagsFiscais( Var Flag: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ValorPagoUltimoCupom( ValorCupom: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_DataHoraImpressora( Data: String; Hora: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadoresTotalizadoresNaoFiscais( Contadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_DataHoraReducao( Data: String; Hora: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_DataMovimento( Data: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTruncamento( Flag: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_Acrescimos( ValorAcrescimos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -93,7 +82,6 @@ function Bematech_FI_VerificaRecebimentoNaoFiscal( Recebimentos: String ): Integ
 function Bematech_FI_VerificaDepartamentos( Departamentos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTipoImpressora( Var TipoImpressora: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTotalizadoresParciais( Totalizadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_RetornoAliquotas( Aliquotas: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaEstadoImpressora( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_DadosUltimaReducao( DadosReducao: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_MonitoramentoPapel( Var Linhas: Integer): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -140,17 +128,11 @@ function Bematech_FI_IncluiCidadeFavorecido( Cidade: String; Favorecido: String 
 function Bematech_FI_ImprimeCopiaCheque: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeCopiaCheque';
 
 // Outras Funções
-function Bematech_FI_AbrePortaSerial: Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_RetornoImpressora( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_FechaPortaSerial: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_FechaPortaSerial';
 function Bematech_FI_MapaResumo:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_MapaResumo';
-function Bematech_FI_AberturaDoDia( ValorCompra: string; FormaPagamento: string ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_FechamentoDoDia: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_FechamentoDoDia';
-function Bematech_FI_ImprimeConfiguracoesImpressora:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeConfiguracoesImpressora';
 function Bematech_FI_ImprimeDepartamentos: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_ImprimeDepartamentos';
 function Bematech_FI_RelatorioTipo60Analitico: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60Analitico';
 function Bematech_FI_RelatorioTipo60Mestre: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60Mestre';
-function Bematech_FI_VerificaImpressoraLigada: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_VerificaImpressoraLigada';
 function Bematech_FI_ImpressaoCarne( Titulo, Percelas: string; Datas, Quantidade: integer; Texto, Cliente, RG_CPF, Cupom: string; Vias, Assina: integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_InfoBalanca( Porta: string; Modelo: integer; Peso, PrecoKilo, Total: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_DadosSintegra( DataInicio: string; DataFinal: string ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -268,8 +250,98 @@ function Bematech_FI_CodigoBarrasISBNMFD( Codigo: String ): Integer; StdCall; Ex
 function Bematech_FI_CodigoBarrasMSIMFD( Codigo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CodigoBarrasPLESSEYMFD( Codigo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CodigoBarrasPDF417MFD( NivelCorrecaoErros: Integer; Altura: Integer; Largura: Integer; Colunas: Integer; Codigo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
+}
+procedure loadAllBematechFunctions;
 
+type
+  TBematech_FI_ProgramaAliquota = function( Aliquota: String; ICMS_ISS: Integer ): integer; stdcall;
+  TBematech_FI_AbreCupom = function( CGC_CPF: String ): Integer; stdcall;
+  TBematech_FI_VendeItem = function( Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; stdcall;
+  TBematech_FI_VendeItemDepartamento = function( Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; stdcall;
+  TBematech_FI_CancelaItemGenerico = function( NumeroItem: String ): Integer; StdCall;
+  TBematech_FI_CancelaCupom = function: Integer; StdCall;
+  TBematech_FI_IniciaFechamentoCupom = function( AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall;
+  TBematech_FI_EfetuaFormaPagamento = function( FormaPagamento: String; ValorFormaPagamento: String ): Integer; StdCall;
+  TBematech_FI_EfetuaFormaPagamentoDescricaoForma = function( FormaPagamento: string; ValorFormaPagamento: string; DescricaoFormaPagto: string ): integer; StdCall;
+  TBematech_FI_TerminaFechamentoCupom = function( Mensagem: String): Integer; StdCall;
+  TBematech_FI_AumentaDescricaoItem = function( Descricao: String ): Integer; StdCall;
+  TBematech_FI_LeituraX = function: Integer; StdCall;
+  TBematech_FI_ReducaoZ = function( Data: String; Hora: String ): Integer; StdCall;
+  TBematech_FI_NumeroSerie = function( NumeroSerie: String ): Integer; StdCall;
+  TBematech_FI_NumeroCupom = function( NumeroCupom: String ): Integer; StdCall;
+  TBematech_FI_FlagsFiscais = function( Var Flag: Integer ): Integer; StdCall;
+  TBematech_FI_DataHoraReducao = function( Data: String; Hora: String ): Integer; StdCall;
+  TBematech_FI_RetornoAliquotas = function( Aliquotas: String ): Integer; StdCall;
+  TBematech_FI_AbrePortaSerial = function: Integer; StdCall;
+  TBematech_FI_RetornoImpressora = function( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer; StdCall;
+  TBematech_FI_AberturaDoDia = function( ValorCompra: string; FormaPagamento: string ): Integer; StdCall;
+  TBematech_FI_FechamentoDoDia = function: Integer; StdCall;
+  TBematech_FI_ImprimeConfiguracoesImpressora = function:Integer; StdCall;
+  TBematech_FI_VerificaImpressoraLigada = function: Integer; StdCall;
+  TBematech_FI_ResetaImpressora = function : Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalData = function( DataInicial: String; DataFinal: String ): Integer; StdCall;
+var
+  Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
+  Bematech_FI_AbreCupom: TBematech_FI_AbreCupom;
+  Bematech_FI_VendeItem: TBematech_FI_VendeItem;
+  Bematech_FI_VendeItemDepartamento: TBematech_FI_VendeItemDepartamento;
+  Bematech_FI_CancelaItemGenerico: TBematech_FI_CancelaItemGenerico;
+  Bematech_FI_CancelaCupom: TBematech_FI_CancelaCupom;
+  Bematech_FI_IniciaFechamentoCupom: TBematech_FI_IniciaFechamentoCupom;
+  Bematech_FI_EfetuaFormaPagamento: TBematech_FI_EfetuaFormaPagamento;
+  Bematech_FI_EfetuaFormaPagamentoDescricaoForma: TBematech_FI_EfetuaFormaPagamentoDescricaoForma;
+  Bematech_FI_TerminaFechamentoCupom: TBematech_FI_TerminaFechamentoCupom;
+  Bematech_FI_AumentaDescricaoItem: TBematech_FI_AumentaDescricaoItem;
+  Bematech_FI_LeituraX: TBematech_FI_LeituraX;
+  Bematech_FI_ReducaoZ: TBematech_FI_ReducaoZ;
+  Bematech_FI_NumeroSerie: TBematech_FI_NumeroSerie;
+  Bematech_FI_NumeroCupom: TBematech_FI_NumeroCupom;
+  Bematech_FI_FlagsFiscais: TBematech_FI_FlagsFiscais;
+  Bematech_FI_DataHoraReducao: TBematech_FI_DataHoraReducao;
+  Bematech_FI_RetornoAliquotas: TBematech_FI_RetornoAliquotas;
+  Bematech_FI_AbrePortaSerial: TBematech_FI_AbrePortaSerial;
+  Bematech_FI_RetornoImpressora: TBematech_FI_RetornoImpressora;
+  Bematech_FI_AberturaDoDia: TBematech_FI_AberturaDoDia;
+  Bematech_FI_FechamentoDoDia: TBematech_FI_FechamentoDoDia;
+  Bematech_FI_ImprimeConfiguracoesImpressora: TBematech_FI_ImprimeConfiguracoesImpressora;
+  Bematech_FI_VerificaImpressoraLigada: TBematech_FI_VerificaImpressoraLigada;
+  Bematech_FI_ResetaImpressora: TBematech_FI_ResetaImpressora;
+  Bematech_FI_LeituraMemoriaFiscalData: TBematech_FI_LeituraMemoriaFiscalData; 
 implementation
 
+procedure loadAllBematechFunctions;
+var
+  DLLHandle: THandle;
+begin
+  DLLHandle := LoadLibrary('BEMAFI32.DLL');
+  if DLLHandle = 0 then
+    raise Exception.create('Não foi possível carregar a DLL da impressora fiscal Bematech' + #13#10 + 'Entre em contato com o suporte.');
+  @Bematech_FI_ProgramaAliquota := GetProcAddress(DLLHandle, 'Bematech_FI_ProgramaAliquota');
+  @Bematech_FI_AbreCupom := GetProcAddress(DLLHandle, 'Bematech_FI_AbreCupom');
+  @Bematech_FI_VendeItem := GetProcAddress(DLLHandle, 'Bematech_FI_VendeItem');
+  @Bematech_FI_VendeItemDepartamento := GetProcAddress(DLLHandle, 'Bematech_FI_VendeItemDepartamento');
+  @Bematech_FI_CancelaItemGenerico := GetProcAddress(DLLHandle, 'Bematech_FI_CancelaItemGenerico');
+  @Bematech_FI_CancelaCupom := GetProcAddress(DLLHandle, 'Bematech_FI_CancelaCupom');
+  @Bematech_FI_IniciaFechamentoCupom := GetProcAddress(DLLHandle, 'Bematech_FI_IniciaFechamentoCupom');
+  @Bematech_FI_EfetuaFormaPagamento := GetProcAddress(DLLHandle, 'Bematech_FI_EfetuaFormaPagamento');
+  @Bematech_FI_EfetuaFormaPagamentoDescricaoForma := GetProcAddress(DLLHandle, 'Bematech_FI_EfetuaFormaPagamentoDescricaoForma');
+  @Bematech_FI_TerminaFechamentoCupom := GetProcAddress(DLLHandle, 'Bematech_FI_TerminaFechamentoCupom');
+  @Bematech_FI_AumentaDescricaoItem := GetProcAddress(DLLHandle, 'Bematech_FI_AumentaDescricaoItem');
+  @Bematech_FI_LeituraX := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraX');
+  @Bematech_FI_ReducaoZ := GetProcAddress(DLLHandle, 'Bematech_FI_ReducaoZ');
+  @Bematech_FI_NumeroSerie := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroSerie');
+  @Bematech_FI_NumeroCupom := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroCupom');
+  @Bematech_FI_FlagsFiscais := GetProcAddress(DLLHandle, 'Bematech_FI_FlagsFiscais');
+  @Bematech_FI_DataHoraReducao := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraReducao');
+  @Bematech_FI_RetornoAliquotas := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoAliquotas');
+  @Bematech_FI_AbrePortaSerial := GetProcAddress(DLLHandle, 'Bematech_FI_AbrePortaSerial');
+  @Bematech_FI_RetornoImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoImpressora');
+  @Bematech_FI_AberturaDoDia := GetProcAddress(DLLHandle, 'Bematech_FI_AberturaDoDia');
+  @Bematech_FI_FechamentoDoDia := GetProcAddress(DLLHandle, 'Bematech_FI_FechamentoDoDia');
+  @Bematech_FI_ImprimeConfiguracoesImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_ImprimeConfiguracoesImpressora');
+  @Bematech_FI_VerificaImpressoraLigada := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaImpressoraLigada');
+  @Bematech_FI_ResetaImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_ResetaImpressora');
+  @Bematech_FI_LeituraMemoriaFiscalData := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalData');
+end;
+
 end.
- 

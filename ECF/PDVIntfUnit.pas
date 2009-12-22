@@ -71,8 +71,7 @@ type
     function IniciarFechamento(const OperacaoPDV: IOperacaoPDV; ValorDesconto,
         PorcentualDesconto: Currency; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
-    function EfetuarPagamento(const OperacaoPDV: IOperacaoPDV;
-        const Pagamento: IPagamentoPDV): IPDVTransactionState;
+    procedure EfetuarPagamento(forma: string; valor: currency);
     function TerminarFechamento(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;

@@ -48,8 +48,7 @@ type
     function IniciarFechamento(const OperacaoPDV: IOperacaoPDV; ValorDesconto,
         PorcentualDesconto: Currency; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
-    function EfetuarPagamento(const OperacaoPDV: IOperacaoPDV;
-        const Pagamento: IPagamentoPDV): IPDVTransactionState;
+    procedure EfetuarPagamento(forma: string; valor: currency);
     function TerminarFechamento(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;
@@ -59,6 +58,8 @@ type
         SenhaSupervisor: string): IPDVTransactionState;
     function RemoverItemPeloNumero(numero: integer): IPDVTransactionState;
     function numeroUltimoCupom: integer;
+
+    procedure LeituraMemoriaFiscalData(dtInicial, dtFinal: TDateTime);
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -152,10 +153,9 @@ begin
   CheckStatus(FBematech.AbreCupom(Documento));
 end;
 
-function TBematechPrinter.EfetuarPagamento(const OperacaoPDV: IOperacaoPDV;
-  const Pagamento: IPagamentoPDV): IPDVTransactionState;
+procedure TBematechPrinter.EfetuarPagamento(forma: string; valor: currency);
 begin
-  CheckStatus(Pagamento.EfetuarPagamentoPrinter(OperacaoPDV, FBematech));
+  CheckStatus(FBematech.EfetuaFormaPagamento(forma, PChar(formatFloat(',0.00', valor))));
 end;
 
 procedure TBematechPrinter.EfetuarReducaoZ(DateTime: TDateTime);
@@ -397,6 +397,13 @@ begin
   SetLength(num, 6);
   checkStatus(FBematech.numeroCupom(num));
   result := strToInt(num);
+end;
+
+procedure TBematechPrinter.LeituraMemoriaFiscalData(dtInicial,
+  dtFinal: TDateTime);
+begin
+  checkStatus(FBematech.LeituraMemoriaFiscalData(FormatDateTime('ddmmyy', dtInicial),
+    FormatDateTime('ddmmyy', dtFinal)));
 end;
 
 { TBematechAliquotaList }

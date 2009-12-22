@@ -25,6 +25,7 @@ type
     function IniciaFechamentoCupom(AcrescimoOuDesconto, TipoAcrescimoOuDesconto,
         ValorAcrescimoOuDesconto: string): Integer;
     function EfetuaFormaPagamentoDescricaoForma(Forma, Valor, Descricao: string): Integer;
+    function EfetuaFormaPagamento(Forma, Valor: string): Integer;
     function TerminaFechamentoCupom(Mensagem: string): Integer;
 
     function LeituraX: Integer;
@@ -44,6 +45,8 @@ type
 
     function NumeroSerie(var num: string): integer;
     function numeroCupom(var numeroCupom: string): integer;
+
+    function LeituraMemoriaFiscalData(dtInicial: string; dtFinal: string): integer;
   end;
 
 implementation
@@ -96,6 +99,11 @@ function TBematechWrapper.EfetuaFormaPagamentoDescricaoForma(Forma, Valor,
   Descricao: string): Integer;
 begin
   Result := Bematech_FI_EfetuaFormaPagamentoDescricaoForma(Forma, Valor, Descricao);
+end;
+
+function TBematechWrapper.EfetuaFormaPagamento(Forma, Valor: string): Integer;
+begin
+  Result := Bematech_FI_EfetuaFormaPagamento(PChar(Forma), PChar(Valor));
 end;
 
 function TBematechWrapper.FechamentoDoDia: Integer;
@@ -182,6 +190,12 @@ end;
 function TBematechWrapper.numeroCupom(var numeroCupom: string): integer;
 begin
   result := Bematech_FI_NumeroCupom(numeroCupom);
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalData(dtInicial,
+  dtFinal: string): integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalData(dtInicial, dtFinal);
 end;
 
 end.

@@ -22,15 +22,17 @@ type
     function IniciaFechamentoCupom(AcrescimoOuDesconto, TipoAcrescimoOuDesconto,
         ValorAcrescimoOuDesconto: string): Integer;
     function EfetuaFormaPagamentoDescricaoForma(Forma, Valor, Descricao: string): Integer;
+    function EfetuaFormaPagamento(Forma, Valor: string): Integer;
     function TerminaFechamentoCupom(Mensagem: string): Integer;
 
     // Funções dos Relatórios Fiscais
     function LeituraX: Integer;
     function ReducaoZ(Data, Hora: String): Integer;
+    function LeituraMemoriaFiscalData(dataInicial, dataFinal: string): integer;
 
     // Outras funções
     function AberturaDoDia(var Valor, FormaPagamento: string): Integer;
-    function FechamentoDoDia: Integer; 
+    function FechamentoDoDia: Integer;
     function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
     function VerificaImpressoraLigada: Integer;
 
@@ -44,6 +46,8 @@ type
 
     function numeroSerie(var num: string): integer;
     function numeroCupom(var num: string): integer;
+
+
   end;
 
 implementation
