@@ -317,7 +317,7 @@ end;
 
 function substituiCaracterInvalido(texto: string; strConst: Char = '_'): string;
 const
-  CaracteresInvalidos = ' \ / : * ? " < > | # !';
+  CaracteresInvalidos = ' \ / : * ? " < > | #';
 var
   i: Integer;
   str: string;
