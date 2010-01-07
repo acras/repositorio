@@ -30,6 +30,7 @@ function simpleDecrypt(str: string): string;
 function toTxtField(value: string; size: integer): string; overload;
 function toTxtField(value: integer; size: integer): string; overload;
 function currencyToTxtField(value: double; size: integer): string;
+function substituiCaracterInvalido(texto: string; strConst: char = '_'): string;
 
 implementation
 
@@ -314,6 +315,22 @@ begin
   result := FormatFloat(strVezes('0', size), value*100);
 end;
 
+function substituiCaracterInvalido(texto: string; strConst: Char = '_'): string;
+const
+  CaracteresInvalidos = ' \ / : * ? " < > | # !';
+var
+  i: Integer;
+  str: string;
+begin
+  for i:=1 to Length(texto) do
+  begin
+    if Pos(texto[i], CaracteresInvalidos) > 0 then
+      str := str + strConst
+    else
+      str := str + texto[i];
+  end;
+  Result := str;
+end;
 
 
 end.
