@@ -31,6 +31,7 @@ function toTxtField(value: string; size: integer): string; overload;
 function toTxtField(value: integer; size: integer): string; overload;
 function currencyToTxtField(value: double; size: integer): string;
 function substituiCaracterInvalido(texto: string; strConst: char = '_'): string;
+function prepareIdsForIn(strIds: string): TStringList;
 
 implementation
 
@@ -332,6 +333,33 @@ begin
   Result := str;
 end;
 
+function prepareIdsForIn(strIds: string): TStringList;
+var
+  IDsStringList: TStringList;
+  listaIds: string;
+  contador: Integer;
+begin
+  try
+    listaIds := '-1';
+    IDsStringList := TStringList.Create;
+    IDsStringList.Duplicates := dupIgnore;
+    IDsStringList.Sorted := True;
+    ExtractStrings([','], [' '], PChar(strIds), IDsStringList);
+
+    Result := TStringList.Create;
+    for contador := 1 to (IDsStringList.Count) do
+    begin
+      listaIds := listaIds + ',' + IDsStringList.Strings[contador - 1];
+      if ((contador mod 1495) = 0) or (contador = IDsStringList.Count) then
+      begin
+        Result.Add(listaIds);
+        listaIds := '-1';
+      end;
+    end;
+  finally
+    FreeAndNil(IDsStringList);
+  end;
+end;
 
 end.
 
