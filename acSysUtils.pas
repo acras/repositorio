@@ -3,12 +3,13 @@ unit acSysUtils;
 interface
 
 uses
-  Classes, Printers, SysUtils;
+  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX;
 
 procedure getPrinterList(PList: TStrings);
 procedure deltree(dir: string);
 procedure listdirectorycontents(basedir: string; s: TStrings);
 procedure listdirectories(basedir: string; s: TStrings);
+function GetSpecialFolderLocation(HWnd:HWnd; Index:integer):string;
 
 implementation
 
@@ -84,7 +85,7 @@ begin
       else
         if (sr.Name <> '.') and (sr.name <> '..') then s.Add(basedir + '/' + sr.Name);
     end;
-    findclose(sr);
+    //findclose(sr);
   end;
 end;
 
@@ -107,7 +108,48 @@ begin
         listdirectories(basedir + '/' + sr.name, s);
       end;
     end;
-    findclose(sr);
+    //findclose(sr);
+  end;
+end;
+
+function GetSpecialFolderLocation(HWnd:HWnd; Index:integer):string;
+var
+  I:PItemIDList;
+  FIDesktopFolder:IShellFolder;
+  StrRet:TStrRet;
+  P:PChar;
+  M:IMalloc;
+  path : array[0..MAX_PATH] of char;
+begin
+  Result := '';
+  SHGetSpecialFolderLocation(HWnd, Index, I);
+  if I <> nil then begin
+    SetLength(Result, MAX_PATH);
+    if SHGetPathFromIdList(I, PChar(Result)) then
+      SetLength(Result,Strlen(PChar(Result)))
+    else
+      Result := '';
+    SHGetMalloc(M);
+    if Result='' then begin
+      SHGetDesktopFolder(FIDesktopFolder);
+      FIDesktopFolder.GetDisplayNameOf(I, SHGDN_FORPARSING, StrRet);
+      case StrRet.uType of
+        STRRET_CSTR:
+          SetString(Result, StrRet.cStr, lStrLen(StrRet.cStr));
+        STRRET_OFFSET:
+          begin
+            P := @I.mkid.abID[StrRet.uOffset - SizeOf(I.mkid.cb)];
+            SetString(Result, P, I.mkid.cb - StrRet.uOffset);
+          end;
+        STRRET_WSTR:
+          begin
+            Result := WideCharToString(StrRet.pOleStr);
+            if M.DidAlloc(StrRet.pOleStr)>0 then
+              M.Free(StrRet.pOleStr)
+          end;
+      end;
+    end;
+    M.Free(I);
   end;
 end;
 

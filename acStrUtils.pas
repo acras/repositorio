@@ -30,6 +30,7 @@ function simpleDecrypt(str: string): string;
 function toTxtField(value: string; size: integer): string; overload;
 function toTxtField(value: integer; size: integer): string; overload;
 function currencyToTxtField(value: double; size: integer): string;
+function encodeFileToUTF8(fileName: string): string;
 function substituiCaracterInvalido(texto: string; strConst: char = '_'): string;
 function prepareIdsForIn(strIds: string): TStringList;
 
@@ -314,6 +315,21 @@ end;
 function currencyToTxtField(value: double; size: integer): string;
 begin
   result := FormatFloat(strVezes('0', size), value*100);
+end;
+
+function encodeFileToUTF8(fileName: string): string;
+var
+  fc: TStringList;
+begin
+  try
+    fc := TstringList.Create;
+    fc.LoadFromFile(fileName);
+    fc.Text := UTF8Encode(fc.Text);
+    fc.SaveToFile(fileName);
+    result := fileName;
+  finally
+    FreeAndNil(fc);
+  end;
 end;
 
 function substituiCaracterInvalido(texto: string; strConst: Char = '_'): string;
