@@ -1,0 +1,54 @@
+package repositorio_acras;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  rtl,
+  dbrtl,
+  dsnap,
+  vcldb,
+  bdertl,
+  ip4000v7;
+
+contains
+  acStrUtils in '..\acStrUtils.pas',
+  acInetUtils in '..\acInetUtils.pas',
+  acLog in '..\acLog.pas',
+  acSysUtils in '..\acSysUtils.pas',
+  AsyncCalls in '..\AsyncCalls.pas',
+  Base64 in '..\base64.pas',
+  CNAB240 in '..\CNAB240.pas',
+  CNAB400 in '..\CNAB400.pas',
+  DCPconst in '..\dcpconst.pas',
+  DCPcrypt in '..\dcpcrypt.pas',
+  fastString in '..\fastString.pas',
+  IDEA in '..\idea.pas',
+  Md5 in '..\md5.pas',
+  Sha1 in '..\sha1.pas',
+  U_Cipher in '..\u_cipher.pas',
+  ValidaDocumentos in '..\ValidaDocumentos.pas';
+
+end.
