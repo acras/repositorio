@@ -78,7 +78,7 @@ type
 implementation
 
 uses
-  StrUtils, Classes, DateUtils, DConfigGeral, DConfigSistema,
+  StrUtils, Classes, DateUtils, {DConfigGeral, DConfigSistema,}
   BematechUtils;
 
 const
@@ -157,6 +157,11 @@ procedure TBematechPrinter.EfetuarPagamento(forma: string; valor: currency);
 begin
   CheckStatus(FBematech.EfetuaFormaPagamento(forma, PChar(formatFloat(',0.00', valor))));
 end;
+
+//procedure TBematechPrinter.AbreComprovanteNaoFiscalVinculado((forma: string; valor: currency);
+//begin
+//  CheckStatus(FBematech.EfetuaFormaPagamento(forma, PChar(formatFloat(',0.00', valor))));
+//end;
 
 procedure TBematechPrinter.EfetuarReducaoZ(DateTime: TDateTime);
 var
