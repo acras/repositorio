@@ -721,7 +721,7 @@ var
 begin
   result := false;
   FSeqRegistro := 1;
-  with TOpenDialog.Create(nil) do
+  with TSaveDialog.Create(nil) do
   begin
     FileName := nomeArquivo;
     if Execute then
