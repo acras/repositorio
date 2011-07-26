@@ -3,15 +3,24 @@ unit acSysUtils;
 interface
 
 uses
-  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX;
+  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX, Forms;
 
 procedure getPrinterList(PList: TStrings);
 procedure deltree(dir: string);
 procedure listdirectorycontents(basedir: string; s: TStrings);
 procedure listdirectories(basedir: string; s: TStrings);
 function GetSpecialFolderLocation(HWnd:HWnd; Index:integer):string;
+function GetTempDir: string;
+function getWindowsTempFileName(prefix: string): string;
+function getWindowsTempPath: string;
+procedure blockInput;
+procedure unblockInput;
+function functionAvailable(dllName, funcName: string; var p: pointer): boolean;
 
 implementation
+
+const
+  CSIDL_COMMON_APPDATA = $0023;
 
 procedure getPrinterList(PList: TStrings);
 var
@@ -119,7 +128,6 @@ var
   StrRet:TStrRet;
   P:PChar;
   M:IMalloc;
-  path : array[0..MAX_PATH] of char;
 begin
   Result := '';
   SHGetSpecialFolderLocation(HWnd, Index, I);
@@ -152,6 +160,69 @@ begin
     M.Free(I);
   end;
 end;
+
+function GetTempDir: string;
+begin
+  result := getSpecialFolderLocation(
+    Application.Handle, CSIDL_COMMON_APPDATA) + '\ACRASSGL\';
+end;
+
+function getWindowsTempPath: string;
+var
+  lng: DWORD;
+  thePath: string;
+begin
+  SetLength(thePath, MAX_PATH);
+  lng := GetTempPath(MAX_PATH, PChar(thePath));
+  SetLength(thePath, lng);
+  result := thePath;
+end;
+
+function getWindowsTempFileName(prefix: string): string;
+var
+  lng: DWORD;
+  pc: PChar;
+  theFileNameWithPath: array[0..MAX_PATH] of char;
+begin
+  pc := @theFileNameWithPath[0];
+  lng := GetTempFileName(PChar(getWindowsTempPath), PChar(prefix), 0, pc);
+  Win32Check(lng <> 0);
+  SetString(result, pc, strLen(pc));
+  result := result;
+end;
+
+procedure blockInput;
+var
+  BlockInput : function(Block: BOOL): BOOL; stdcall;
+begin
+  if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
+    BlockInput(true) ;
+end;
+
+procedure unblockInput;
+var
+  BlockInput : function(Block: BOOL): BOOL; stdcall;
+begin
+  if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
+    BlockInput(false) ;
+end;
+
+function functionAvailable(dllName, funcName: string; var p: pointer): boolean;
+var
+  lib: THandle;
+begin
+  result := false;
+  p := nil;
+  if LoadLibrary(PChar(dllName)) = 0 then exit;
+  lib := GetModuleHandle(PChar(dllName)) ;
+  if lib <> 0 then
+  begin
+    p := GetProcAddress(lib, PChar(funcName)) ;
+    if p <> nil then Result := true;
+  end;
+end;
+
+
 
 
 end.
