@@ -16,6 +16,7 @@ function getWindowsTempPath: string;
 procedure blockInput;
 procedure unblockInput;
 function functionAvailable(dllName, funcName: string; var p: pointer): boolean;
+function CreateProcessSimple(cmd: string; wait: boolean = false): boolean;
 
 implementation
 
@@ -195,7 +196,7 @@ procedure blockInput;
 var
   BlockInput : function(Block: BOOL): BOOL; stdcall;
 begin
-  if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
+  if functionAvailable('USER32.DLL', 'BlockInput', @BlockInput) then
     BlockInput(true) ;
 end;
 
@@ -203,7 +204,7 @@ procedure unblockInput;
 var
   BlockInput : function(Block: BOOL): BOOL; stdcall;
 begin
-  if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
+  if functionAvailable('USER32.DLL', 'BlockInput', @BlockInput) then
     BlockInput(false) ;
 end;
 
@@ -222,6 +223,36 @@ begin
   end;
 end;
 
+function CreateProcessSimple(cmd: string; wait: boolean = false): boolean;
+var
+  SUInfo: TStartupInfo;
+  ProcInfo: TProcessInformation;
+begin
+  FillChar(SUInfo, SizeOf(SUInfo), #0);
+  SUInfo.cb      := SizeOf(SUInfo);
+  SUInfo.dwFlags := STARTF_USESHOWWINDOW;
+  SUInfo.wShowWindow := SW_HIDE;
+
+  Result := CreateProcess(nil,
+                          PChar(cmd),
+                          nil,
+                          nil,
+                          false,
+                          CREATE_NEW_CONSOLE or
+                          NORMAL_PRIORITY_CLASS,
+                          nil,
+                          nil,
+                          SUInfo,
+                          ProcInfo);
+
+  if (Result and wait) then
+  begin
+    WaitForSingleObject(ProcInfo.hProcess, INFINITE);
+
+    CloseHandle(ProcInfo.hProcess);
+    CloseHandle(ProcInfo.hThread);
+  end;
+end;
 
 
 

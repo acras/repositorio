@@ -28,9 +28,6 @@ function Bematech_FI_EstornoFormasPagamento( FormaOrigem: String; FormaDestino: 
 function Bematech_FI_UsaUnidadeMedida( UnidadeMedida: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 
 // Funções dos Relatórios Fiscais
-function Bematech_FI_RelatorioGerencial( Texto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-
-function Bematech_FI_FechaRelatorioGerencial: Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraMemoriaFiscalData( DataInicial: String; DataFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraMemoriaFiscalReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraMemoriaFiscalSerialData( DataInicial: String; DataFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -287,6 +284,9 @@ type
   TBematech_FI_FinalizaModoTEF = function : Integer; StdCall;
   TBematech_FI_SegundaViaNaoFiscalVinculadoMFD = function : Integer; StdCall;
   TBematech_FI_EstornoNaoFiscalVinculadoMFD = function (CGC, Nome, Endereco : string): Integer; StdCall;
+  TBematech_FI_RelatorioGerencial = function( Texto: String ): Integer; StdCall;
+  TBematech_FI_FechaRelatorioGerencial = function: Integer; StdCall;
+
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
   Bematech_FI_AbreCupom: TBematech_FI_AbreCupom;
@@ -322,6 +322,8 @@ var
   Bematech_FI_FinalizaModoTEF: TBematech_FI_FinalizaModoTEF;
   Bematech_FI_SegundaViaNaoFiscalVinculadoMFD: TBematech_FI_SegundaViaNaoFiscalVinculadoMFD;
   Bematech_FI_EstornoNaoFiscalVinculadoMFD: TBematech_FI_EstornoNaoFiscalVinculadoMFD;
+  Bematech_FI_RelatorioGerencial: TBematech_FI_RelatorioGerencial;
+  Bematech_FI_FechaRelatorioGerencial: TBematech_FI_FechaRelatorioGerencial;
 
 implementation
 
@@ -366,6 +368,8 @@ begin
   @Bematech_FI_FinalizaModoTEF := GetProcAddress(DLLHandle, 'Bematech_FI_FinalizaModoTEF');
   @Bematech_FI_SegundaViaNaoFiscalVinculadoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_SegundaViaNaoFiscalVinculadoMFD');
   @Bematech_FI_EstornoNaoFiscalVinculadoMFD :=  GetProcAddress(DLLHandle, 'Bematech_FI_EstornoNaoFiscalVinculadoMFD');
+  @Bematech_FI_RelatorioGerencial :=  GetProcAddress(DLLHandle, 'Bematech_FI_RelatorioGerencial');
+  @Bematech_FI_FechaRelatorioGerencial :=  GetProcAddress(DLLHandle, 'Bematech_FI_FechaRelatorioGerencial');
 end;
 
 end.
