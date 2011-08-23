@@ -17,6 +17,10 @@ procedure blockInput;
 procedure unblockInput;
 function functionAvailable(dllName, funcName: string; var p: pointer): boolean;
 function CreateProcessSimple(cmd: string; wait: boolean = false): boolean;
+function getWindowsProgramDataDir(subdir: string = ''): string;
+procedure bloqueiaTecladoMouse;
+procedure desbloqueiaTecladoMouse;
+function FuncAvail(dllName, funcName: string; var p: pointer): boolean;
 
 implementation
 
@@ -254,6 +258,42 @@ begin
   end;
 end;
 
+function getWindowsProgramDataDir(subdir: string = ''): string;
+begin
+  result := getSpecialFolderLocation(Application.Handle, CSIDL_COMMON_APPDATA) + '\' + subdir;
+  if not DirectoryExists(result) then
+    CreateDir(result);
+end;
 
+procedure bloqueiaTecladoMouse;
+var
+  BlockInput : function(Block: BOOL): BOOL; stdcall;
+begin
+  if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
+    BlockInput(true) ;
+end;
+
+procedure desbloqueiaTecladoMouse;
+var
+  BlockInput : function(Block: BOOL): BOOL; stdcall;
+begin
+  if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
+    BlockInput(false) ;
+end;
+
+function FuncAvail(dllName, funcName: string; var p: pointer): boolean;
+var
+  lib: THandle;
+begin
+  result := false;
+  p := nil;
+  if LoadLibrary(PChar(dllName)) = 0 then exit;
+  lib := GetModuleHandle(PChar(dllName)) ;
+  if lib <> 0 then
+  begin
+    p := GetProcAddress(lib, PChar(funcName)) ;
+    if p <> nil then Result := true;
+  end;
+end;
 
 end.

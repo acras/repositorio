@@ -286,6 +286,7 @@ type
   TBematech_FI_EstornoNaoFiscalVinculadoMFD = function (CGC, Nome, Endereco : string): Integer; StdCall;
   TBematech_FI_RelatorioGerencial = function( Texto: String ): Integer; StdCall;
   TBematech_FI_FechaRelatorioGerencial = function: Integer; StdCall;
+  TBematech_FI_StatusEstendidoMFD = function(var iStatus: integer): integer; StdCall;
 
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
@@ -324,6 +325,7 @@ var
   Bematech_FI_EstornoNaoFiscalVinculadoMFD: TBematech_FI_EstornoNaoFiscalVinculadoMFD;
   Bematech_FI_RelatorioGerencial: TBematech_FI_RelatorioGerencial;
   Bematech_FI_FechaRelatorioGerencial: TBematech_FI_FechaRelatorioGerencial;
+  Bematech_FI_StatusEstendidoMFD: TBematech_FI_StatusEstendidoMFD;
 
 implementation
 
@@ -369,7 +371,9 @@ begin
   @Bematech_FI_SegundaViaNaoFiscalVinculadoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_SegundaViaNaoFiscalVinculadoMFD');
   @Bematech_FI_EstornoNaoFiscalVinculadoMFD :=  GetProcAddress(DLLHandle, 'Bematech_FI_EstornoNaoFiscalVinculadoMFD');
   @Bematech_FI_RelatorioGerencial :=  GetProcAddress(DLLHandle, 'Bematech_FI_RelatorioGerencial');
-  @Bematech_FI_FechaRelatorioGerencial :=  GetProcAddress(DLLHandle, 'Bematech_FI_FechaRelatorioGerencial');
+  @Bematech_FI_FechaRelatorioGerencial := GetProcAddress(DLLHandle, 'Bematech_FI_FechaRelatorioGerencial');
+  @Bematech_FI_StatusEstendidoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_StatusEstendidoMFD');
+
 end;
 
 end.

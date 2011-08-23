@@ -13,6 +13,7 @@ Type
   end;
 
 function getStrField(str: string; delimiter: char; index: integer): string;
+function getStrField2(str: string; delimiter: char; index: integer): string;
 function retiraEspacos(str: String): String;
 function tiraPontos(str: String): String;
 function removeAcento(str: String): String;
@@ -66,6 +67,35 @@ begin
   finally
     FreeAndNil(strL);
   end;
+end;
+
+function getStrField2(str: string; delimiter: char; index: integer): string;
+var
+  ultimoIndice: integer;
+  strl: array of string;
+  arrLength: integer;
+begin
+  arrLength := 0;
+  ultimoIndice := pos(delimiter, str);
+  while (ultimoIndice > 0) do
+  begin
+    inc(arrLength);
+    SetLength(strl, arrLength);
+    strl[arrLength-1] := copy(str, 0, ultimoIndice-1);
+    str := copy(str, ultimoIndice+1, length(str));
+    ultimoIndice := pos(delimiter, str);
+    if (ultimoIndice = 0) and (str <> '') then
+    begin
+      inc(arrLength);
+      SetLength(strl, arrLength);
+      strl[arrLength-1] := str;
+    end;
+  end;
+
+  if (index > 0) and (index <= arrLength) then
+    result := strl[index-1]
+  else
+    result := '';
 end;
 
 
