@@ -34,6 +34,9 @@ function currencyToTxtField(value: double; size: integer): string;
 function encodeFileToUTF8(fileName: string): string;
 function substituiCaracterInvalido(texto: string; strConst: char = '_'): string;
 function prepareIdsForIn(strIds: string): TStringList;
+function EnsureTrailingSlash(const path: string): string;
+function dasherize(const str: string): string;
+function underscorize(const str: string): string;
 
 implementation
 
@@ -405,6 +408,23 @@ begin
   finally
     FreeAndNil(IDsStringList);
   end;
+end;
+
+function EnsureTrailingSlash(const path: string): string;
+begin
+  result := path;
+  if result[Length(result)] <> '/' then
+    result := result + '/';
+end;
+
+function dasherize(const str: string): string;
+begin
+  result := FastReplace(str, '_', '-');
+end;
+
+function underscorize(const str: string): string;
+begin
+  result := FastReplace(str, '-', '_');
 end;
 
 end.

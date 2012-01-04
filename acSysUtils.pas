@@ -3,7 +3,7 @@ unit acSysUtils;
 interface
 
 uses
-  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX, Forms;
+  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX, Forms, dialogs;
 
 procedure getPrinterList(PList: TStrings);
 procedure deltree(dir: string);
@@ -272,6 +272,7 @@ begin
   if FuncAvail('USER32.DLL', 'BlockInput', @BlockInput) then
     BlockInput(true) ;
 end;
+
 
 procedure desbloqueiaTecladoMouse;
 var
