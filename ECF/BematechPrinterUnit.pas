@@ -3,7 +3,7 @@ unit BematechPrinterUnit;
 interface
 
 uses
-  SysUtils, BematechIntfUnit, PDVIntfUnit, PDVPrinterIntfUnit;
+  SysUtils, BematechIntfUnit, PDVIntfUnit, PDVPrinterIntfUnit, Dialogs;
 
 type
   EBematechPrinter = class(Exception)
@@ -79,7 +79,7 @@ implementation
 
 uses
   StrUtils, Classes, DateUtils, {DConfigGeral, DConfigSistema,}
-  BematechUtils;
+  acBematechUtils;
 
 const
   MsgSt1: array[0..7] of string = (
@@ -138,8 +138,12 @@ begin
   if Ack <> 6 then
     raise EBematechPrinter.Create(GetMessageFromAckByte(Ack));
 
-  if not ((St1 = 0) and (St2 = 0)) then
-    raise EBematechPrinter.Create(GetMessageFromStatusBytes(St1, St2));
+  //se for somente o aviso de pouco papel
+  if (St1 = 64) and (St2 = 0) then
+    //
+  else
+    if not ((St1 = 0) and (St2 = 0)) then
+      raise EBematechPrinter.Create(GetMessageFromStatusBytes(St1, St2));
 end;
 
 constructor TBematechPrinter.Create(const ABematech: IBematech);
@@ -155,7 +159,8 @@ end;
 
 procedure TBematechPrinter.EfetuarPagamento(forma: string; valor: currency);
 begin
-  CheckStatus(FBematech.EfetuaFormaPagamento(forma, PChar(formatFloat(',0.00', valor))));
+  CheckStatus(
+    FBematech.EfetuaFormaPagamento(forma, PChar(formatFloat(',0.00', valor))));
 end;
 
 //procedure TBematechPrinter.AbreComprovanteNaoFiscalVinculado((forma: string; valor: currency);

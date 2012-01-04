@@ -31,7 +31,6 @@ function Bematech_FI_UsaUnidadeMedida( UnidadeMedida: String ): Integer; StdCall
 function Bematech_FI_LeituraMemoriaFiscalData( DataInicial: String; DataFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraMemoriaFiscalReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraMemoriaFiscalSerialData( DataInicial: String; DataFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_LeituraMemoriaFiscalSerialReducao( ReducaoInicial: String; ReducaoFinal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 }
 // Funções das Operações Não Fiscais
 //function Bematech_FI_RecebimentoNaoFiscal( IndiceTotalizador: String; Valor: String; FormaPagamento: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -186,7 +185,6 @@ function Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, Reduca
 function Bematech_FI_LeituraChequeMFD(CodigoCMC7 : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ImprimeChequeMFD(NumeroBanco, Valor, Favorecido, Cidade, Data, Mensagem, ImpressaoVerso, Linhas : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(FlagRetorno : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_RetornoImpressoraMFD(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer; Var ST3: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_AbreBilhetePassagemMFD(Embarque, Destino, Linha, Agencia, Data, Hora, Poltrona, Plataforma, TipoPassagem: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CancelaAcrescimoDescontoItemMFD( cFlag, cItem: string ): integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_SubTotalizaCupomMFD: integer; StdCall; External 'BEMAFI32.DLL';
@@ -207,20 +205,6 @@ function Bematech_FI_ValorFormaPagamentoMFD( FormaPagamento: String; Valor: Stri
 function Bematech_FI_ValorTotalizadorNaoFiscalMFD( Totalizador: String; Valor: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaEstadoImpressoraMFD( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer; Var ST3: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_IniciaFechamentoCupomMFD( AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimo: String; ValorDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_RelatorioSintegraMFD( iRelatorios : Integer;
-                                           cArquivo    : String;
-                                           cMes        : String;
-                                           cAno        : String;
-                                           cRazaoSocial: String;
-                                           cEndereco   : String;
-                                           cNumero     : String;
-                                           cComplemento: String;
-                                           cBairro     : String;
-                                           cCidade     : String;
-                                           cCEP        : String;
-                                           cTelefone   : String;
-                                           cFax        : String;
-                                           cContato    : String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CancelaItemNaoFiscalMFD( NumeroItem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_AcrescimoItemNaoFiscalMFD( NumeroItem: String; AcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CancelaAcrescimoNaoFiscalMFD( NumeroItem: String; AcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -287,6 +271,23 @@ type
   TBematech_FI_RelatorioGerencial = function( Texto: String ): Integer; StdCall;
   TBematech_FI_FechaRelatorioGerencial = function: Integer; StdCall;
   TBematech_FI_StatusEstendidoMFD = function(var iStatus: integer): integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalSerialReducao = function(ReducaoInicial: String; ReducaoFinal: String): Integer; StdCall;
+  TBematech_FI_RetornoImpressoraMFD = function(Var ACK: Integer; Var ST1: Integer; Var ST2: Integer; Var ST3: Integer ): Integer; StdCall;
+  TBematech_FI_RelatorioSintegraMFD = function( iRelatorios : Integer;
+                                           cArquivo    : String;
+                                           cMes        : String;
+                                           cAno        : String;
+                                           cRazaoSocial: String;
+                                           cEndereco   : String;
+                                           cNumero     : String;
+                                           cComplemento: String;
+                                           cBairro     : String;
+                                           cCidade     : String;
+                                           cCEP        : String;
+                                           cTelefone   : String;
+                                           cFax        : String;
+                                           cContato    : String ): Integer; StdCall;
+
 
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
@@ -326,6 +327,10 @@ var
   Bematech_FI_RelatorioGerencial: TBematech_FI_RelatorioGerencial;
   Bematech_FI_FechaRelatorioGerencial: TBematech_FI_FechaRelatorioGerencial;
   Bematech_FI_StatusEstendidoMFD: TBematech_FI_StatusEstendidoMFD;
+  Bematech_FI_LeituraMemoriaFiscalSerialReducao: TBematech_FI_LeituraMemoriaFiscalSerialReducao;
+  Bematech_FI_RetornoImpressoraMFD: TBematech_FI_RetornoImpressoraMFD;
+  Bematech_FI_RelatorioSintegraMFD: TBematech_FI_RelatorioSintegraMFD;
+
 
 implementation
 
@@ -373,7 +378,9 @@ begin
   @Bematech_FI_RelatorioGerencial :=  GetProcAddress(DLLHandle, 'Bematech_FI_RelatorioGerencial');
   @Bematech_FI_FechaRelatorioGerencial := GetProcAddress(DLLHandle, 'Bematech_FI_FechaRelatorioGerencial');
   @Bematech_FI_StatusEstendidoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_StatusEstendidoMFD');
-
+  @Bematech_FI_LeituraMemoriaFiscalSerialReducao := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducao');
+  @Bematech_FI_RetornoImpressoraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoImpressoraMFD');
+  @Bematech_FI_RelatorioSintegraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_RelatorioSintegraMFD');
 end;
 
 end.
