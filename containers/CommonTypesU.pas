@@ -30,17 +30,16 @@ type
 
   TDynArray = class
   public
-    class function ByteArray(const A: array of Byte):TDynByteArray; static;
-    class function IntegerArray(const A: array of Integer):TIntegerArray; static;
-    class function DoubleArray(const A: array of Double):TDoubleArray; static;
-    class function SingleArray(const A: array of Single):TSingleArray; static;
-    class function StringArray(const A: array of String):TStringArray; static;
-    class function ObjectArray(const A: array of TObject):TObjectArray; static;
-    class function InterfaceArray(const A: array of IInterface):TInterfaceArray; static;
+    class function ByteArray(const A: array of Byte):TDynByteArray;
+    class function IntegerArray(const A: array of Integer):TIntegerArray;
+    class function DoubleArray(const A: array of Double):TDoubleArray;
+    class function SingleArray(const A: array of Single):TSingleArray;
+    class function StringArray(const A: array of String):TStringArray;
+    class function ObjectArray(const A: array of TObject):TObjectArray;
+    class function InterfaceArray(const A: array of IInterface):TInterfaceArray;
     class function StartsWith(const aSubArray, aArray: TDynByteArray):
-        Boolean; static;
+        Boolean;
     class function ToByteArray(const Data; NumBytes: Cardinal): TDynByteArray;
-        static;
   end;
 
 implementation

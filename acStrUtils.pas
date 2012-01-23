@@ -105,7 +105,6 @@ end;
 function tiraPontos(str: String): String;
 var
   i: integer;
-  adicionouEspaco: boolean;
 begin
   result := '';
   for i := 1 to length(str) do
