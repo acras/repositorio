@@ -47,7 +47,14 @@ type
     function numeroSerie(var num: string): integer;
     function numeroCupom(var num: string): integer;
 
-
+    function DadosUltimaReducaoMFD(DadosReducao: string): Integer;
+    function LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataPAFECF(DataInicial, DataFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
+    function LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
+    function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
   end;
 
 implementation

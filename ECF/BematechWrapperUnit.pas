@@ -7,7 +7,6 @@ uses
 
 type
   TBematechWrapper = class(TInterfacedObject, IBematech)
-  private
   public
     function ProgramaAliquota(var Aliquota: string; Vinculo: Integer): Integer;
 
@@ -47,6 +46,20 @@ type
     function numeroCupom(var numeroCupom: string): integer;
 
     function LeituraMemoriaFiscalData(dtInicial: string; dtFinal: string): integer;
+    function DadosUltimaReducaoMFD(DadosReducao: string): Integer;
+    function LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal,
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal,
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataPAFECF(DataInicial, DataFinal,
+      FlagLeitura, chavePublica, chavePrivada: string): Integer;
+    function LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal,
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal,
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal,
+      FlagLeitura, chavePublica, chavePrivada: string): Integer;
+    function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
   end;
 
 implementation
@@ -196,6 +209,53 @@ function TBematechWrapper.LeituraMemoriaFiscalData(dtInicial,
   dtFinal: string): integer;
 begin
   result := Bematech_FI_LeituraMemoriaFiscalData(dtInicial, dtFinal);
+end;
+
+function TBematechWrapper.DadosUltimaReducaoMFD(DadosReducao : string): Integer;
+begin
+  result := Bematech_FI_DadosUltimaReducaoMFD(dadosReducao);
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalDataMFD(
+  DataInicial, DataFinal, FlagLeitura : string): Integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalDataMFD(Pchar(dataInicial), PChar(dataFinal), PChar(FlagLeitura));
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalReducaoMFD(
+  ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalReducaoMFD(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura));
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalSerialDataMFD(
+  DataInicial, DataFinal, FlagLeitura : string): Integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(Pchar(dataInicial), PChar(dataFinal), PChar(FlagLeitura));
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalSerialReducaoMFD(
+  ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura));
+end;
+
+function TBematechWrapper.HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
+begin
+  result := Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(flag);
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalSerialDataPAFECF(DataInicial,
+  DataFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalSerialDataPAFECF(Pchar(dataInicial), PChar(dataFinal), PChar(FlagLeitura), PCHar(chavePublica), PChar(chavePrivada));
+end;
+
+function TBematechWrapper.LeituraMemoriaFiscalSerialReducaoPAFECF(
+  ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica,
+  chavePrivada: string): Integer;
+begin
+  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura), PCHar(chavePublica), PChar(chavePrivada));
 end;
 
 end.

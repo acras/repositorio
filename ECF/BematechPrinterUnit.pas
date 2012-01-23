@@ -6,6 +6,47 @@ uses
   SysUtils, BematechIntfUnit, PDVIntfUnit, PDVPrinterIntfUnit, Dialogs;
 
 type
+  TModoReducaoZ = (tmrzManual, tmrzAutomatica);
+  TInfoReducaoZRaw = record
+    modo: string;
+    contReinicioOperacao: string;
+    contReducaoZ: string;
+    contOrdemOperacao: string;
+    contGeralOperacoesNaoFiscais: string;
+    contCupomFiscal: string;
+    contGeralRelatoriosGerenciais: string;
+    contFitaDetalheEmitida: string;
+    contOperacoesNaoFiscaisCanceladas: string;
+    contCupomFiscalCancelados: string;
+    contOperacaoesNaoFiscais: string;
+    contEspecificosRelatoriosGerenciais: string;
+    contComprovanteDebitoCredito: string;
+    contComprovanteDebitoCreditoNaoEmitido: string;
+    contComprovanteDebitoCreditoCancelados: string;
+    totalizadorGeral: string;
+    totalizadoresParciaisTributados: string;
+    totalizadorIsencaoICMS: string;
+    totalizadoresNaoIncidenciaICMS: string;
+    totalizadorSubstituicaoTributariaICMS: string;
+    totalizadorIsencaoISSQN: string;
+    totalizadorNaoIncidenciaISSQN: string;
+    totalizadorSubstituicaotributariaISSQN: string;
+    totalizadorDescontosICMS: string;
+    totalizadorDescontosISSQN: string;
+    totalizadorAcrescimosICMS: string;
+    totalizadorAcrescimosISSQN: string;
+    totalizadorCancelamentosICMS: string;
+    totalizadorCancelamentosISSQN: string;
+    totalizadoresParceiaisNaoSujeitosICMS: string;
+    totalizadorSangria: string;
+    totalizadorSuprimento: string;
+    totalizadorCancelamentosNaoFiscais: string;
+    totalizadorDescontosNaoFiscais: string;
+    totalizadorAcrescimosNaoFiscais: string;
+    aliquotasTributarias: string;
+    dataMovimento: string;
+  end;
+
   EBematechPrinter = class(Exception)
   end;
 
@@ -60,6 +101,20 @@ type
     function numeroUltimoCupom: integer;
 
     procedure LeituraMemoriaFiscalData(dtInicial, dtFinal: TDateTime);
+    function DadosUltimaReducaoMFD: TInfoReducaoZRaw;
+    function LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal: TDateTime;
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal: integer;
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal: TDateTime;
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataPAFECF(DataInicial, DataFinal: TDateTime;
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal: integer;
+      FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal: integer;
+      FlagLeitura: string): Integer;
+    procedure HabilitaDesabilitaRetornoEstendidoMFD(habilita: boolean);
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -79,7 +134,7 @@ implementation
 
 uses
   StrUtils, Classes, DateUtils, {DConfigGeral, DConfigSistema,}
-  acBematechUtils;
+  acBematechUtils, statusUnit, sglConsts;
 
 const
   MsgSt1: array[0..7] of string = (
@@ -414,6 +469,136 @@ procedure TBematechPrinter.LeituraMemoriaFiscalData(dtInicial,
 begin
   checkStatus(FBematech.LeituraMemoriaFiscalData(FormatDateTime('ddmmyy', dtInicial),
     FormatDateTime('ddmmyy', dtFinal)));
+end;
+
+function TBematechPrinter.DadosUltimaReducaoMFD: TInfoReducaoZRaw;
+const
+  indices: Array[0..36] of integer =
+    (2,4,4,6,6,6,6,6,4,4,120,120,4,4,4,18,224,14,14,14,14,14,14,14,14,14,14,14,14,392,14,14,14,14,14,64,6);
+var
+  i, posAtual: integer;
+  dadosReducao: string;
+  dadosReducaoArr: array[0..36] of string;
+begin
+  for i := 1 to 1278 do dadosReducao := dadosReducao + ' ';
+  CheckStatus(FBematech.DadosUltimaReducaoMFD(DadosReducao));
+  posAtual := 1;
+  for i := low(indices) to high(indices) do
+  begin
+    dadosReducaoArr[i] := copy(dadosReducao, posAtual, indices[i]);
+    posAtual := posAtual + indices[i] + 1;
+  end;
+
+  result.modo := dadosReducaoArr[0];
+  result.contReinicioOperacao := dadosReducaoArr[1];
+  result.contReducaoZ := dadosReducaoArr[2];
+  result.contOrdemOperacao := dadosReducaoArr[3];
+  result.contGeralOperacoesNaoFiscais := dadosReducaoArr[4];
+  result.contCupomFiscal := dadosReducaoArr[5];
+  result.contGeralRelatoriosGerenciais := dadosReducaoArr[6];
+  result.contFitaDetalheEmitida := dadosReducaoArr[7];
+  result.contOperacoesNaoFiscaisCanceladas := dadosReducaoArr[8];
+  result.contCupomFiscalCancelados := dadosReducaoArr[9];
+  result.contOperacaoesNaoFiscais := dadosReducaoArr[10];
+  result.contEspecificosRelatoriosGerenciais := dadosReducaoArr[11];
+  result.contComprovanteDebitoCredito := dadosReducaoArr[12];
+  result.contComprovanteDebitoCreditoNaoEmitido := dadosReducaoArr[13];
+  result.contComprovanteDebitoCreditoCancelados := dadosReducaoArr[14];
+  result.totalizadorGeral := dadosReducaoArr[15];
+  result.totalizadoresParciaisTributados := dadosReducaoArr[16];
+  result.totalizadorIsencaoICMS := dadosReducaoArr[17];
+  result.totalizadoresNaoIncidenciaICMS := dadosReducaoArr[18];
+  result.totalizadorSubstituicaoTributariaICMS := dadosReducaoArr[19];
+  result.totalizadorIsencaoISSQN := dadosReducaoArr[20];
+  result.totalizadorNaoIncidenciaISSQN := dadosReducaoArr[21];
+  result.totalizadorSubstituicaotributariaISSQN := dadosReducaoArr[22];
+  result.totalizadorDescontosICMS := dadosReducaoArr[23];
+  result.totalizadorDescontosISSQN := dadosReducaoArr[24];
+  result.totalizadorAcrescimosICMS := dadosReducaoArr[25];
+  result.totalizadorAcrescimosISSQN := dadosReducaoArr[26];
+  result.totalizadorCancelamentosICMS := dadosReducaoArr[27];
+  result.totalizadorCancelamentosISSQN := dadosReducaoArr[28];
+  result.totalizadoresParceiaisNaoSujeitosICMS := dadosReducaoArr[29];
+  result.totalizadorSangria := dadosReducaoArr[30];
+  result.totalizadorSuprimento := dadosReducaoArr[31];
+  result.totalizadorCancelamentosNaoFiscais := dadosReducaoArr[32];
+  result.totalizadorDescontosNaoFiscais := dadosReducaoArr[33];
+  result.totalizadorAcrescimosNaoFiscais := dadosReducaoArr[34];
+  result.aliquotasTributarias := dadosReducaoArr[35];
+  result.dataMovimento := dadosReducaoArr[36];
+end;
+
+function TBematechPrinter.LeituraMemoriaFiscalDataMFD(DataInicial,
+  DataFinal: TDateTime; FlagLeitura: string): Integer;
+begin
+  CheckStatus(FBematech.LeituraMemoriaFiscalDataMFD(
+    formatDateTime('ddmmyyyy', DataInicial),
+    formatDateTime('ddmmyyyy', DataFinal),
+    PChar(FlagLeitura)
+  ));
+end;
+
+function TBematechPrinter.LeituraMemoriaFiscalSerialDataPAFECF(DataInicial,
+  DataFinal: TDateTime; FlagLeitura: string): Integer;
+begin
+  CheckStatus(FBematech.LeituraMemoriaFiscalSerialDataPAFECF(
+    formatDateTime('ddmmyyyy', DataInicial),
+    formatDateTime('ddmmyyyy', DataFinal),
+    PChar(FlagLeitura),
+    PChar(_paf_cpb), PChar(_paf_cpv)
+  ));
+end;
+
+function TBematechPrinter.LeituraMemoriaFiscalReducaoMFD(ReducaoInicial,
+  ReducaoFinal: integer; FlagLeitura: string): Integer;
+begin
+  CheckStatus(FBematech.LeituraMemoriaFiscalReducaoMFD(
+    PChar(intToStr(reducaoInicial)),
+    PChar(intToStr(reducaoFinal)),
+    PChar(FlagLeitura)
+  ));
+end;
+
+function TBematechPrinter.LeituraMemoriaFiscalSerialReducaoPAFECF(
+  ReducaoInicial, ReducaoFinal: integer; FlagLeitura: string): Integer;
+begin
+  CheckStatus(FBematech.LeituraMemoriaFiscalSerialReducaoPAFECF(
+    intToStr(reducaoInicial),
+    intToStr(reducaoFinal),
+    FlagLeitura, _paf_cpv, _paf_cpb
+  ));
+end;
+
+function TBematechPrinter.LeituraMemoriaFiscalSerialDataMFD(DataInicial,
+  DataFinal: TDateTime; FlagLeitura: string): Integer;
+begin
+  CheckStatus(FBematech.LeituraMemoriaFiscalDataMFD(
+    formatDateTime('ddmmyyyy', DataInicial),
+    formatDateTime('ddmmyyyy', DataFinal),
+    PChar(FlagLeitura)
+  ));
+end;
+
+function TBematechPrinter.LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial,
+  ReducaoFinal: integer; FlagLeitura: string): Integer;
+begin
+  CheckStatus(FBematech.LeituraMemoriaFiscalSerialReducaoMFD(
+    PChar(intToStr(reducaoInicial)),
+    PChar(intToStr(reducaoFinal)),
+    PChar(FlagLeitura)
+  ));
+end;
+
+procedure TBematechPrinter.HabilitaDesabilitaRetornoEstendidoMFD(
+  habilita: boolean);
+var
+  flag: string;
+begin
+  if habilita then
+    flag := '1'
+  else
+    flag := '0';
+  checkStatus(FBematech.HabilitaDesabilitaRetornoEstendidoMFD(PChar(flag)));
 end;
 
 { TBematechAliquotaList }

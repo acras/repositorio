@@ -80,6 +80,7 @@ type
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
     function numeroUltimoCupom: integer;
+    procedure LeituraMemoriaFiscalData(dtInicial, dtFinal: TDateTime);
   end;
 
   { Interface a ser implementada por cada método transacional. }

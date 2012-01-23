@@ -177,14 +177,8 @@ function Bematech_FI_NumeroSerieMemoriaMFD(NumeroSerieMFD : string): Integer; St
 function Bematech_FI_MarcaModeloTipoImpressoraMFD(Marca, Modelo, Tipo : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ReducoesRestantesMFD(Reducoes : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTotalizadoresParciaisMFD(Totalizadores : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_DadosUltimaReducaoMFD(DadosReducao : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraChequeMFD(CodigoCMC7 : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ImprimeChequeMFD(NumeroBanco, Valor, Favorecido, Cidade, Data, Mensagem, ImpressaoVerso, Linhas : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(FlagRetorno : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_AbreBilhetePassagemMFD(Embarque, Destino, Linha, Agencia, Data, Hora, Poltrona, Plataforma, TipoPassagem: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CancelaAcrescimoDescontoItemMFD( cFlag, cItem: string ): integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_SubTotalizaCupomMFD: integer; StdCall; External 'BEMAFI32.DLL';
@@ -287,7 +281,14 @@ type
                                            cTelefone   : String;
                                            cFax        : String;
                                            cContato    : String ): Integer; StdCall;
-
+  TBematech_FI_DadosUltimaReducaoMFD = function(DadosReducao : string): Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalDataMFD = function(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalSerialDataMFD = function(DataInicial, DataFinal, FlagLeitura : string): Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalSerialDataPAFECF = function(DataInicial, DataFinal, FlagLeitura, chavePublica, chavePrivada : string): Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalReducaoMFD = function(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalSerialReducaoMFD = function(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall;
+  TBematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF = function(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada : string): Integer; StdCall;
+  TBematech_FI_HabilitaDesabilitaRetornoEstendidoMFD = function(FlagRetorno : string): Integer;
 
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
@@ -330,7 +331,14 @@ var
   Bematech_FI_LeituraMemoriaFiscalSerialReducao: TBematech_FI_LeituraMemoriaFiscalSerialReducao;
   Bematech_FI_RetornoImpressoraMFD: TBematech_FI_RetornoImpressoraMFD;
   Bematech_FI_RelatorioSintegraMFD: TBematech_FI_RelatorioSintegraMFD;
-
+  Bematech_FI_DadosUltimaReducaoMFD: TBematech_FI_DadosUltimaReducaoMFD;
+  Bematech_FI_LeituraMemoriaFiscalDataMFD: TBematech_FI_LeituraMemoriaFiscalDataMFD;
+  Bematech_FI_LeituraMemoriaFiscalSerialDataMFD: TBematech_FI_LeituraMemoriaFiscalDataMFD;
+  Bematech_FI_LeituraMemoriaFiscalSerialDataPAFECF: TBematech_FI_LeituraMemoriaFiscalSerialDataPAFECF;
+  Bematech_FI_LeituraMemoriaFiscalReducaoMFD: TBematech_FI_LeituraMemoriaFiscalReducaoMFD;
+  Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD: TBematech_FI_LeituraMemoriaFiscalReducaoMFD;
+  Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF: TBematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF;
+  Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD: TBematech_FI_HabilitaDesabilitaRetornoEstendidoMFD;
 
 implementation
 
@@ -381,6 +389,14 @@ begin
   @Bematech_FI_LeituraMemoriaFiscalSerialReducao := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducao');
   @Bematech_FI_RetornoImpressoraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoImpressoraMFD');
   @Bematech_FI_RelatorioSintegraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_RelatorioSintegraMFD');
+  @Bematech_FI_DadosUltimaReducaoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_DadosUltimaReducaoMFD');
+  @Bematech_FI_LeituraMemoriaFiscalDataMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalDataMFD');
+  @Bematech_FI_LeituraMemoriaFiscalSerialDataMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialDataMFD');
+  @Bematech_FI_LeituraMemoriaFiscalSerialDataPAFECF := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialDataPAFECF');
+  @Bematech_FI_LeituraMemoriaFiscalReducaoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalReducaoMFD');
+  @Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD');
+  @Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF');
+  @Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD');
 end;
 
 end.
