@@ -47,6 +47,46 @@ type
     dataMovimento: string;
   end;
 
+  TInfoReducaoZ = record
+    modo: string;
+    dataMovimento: TDateTime;
+    contReinicioOperacao: string;
+    contReducaoZ: string;
+    contOrdemOperacao: string;
+    contGeralOperacoesNaoFiscais: string;
+    contCupomFiscal: string;
+    contGeralRelatoriosGerenciais: string;
+    contFitaDetalheEmitida: string;
+    contOperacoesNaoFiscaisCanceladas: string;
+    contCupomFiscalCancelados: string;
+    contOperacaoesNaoFiscais: string;
+    contEspecificosRelatoriosGerenciais: string;
+    contComprovanteDebitoCredito: string;
+    contComprovanteDebitoCreditoNaoEmitido: string;
+    contComprovanteDebitoCreditoCancelados: string;
+    totalizadorGeral: string;
+    totalizadoresParciaisTributados: string;
+    totalizadorIsencaoICMS: string;
+    totalizadoresNaoIncidenciaICMS: string;
+    totalizadorSubstituicaoTributariaICMS: string;
+    totalizadorIsencaoISSQN: string;
+    totalizadorNaoIncidenciaISSQN: string;
+    totalizadorSubstituicaotributariaISSQN: string;
+    totalizadorDescontosICMS: string;
+    totalizadorDescontosISSQN: string;
+    totalizadorAcrescimosICMS: string;
+    totalizadorAcrescimosISSQN: string;
+    totalizadorCancelamentosICMS: string;
+    totalizadorCancelamentosISSQN: string;
+    totalizadoresParceiaisNaoSujeitosICMS: string;
+    totalizadorSangria: string;
+    totalizadorSuprimento: string;
+    totalizadorCancelamentosNaoFiscais: string;
+    totalizadorDescontosNaoFiscais: string;
+    totalizadorAcrescimosNaoFiscais: string;
+    aliquotasTributarias: string;
+  end;
+
   EBematechPrinter = class(Exception)
   end;
 
@@ -83,14 +123,15 @@ type
 
     { IPDV }
     function CriarOperacao(VendedorId, ClienteId,
-        TipoOperacaoId: Integer; const NomeCliente, Documento: string): IPDVTransactionState;
+        TipoOperacaoId: Integer;
+        const NomeCliente, Documento, Endereco: string): IPDVTransactionState;
     function CancelarOperacao(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
 
     function IniciarFechamento(const OperacaoPDV: IOperacaoPDV; ValorDesconto,
         PorcentualDesconto: Currency; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
     procedure EfetuarPagamento(forma: string; valor: currency);
-    function TerminarFechamento(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
+    function TerminarFechamento(const OperacaoPDV: IOperacaoPDV; mensagem: string = ''): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;
         const Codigo, Descricao, Unidade: string; AliquotaICMS, Quantidade, PrecoUnitario,
@@ -114,7 +155,21 @@ type
       FlagLeitura: string): Integer;
     function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal: integer;
       FlagLeitura: string): Integer;
+    function ArquivoMFD(ArquivoOrigem, DadoInicial, DadoFinal, TipoDownload, Usuario: String;
+      TipoGeracao, UnicoArquivo: integer): integer;
+    function EspelhoMFD(NomeArquivo, DataOuCOOInicial,
+      DataOuCOOFinal,  TipoDownload, Usuario: string): integer;
     procedure HabilitaDesabilitaRetornoEstendidoMFD(habilita: boolean);
+    function DownloadMF( Arquivo: String ): Integer;
+    function DownloadMFD( Arquivo: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
+    function FormatoDadosMFD( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
+    function dataHoraImpressora: TDateTime;
+    function SubTotal: double;
+    procedure LeituraXSerial;
+    function VersaoFirmware: string;
+    function VersaoFirmwareMFD: string;
+    procedure CGC_IE(var CGC, IE: String);
+    function GrandeTotal: Double;
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -207,9 +262,9 @@ begin
 end;
 
 function TBematechPrinter.CriarOperacao(VendedorId, ClienteId,
-  TipoOperacaoId: Integer; const NomeCliente, Documento: string): IPDVTransactionState;
+  TipoOperacaoId: Integer; const NomeCliente, Documento, Endereco: string): IPDVTransactionState;
 begin
-  CheckStatus(FBematech.AbreCupom(Documento));
+  CheckStatus(FBematech.AbreCupomMFD(Documento, NomeCliente, Endereco));
 end;
 
 procedure TBematechPrinter.EfetuarPagamento(forma: string; valor: currency);
@@ -389,9 +444,9 @@ begin
 end;
 
 function TBematechPrinter.TerminarFechamento(
-  const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
+  const OperacaoPDV: IOperacaoPDV; mensagem: string = ''): IPDVTransactionState;
 begin
-  CheckStatus(FBematech.TerminaFechamentoCupom(''));
+  CheckStatus(FBematech.TerminaFechamentoCupom(PChar(mensagem)));
 end;
 
 function TBematechPrinter.VerifyDataUltimaReducaoZ(
@@ -599,6 +654,105 @@ begin
   else
     flag := '0';
   checkStatus(FBematech.HabilitaDesabilitaRetornoEstendidoMFD(PChar(flag)));
+end;
+
+function TBematechPrinter.ArquivoMFD(ArquivoOrigem, DadoInicial, DadoFinal,
+  TipoDownload, Usuario: string; TipoGeracao, UnicoArquivo: integer): integer;
+begin
+  CheckStatus(FBematech.ArquivoMFD(ArquivoOrigem, DadoInicial, DadoFinal,
+    TipoDownload, Usuario, TipoGeracao, _paf_cpv, _paf_cpb,
+    UnicoArquivo));
+end;
+
+function TBematechPrinter.EspelhoMFD(NomeArquivo, DataOuCOOInicial,
+  DataOuCOOFinal, TipoDownload, Usuario: string): integer;
+begin
+  CheckStatus(FBematech.EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
+    TipoDownload, Usuario, _paf_cpv, _paf_cpb));
+end;
+
+function TBematechPrinter.DownloadMF(Arquivo: String): Integer;
+begin
+  CheckStatus(FBematech.DownloadMF(Arquivo));
+end;
+
+function TBematechPrinter.DownloadMFD(Arquivo, TipoDownload,
+  ParametroInicial, ParametroFinal, UsuarioECF: String): Integer;
+begin
+  CheckStatus(Fbematech.DownloadMFD(Arquivo, TipoDownload, ParametroInicial, ParametroFinal, UsuarioECF));
+end;
+
+function TBematechPrinter.FormatoDadosMFD(ArquivoOrigem, ArquivoDestino,
+  TipoFormato, TipoDownload, ParametroInicial, ParametroFinal,
+  UsuarioECF: String): Integer;
+begin
+  CheckStatus(FBematech.FormatoDadosMFD(ArquivoOrigem, ArquivoDestino, TipoFormato,
+    TipoDownload, ParametroInicial, ParametroFinal, UsuarioECF));
+end;
+
+function TBematechPrinter.dataHoraImpressora: TDateTime;
+var
+  d, h: string;
+begin
+  CheckStatus(FBematech.DataHoraImpressora(d, h));
+  result := EncodeDateTime(strToInt('20' + copy(d, 5, 2)),
+                 StrToInt(copy(d, 3, 2)),
+                 StrToInt(copy(d, 1, 2)),
+                 StrToInt(copy(h, 1, 2)),
+                 StrToInt(copy(h, 3, 2)),
+                 StrToInt(copy(h, 5, 2)), 0);
+end;
+
+function TBematechPrinter.GrandeTotal: Double;
+var
+  gt: String;
+begin
+  CheckStatus(FBematech.GrandeTotal(gt));
+  result := StrToFloat(gt);
+  result := Result / 100;
+end;
+
+
+procedure TBematechPrinter.CGC_IE(var CGC, IE: String);
+var
+  pCgc, pIE: string;
+begin
+  SetLength(pCgc, 18);
+  setLength(pIE, 15);
+  CheckStatus(FBematech.CGC_IE(pCGC, pIE));
+  CGC := pCGC;
+  IE := pIE;
+end;
+
+
+procedure TBematechPrinter.LeituraXSerial;
+begin
+  CheckStatus(FBematech.LeituraXSerial);
+end;
+
+function TBematechPrinter.SubTotal: double;
+var
+  sub: string;
+begin
+  CheckStatus(FBematech.SubTotal(sub));
+  result := StrToFloat(sub);
+  result := result / 100;
+end;
+
+function TBematechPrinter.VersaoFirmware: string;
+var
+  v: string;
+begin
+  CheckStatus(FBematech.VersaoFirmware(v));
+  result := v;
+end;
+
+function TBematechPrinter.VersaoFirmwareMFD: string;
+var
+  v: string;
+begin
+  CheckStatus(FBematech.VersaoFirmwareMFD(v));
+  result := v;
 end;
 
 { TBematechAliquotaList }

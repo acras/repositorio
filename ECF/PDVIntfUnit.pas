@@ -65,14 +65,15 @@ type
   IPDV = interface(IInterface)
   ['{95AA2369-84BA-4D1F-B31B-6A25E269EE85}']
     function CriarOperacao(VendedorId, ClienteId,
-        TipoOperacaoId: Integer; const NomeCliente, Documento: string): IPDVTransactionState;
+        TipoOperacaoId: Integer;
+        const NomeCliente, Documento, Endereco: string): IPDVTransactionState;
     function CancelarOperacao(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
 
     function IniciarFechamento(const OperacaoPDV: IOperacaoPDV; ValorDesconto,
         PorcentualDesconto: Currency; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
     procedure EfetuarPagamento(forma: string; valor: currency);
-    function TerminarFechamento(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
+    function TerminarFechamento(const OperacaoPDV: IOperacaoPDV; mensagem: string): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;
         const Codigo, Descricao, Unidade: string; AliquotaICMS, Quantidade, PrecoUnitario,
@@ -80,7 +81,6 @@ type
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
     function numeroUltimoCupom: integer;
-    procedure LeituraMemoriaFiscalData(dtInicial, dtFinal: TDateTime);
   end;
 
   { Interface a ser implementada por cada método transacional. }

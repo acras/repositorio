@@ -3,7 +3,7 @@ unit BematechWrapperUnit;
 interface
 
 uses
-  BematechIntfUnit;
+  BematechIntfUnit, SysUtils, dialogs;
 
 type
   TBematechWrapper = class(TInterfacedObject, IBematech)
@@ -11,6 +11,7 @@ type
     function ProgramaAliquota(var Aliquota: string; Vinculo: Integer): Integer;
 
     function AbreCupom(CNPJCPF: string): Integer;
+    function AbreCupomMFD(CGC: string; Nome: string; Endereco : string): Integer;
     function CancelaCupom: Integer;
 
     function VendeItem(Codigo, Descricao, AliquotaICMS, TipoQuantidade,
@@ -36,6 +37,7 @@ type
     function VerificaImpressoraLigada: Integer;
 
     function DataHoraReducao(var DataReducao, HoraReducao: string): Integer;
+    function DataHoraImpressora(var Data, Hora: string): Integer;
     function ImprimeConfiguracoesImpressora: Integer;
     function RetornoAliquotas(var Aliquotas: string): Integer;
 
@@ -60,6 +62,20 @@ type
     function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal,
       FlagLeitura, chavePublica, chavePrivada: string): Integer;
     function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
+    function ArquivoMFD(ArquivoOrigem, DataOuCOOInicial, DataOuCOOFinal, TipoDownload,
+      Usuario: string; TipoGeracao: integer; ChavePublica, ChavePrivada: string; UnicoArquivo: integer): integer;
+    function EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
+      TipoDownload, Usuario, ChavePublica, ChavePrivada: string): integer;
+    function DownloadMF( Arquivo: String ): Integer;
+    function DownloadMFD( Arquivo: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
+    function FormatoDadosMFD( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
+    function SubTotal(var SubTotal: String): Integer;
+    function LeituraXSerial: Integer;
+    function VersaoFirmware(var VersaoFirmware: String): Integer;
+    function VersaoFirmwareMFD(var VersaoFirmware: String): Integer;
+    function CGC_IE(var CGC: String; var IE: String): Integer;
+    function GrandeTotal(var GrandeTotal: String): Integer;
+
   end;
 
 implementation
@@ -80,6 +96,12 @@ end;
 function TBematechWrapper.AbreCupom(CNPJCPF: string): Integer;
 begin
   Result := Bematech_FI_AbreCupom(CNPJCPF);
+end;
+
+function TBematechWrapper.AbreCupomMFD(CGC, Nome,
+  Endereco: string): Integer;
+begin
+  Result := Bematech_FI_AbreCupomMFD(CGC, Nome, Endereco);
 end;
 
 function TBematechWrapper.AumentaDescricaoItem(Descricao: string): Integer;
@@ -107,6 +129,27 @@ function TBematechWrapper.DataHoraReducao(var DataReducao,
 begin
   Result := Bematech_FI_DataHoraReducao(DataReducao, HoraReducao);
 end;
+
+function TBematechWrapper.DataHoraImpressora(var Data, Hora: string): Integer;
+var
+  d, h: string;
+begin
+  SetLength(d, 6);
+  SetLength(h, 6);
+  Result := Bematech_FI_DataHoraImpressora(d, h);
+  Data := d;
+  Hora := h;
+end;
+
+function TBematechWrapper.GrandeTotal(var GrandeTotal: String): Integer;
+var
+  s: String;
+begin
+  SetLength(s, 18);
+  result := Bematech_FI_GrandeTotal(s);
+  GrandeTotal := s;
+end;
+
 
 function TBematechWrapper.EfetuaFormaPagamentoDescricaoForma(Forma, Valor,
   Descricao: string): Integer;
@@ -255,7 +298,84 @@ function TBematechWrapper.LeituraMemoriaFiscalSerialReducaoPAFECF(
   ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica,
   chavePrivada: string): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura), PCHar(chavePublica), PChar(chavePrivada));
+  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF(Pchar(ReducaoInicial),
+    PChar(ReducaoFinal), PChar(FlagLeitura), PCHar(chavePublica), PChar(chavePrivada));
 end;
+
+function TBematechWrapper.ArquivoMFD(ArquivoOrigem, DataOuCOOInicial, DataOuCOOFinal,
+  TipoDownload, Usuario: string; TipoGeracao: integer; ChavePublica, ChavePrivada: string;
+  UnicoArquivo: integer): integer;
+begin
+  result := Bematech_FI_ArquivoMFD(PChar(ArquivoOrigem), PChar(DataOuCOOInicial),
+    PChar(DataOuCOOFinal), PChar(TipoDownload), PChar(Usuario), TipoGeracao,
+    PChar(ChavePublica), PChar(ChavePrivada), UnicoArquivo);
+end;
+
+function TBematechWrapper.EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
+  TipoDownload, Usuario, ChavePublica, ChavePrivada: string): integer;
+begin
+  result := Bematech_FI_EspelhoMFD(PChar(NomeArquivo), PChar(dataOuCOOInicial), PChar(dataOuCOOFinal),
+    PChar(TipoDownload), PChar(Usuario), PChar(ChavePublica), PChar(ChavePrivada));
+end;
+
+function TBematechWrapper.DownloadMF(Arquivo: String): Integer;
+begin
+  result := Bematech_FI_DownloadMF(PChar(Arquivo));
+end;
+
+function TBematechWrapper.DownloadMFD(Arquivo, TipoDownload,
+  ParametroInicial, ParametroFinal, UsuarioECF: String): Integer;
+begin
+  result := Bematech_FI_DownloadMFD(PChar(Arquivo), PChar(TipoDownload), PChar(ParametroInicial),
+    PChar(ParametroFinal), PChar(UsuarioECF));
+end;
+
+function TBematechWrapper.FormatoDadosMFD(ArquivoOrigem, ArquivoDestino,
+  TipoFormato, TipoDownload, ParametroInicial, ParametroFinal,
+  UsuarioECF: String): Integer;
+begin
+  result := Bematech_FI_FormatoDadosMFD(PChar(ArquivoOrigem), PChar(ArquivoDestino), PChar(TipoFormato),
+    PChar(TipoDownload), PChar(ParametroInicial), PChar(ParametroFinal), PChar(UsuarioECF));
+end;
+
+function TBematechWrapper.CGC_IE(var CGC, IE: String): Integer;
+begin
+  result := Bematech_FI_CGC_IE(CGC, IE);
+end;
+
+
+function TBematechWrapper.LeituraXSerial: Integer;
+begin
+  result := Bematech_FI_LeituraXSerial;
+end;
+
+function TBematechWrapper.SubTotal(var SubTotal: String): Integer;
+var
+  s: string;
+begin
+  SetLength(s, 14);
+  result := Bematech_FI_SubTotal(s);
+  SubTotal := s;
+end;
+
+function TBematechWrapper.VersaoFirmware(var VersaoFirmware: String): Integer;
+var
+  v: string;
+begin
+  SetLength(v, 4);
+  result := Bematech_FI_VersaoFirmware(VersaoFirmware);
+  VersaoFirmware := v;
+end;
+
+function TBematechWrapper.VersaoFirmwareMFD(
+  var VersaoFirmware: String): Integer;
+var
+  v: string;
+begin
+  SetLength(v, 6);
+  result := Bematech_FI_VersaoFirmwareMFD(v);
+  VersaoFirmware := v;
+end;
+
 
 end.

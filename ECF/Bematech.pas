@@ -64,7 +64,6 @@ function Bematech_FI_MinutosImprimindo( Minutos: String ): Integer; StdCall; Ext
 function Bematech_FI_VerificaModoOperacao( Modo: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaEpromConectada( Flag: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ValorPagoUltimoCupom( ValorCupom: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_DataHoraImpressora( Data: String; Hora: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadoresTotalizadoresNaoFiscais( Contadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_DataMovimento( Data: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -135,7 +134,6 @@ function Bematech_FI_VersaoDll( Versao: String ): Integer; StdCall; External 'BE
 function Bematech_FI_RegistrosTipo60: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RegistrosTipo60';
 
 // Funções da Impressora Fiscal MFD
-function Bematech_FI_AbreCupomMFD(CGC: string; Nome: string; Endereco : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CancelaCupomMFD(CGC, Nome, Endereco: string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ProgramaFormaPagamentoMFD(FormaPagto, OperacaoTef: String) : Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_EfetuaFormaPagamentoMFD(FormaPagamento, ValorFormaPagamento, Parcelas, DescricaoFormaPagto: string): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -230,6 +228,7 @@ procedure loadAllBematechFunctions;
 type
   TBematech_FI_ProgramaAliquota = function( Aliquota: String; ICMS_ISS: Integer ): integer; stdcall;
   TBematech_FI_AbreCupom = function( CGC_CPF: String ): Integer; stdcall;
+  TBematech_FI_AbreCupomMFD = function(CGC: string; Nome: string; Endereco : string): Integer; StdCall;
   TBematech_FI_VendeItem = function( Codigo: String; Descricao: String; Aliquota: String; TipoQuantidade: String; Quantidade: String; CasasDecimais: Integer; ValorUnitario: String; TipoDesconto: String; Desconto: String): Integer; stdcall;
   TBematech_FI_VendeItemDepartamento = function( Codigo: String; Descricao: String; Aliquota: String; ValorUnitario: String; Quantidade: String; Acrescimo: String; Desconto: String; IndiceDepartamento: String; UnidadeMedida: String): Integer; stdcall;
   TBematech_FI_CancelaItemGenerico = function( NumeroItem: String ): Integer; StdCall;
@@ -289,10 +288,24 @@ type
   TBematech_FI_LeituraMemoriaFiscalSerialReducaoMFD = function(ReducaoInicial, ReducaoFinal, FlagLeitura : string): Integer; StdCall;
   TBematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF = function(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada : string): Integer; StdCall;
   TBematech_FI_HabilitaDesabilitaRetornoEstendidoMFD = function(FlagRetorno : string): Integer;
+  TBematech_FI_ArquivoMFD = function(ArquivoOrigem, DadoInicial, DadoFinal, TipoDownload, Usuario: String; TipoGeracao: integer; ChavePublica, ChavePrivada: string; UnicoArquivo: integer): integer; StdCall;
+  TBematech_FI_EspelhoMFD = function(NomeArquivo, DataInicial, DataFinal, TipoDownload, Usuario, ChavePublica, ChavePrivada: string): integer; StdCall;
+  TBematech_FI_DownloadMF = function ( Arquivo: String ): Integer; StdCall;
+  TBematech_FI_DownloadMFD = function( Arquivo: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer; StdCall;
+  TBematech_FI_FormatoDadosMFD = function ( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer; StdCall;
+  TBematech_FI_DataHoraImpressora = function(Data: String; Hora: String): Integer; StdCall;
+  TBematech_FI_GrandeTotal = function(GrandeTotal: String): Integer; StdCall;
+  TBematech_FI_SubTotal = function(SubTotal: String ): Integer; StdCall;
+  TBematech_FI_LeituraXSerial = function: Integer; StdCall;
+  TBematech_FI_VersaoFirmware = function(VersaoFirmware: String ): Integer; StdCall;
+  TBematech_FI_VersaoFirmwareMFD = function(VersaoFirmware: String ): Integer; StdCall;
+  TBematech_FI_CGC_IE = function(CGC: String; IE: String ): Integer; StdCall;
+
 
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
   Bematech_FI_AbreCupom: TBematech_FI_AbreCupom;
+  Bematech_FI_AbreCupomMFD: TBematech_FI_AbreCupomMFD;
   Bematech_FI_VendeItem: TBematech_FI_VendeItem;
   Bematech_FI_VendeItemDepartamento: TBematech_FI_VendeItemDepartamento;
   Bematech_FI_CancelaItemGenerico: TBematech_FI_CancelaItemGenerico;
@@ -339,6 +352,18 @@ var
   Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD: TBematech_FI_LeituraMemoriaFiscalReducaoMFD;
   Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF: TBematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF;
   Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD: TBematech_FI_HabilitaDesabilitaRetornoEstendidoMFD;
+  Bematech_FI_ArquivoMFD: TBematech_FI_ArquivoMFD;
+  Bematech_FI_EspelhoMFD: TBematech_FI_EspelhoMFD;
+  Bematech_FI_DownloadMF: TBematech_FI_DownloadMF;
+  Bematech_FI_DownloadMFD: TBematech_FI_DownloadMFD;
+  Bematech_FI_FormatoDadosMFD: TBematech_FI_FormatoDadosMFD;
+  Bematech_FI_DataHoraImpressora: TBematech_FI_DataHoraImpressora;
+  Bematech_FI_SubTotal: TBematech_FI_SubTotal;
+  Bematech_FI_LeituraXSerial: TBematech_FI_LeituraXSerial;
+  Bematech_FI_VersaoFirmware: TBematech_FI_VersaoFirmware;
+  Bematech_FI_VersaoFirmwareMFD: TBematech_FI_VersaoFirmwareMFD;
+  Bematech_FI_CGC_IE: TBematech_FI_CGC_IE;
+  Bematech_FI_GrandeTotal: TBematech_FI_GrandeTotal;
 
 implementation
 
@@ -351,6 +376,7 @@ begin
     raise Exception.create('Não foi possível carregar a DLL da impressora fiscal Bematech' + #13#10 + 'Entre em contato com o suporte.');
   @Bematech_FI_ProgramaAliquota := GetProcAddress(DLLHandle, 'Bematech_FI_ProgramaAliquota');
   @Bematech_FI_AbreCupom := GetProcAddress(DLLHandle, 'Bematech_FI_AbreCupom');
+  @Bematech_FI_AbreCupomMFD := GetProcAddress(DLLHandle, 'Bematech_FI_AbreCupomMFD');
   @Bematech_FI_VendeItem := GetProcAddress(DLLHandle, 'Bematech_FI_VendeItem');
   @Bematech_FI_VendeItemDepartamento := GetProcAddress(DLLHandle, 'Bematech_FI_VendeItemDepartamento');
   @Bematech_FI_CancelaItemGenerico := GetProcAddress(DLLHandle, 'Bematech_FI_CancelaItemGenerico');
@@ -396,7 +422,20 @@ begin
   @Bematech_FI_LeituraMemoriaFiscalReducaoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalReducaoMFD');
   @Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD');
   @Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF');
-  @Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD');
+  @Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD');
+  @Bematech_FI_ArquivoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_ArquivoMFD');
+  @Bematech_FI_EspelhoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_EspelhoMFD');
+  @Bematech_FI_RetornoImpressoraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoImpressoraMFD');
+  @Bematech_FI_DownloadMF := GetProcAddress(DLLHandle, 'Bematech_FI_DownloadMF');
+  @Bematech_FI_DownloadMFD := GetProcAddress(DLLHandle, 'Bematech_FI_DownloadMFD');
+  @Bematech_FI_FormatoDadosMFD := GetProcAddress(DLLHandle, 'Bematech_FI_FormatoDadosMFD');
+  @Bematech_FI_DataHoraImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraImpressora');
+  @Bematech_FI_SubTotal := GetProcAddress(DLLHandle, 'Bematech_FI_SubTotal');
+  @Bematech_FI_LeituraXSerial := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraXSerial');
+  @Bematech_FI_VersaoFirmware := GetProcAddress(DLLHandle, 'Bematech_FI_VersaoFirmware');
+  @Bematech_FI_VersaoFirmwareMFD := GetProcAddress(DLLHandle, 'Bematech_FI_VersaoFirmwareMFD');
+  @Bematech_FI_CGC_IE := GetProcAddress(DLLHandle, 'Bematech_FI_CGC_IE');
+  @Bematech_FI_GrandeTotal := GetProcAddress(DLLHandle, 'Bematech_FI_GrandeTotal');
 end;
 
 end.

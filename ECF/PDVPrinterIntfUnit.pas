@@ -36,6 +36,16 @@ type
     function GetAliquotaList: IAliquotaList;
     function getNumSerie: string;
 
+    function dataHoraImpressora: TDateTime;
+
+    function SubTotal: double;
+    procedure LeituraXSerial;
+    function VersaoFirmware: string;
+    function VersaoFirmwareMFD: string;
+    procedure CGC_IE(var CGC, IE: String);
+    function GrandeTotal: Double;
+
+
     // Esse método será usado apenas internamente pelo controller, mas é muito conveniente para
     // os test-cases ele ser público
     procedure CheckStatus(RetVal: Integer);

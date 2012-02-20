@@ -10,6 +10,7 @@ type
 
     // Funções do cupom fiscal
     function AbreCupom(CNPJCPF: string): Integer;
+    function AbreCupomMFD(CGC: string; Nome: string; Endereco : string): Integer;
     function CancelaCupom: Integer;
 
     function VendeItem(Codigo, Descricao, AliquotaICMS, TipoQuantidade,
@@ -29,15 +30,26 @@ type
     function LeituraX: Integer;
     function ReducaoZ(Data, Hora: String): Integer;
     function LeituraMemoriaFiscalData(dataInicial, dataFinal: string): integer;
+    function DadosUltimaReducaoMFD(DadosReducao: string): Integer;
+    function LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialDataPAFECF(DataInicial, DataFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
+    function LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
+    function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
+    function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
+    function ArquivoMFD(ArquivoOrigem, DadoInicial, DadoFinal, TipoDownload, Usuario: string;
+      TipoGeracao: integer; ChavePublica, ChavePrivada: string; UnicoArquivo: integer): integer;
+    function EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
+      TipoDownload, Usuario, ChavePublica, ChavePrivada: string): integer;
+    function DownloadMF( Arquivo: String ): Integer;
+    function DownloadMFD( Arquivo: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
+    function FormatoDadosMFD( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
 
-    // Outras funções
-    function AberturaDoDia(var Valor, FormaPagamento: string): Integer;
-    function FechamentoDoDia: Integer;
-    function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
-    function VerificaImpressoraLigada: Integer;
 
     // Funções de informações da impressora
     function DataHoraReducao(var DataReducao, HoraReducao: string): Integer;
+    function DataHoraImpressora(var Data, hora: string): Integer;
     function ImprimeConfiguracoesImpressora: Integer;
     function RetornoAliquotas(var Aliquotas: string): Integer;
 
@@ -47,14 +59,19 @@ type
     function numeroSerie(var num: string): integer;
     function numeroCupom(var num: string): integer;
 
-    function DadosUltimaReducaoMFD(DadosReducao: string): Integer;
-    function LeituraMemoriaFiscalDataMFD(DataInicial, DataFinal, FlagLeitura: string): Integer;
-    function LeituraMemoriaFiscalSerialDataMFD(DataInicial, DataFinal, FlagLeitura: string): Integer;
-    function LeituraMemoriaFiscalSerialDataPAFECF(DataInicial, DataFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
-    function LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
-    function LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
-    function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
-    function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
+    // Outras funções
+    function AberturaDoDia(var Valor, FormaPagamento: string): Integer;
+    function FechamentoDoDia: Integer;
+    function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
+    function VerificaImpressoraLigada: Integer;
+
+    function SubTotal(var SubTotal: String): Integer;
+    function LeituraXSerial: Integer;
+    function VersaoFirmware(var VersaoFirmware: String): Integer;
+    function VersaoFirmwareMFD(var VersaoFirmware: String): Integer;
+    function CGC_IE(var CGC: String; var IE: String): Integer;
+    function GrandeTotal(var GrandeTotal: String): Integer;
+
   end;
 
 implementation
