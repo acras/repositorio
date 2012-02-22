@@ -75,7 +75,7 @@ type
     function VersaoFirmwareMFD(var VersaoFirmware: String): Integer;
     function CGC_IE(var CGC: String; var IE: String): Integer;
     function GrandeTotal(var GrandeTotal: String): Integer;
-
+    function DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string): integer;
   end;
 
 implementation
@@ -377,5 +377,19 @@ begin
   VersaoFirmware := v;
 end;
 
+
+function TBematechWrapper.DataHoraGravacaoUsuarioSWBasicoMFAdicional(
+  var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string): integer;
+var
+  du, ds, mf: string;
+begin
+  setLength(du, 20);
+  setLength(ds, 20);
+  setLength(mf, 2);
+  result := Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional(du, ds, mf);
+  dataHoraUsuario := du;
+  dataHoraSWBasico := ds;
+  MFAdicional := mf;
+end;
 
 end.

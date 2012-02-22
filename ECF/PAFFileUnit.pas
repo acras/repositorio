@@ -59,6 +59,7 @@ var
   nomeArqLocal: string;
   hash: string;
   arqHash: TStringList;
+  _paf_cpb_local, _paf_cpv_local: string;
 begin
   addN1Contents;
   addN2Contents;
@@ -66,9 +67,11 @@ begin
   addN9Contents;
   flagTipoSalvamento := 1;
   contents.SaveToFile(nomeArq);
-  setlength(ead, 256);
   nomeArqLocal := nomeArq;
-  generateEAD(PChar(nomeArqLocal), PChar(_paf_cpb), PChar(_paf_cpv), PChar(ead), flagTipoSalvamento);
+  setlength(ead, 256);
+  _paf_cpv_local := _paf_cpv;
+  _paf_cpb_local := _paf_cpb;
+  generateEAD(nomeArqLocal, _paf_cpb_local, _paf_cpv_local, PChar(ead), flagTipoSalvamento);
   hash := MD5(nomeArq);
   arqHash := TStringList.Create;
   try

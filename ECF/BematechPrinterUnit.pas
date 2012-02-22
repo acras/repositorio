@@ -170,6 +170,7 @@ type
     function VersaoFirmwareMFD: string;
     procedure CGC_IE(var CGC, IE: String);
     function GrandeTotal: Double;
+    procedure DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -237,7 +238,7 @@ var
   v: Integer;
 begin
   if RetVal <> 1 then
-    raise EBematechPrinter.Create(GetMessageFromRetVal(RetVal));
+     raise EBematechPrinter.Create(GetMessageFromRetVal(RetVal));
 
   Ack := 0;
   St1 := 0;
@@ -753,6 +754,12 @@ var
 begin
   CheckStatus(FBematech.VersaoFirmwareMFD(v));
   result := v;
+end;
+
+procedure TBematechPrinter.DataHoraGravacaoUsuarioSWBasicoMFAdicional(
+  var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
+begin
+  checkStatus(FBematech.DataHoraGravacaoUsuarioSWBasicoMFAdicional(DataHoraUsuario, DataHoraSWBasico, MFAdicional));
 end;
 
 { TBematechAliquotaList }

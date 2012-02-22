@@ -44,7 +44,7 @@ type
     function VersaoFirmwareMFD: string;
     procedure CGC_IE(var CGC, IE: String);
     function GrandeTotal: Double;
-
+    procedure DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
 
     // Esse método será usado apenas internamente pelo controller, mas é muito conveniente para
     // os test-cases ele ser público

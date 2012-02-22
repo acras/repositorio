@@ -300,6 +300,7 @@ type
   TBematech_FI_VersaoFirmware = function(VersaoFirmware: String ): Integer; StdCall;
   TBematech_FI_VersaoFirmwareMFD = function(VersaoFirmware: String ): Integer; StdCall;
   TBematech_FI_CGC_IE = function(CGC: String; IE: String ): Integer; StdCall;
+  TBematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional = function(DataHoraUsuario, DataHoraSWBasico, MFAdicional: string): integer; StdCall;
 
 
 var
@@ -364,6 +365,7 @@ var
   Bematech_FI_VersaoFirmwareMFD: TBematech_FI_VersaoFirmwareMFD;
   Bematech_FI_CGC_IE: TBematech_FI_CGC_IE;
   Bematech_FI_GrandeTotal: TBematech_FI_GrandeTotal;
+  Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional: TBematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional;
 
 implementation
 
@@ -436,6 +438,7 @@ begin
   @Bematech_FI_VersaoFirmwareMFD := GetProcAddress(DLLHandle, 'Bematech_FI_VersaoFirmwareMFD');
   @Bematech_FI_CGC_IE := GetProcAddress(DLLHandle, 'Bematech_FI_CGC_IE');
   @Bematech_FI_GrandeTotal := GetProcAddress(DLLHandle, 'Bematech_FI_GrandeTotal');
+  @Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional');
 end;
 
 end.
