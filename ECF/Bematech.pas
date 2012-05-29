@@ -37,8 +37,6 @@ function Bematech_FI_LeituraMemoriaFiscalSerialData( DataInicial: String; DataFi
 //function Bematech_FI_AbreComprovanteNaoFiscalVinculado( FormaPagamento: String; Valor: String; NumeroCupom: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 //function Bematech_FI_UsaComprovanteNaoFiscalVinculado( Texto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 //function Bematech_FI_FechaComprovanteNaoFiscalVinculado: Integer; StdCall; External 'BEMAFI32.DLL';
-//function Bematech_FI_Sangria( Valor: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-//function Bematech_FI_Suprimento( Valor: String; FormaPagamento: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 {
 // Funções de Informações da Impressora
 function Bematech_FI_ModeloImpressora( Modelo: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -49,7 +47,6 @@ function Bematech_FI_CGC_IE( CGC: String; IE: String ): Integer; StdCall; Extern
 function Bematech_FI_GrandeTotal( GrandeTotal: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_Cancelamentos( ValorCancelamentos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_Descontos( ValorDescontos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_NumeroOperacoesNaoFiscais( NumeroOperacoes: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroCuponsCancelados( NumeroCancelamentos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroIntervencoes( NumeroIntervencoes: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroReducoes( NumeroReducoes: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -66,11 +63,9 @@ function Bematech_FI_VerificaEpromConectada( Flag: String ): Integer; StdCall; E
 function Bematech_FI_ValorPagoUltimoCupom( ValorCupom: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadoresTotalizadoresNaoFiscais( Contadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_DataMovimento( Data: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTruncamento( Flag: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_Acrescimos( ValorAcrescimos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorBilhetePassagem( ContadorPassagem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_VerificaAliquotasIss( Flag: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaFormasPagamento( Formas: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaRecebimentoNaoFiscal( Recebimentos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaDepartamentos( Departamentos: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -90,27 +85,12 @@ function Bematech_FI_AcionaGaveta:Integer; StdCall; External 'BEMAFI32.DLL' Name
 function Bematech_FI_VerificaEstadoGaveta( Var EstadoGaveta: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
 
 // Funções para a Impressora Restaurante
-function Bematech_FIR_AbreCupomRestaurante( Mesa: String; CGC_CPF: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FIR_RegistraVenda( Mesa: String; Codigo: String; Descricao: String; Aliquota: String; Quantidade: String; ValorUnitario: String; FlagAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FIR_CancelaVenda( Mesa: String; Codigo: String; Descricao: String; Aliquota: String; Quantidade: String; ValorUnitario: String; FlagAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_ConferenciaMesa( Mesa: String; FlagAcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_AbreConferenciaMesa( Mesa: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_FechaConferenciaMesa( FlagAcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_TransferenciaMesa( MesaOrigem: String; MesaDestino: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_ContaDividida( NumeroCupons: String; ValorPago: String; CGC_CPF: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FIR_FechaCupomContaDividida( NumeroCupons: String; FlagAcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; FormasPagamento: String; ValorFormasPagamento: String; ValorPagoCliente: String; CGC_CPF: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FIR_TransferenciaItem( MesaOrigem: String; Codigo: String; Descricao: String; Aliquota: String; Quantidade: String; ValorUnitario: String; FlagAcrescimoDesconto: String; ValorAcrescimoDesconto: String; MesaDestino: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_RelatorioMesasAbertas( TipoRelatorio: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_ImprimeCardapio: Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_RelatorioMesasAbertasSerial: Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_CardapioPelaSerial: Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FIR_RegistroVendaSerial( Mesa: String ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FIR_VerificaMemoriaLivre( Bytes: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_FechaCupomRestaurante( FormaPagamento: String; FlagAcrescimoDesconto: String; TipoAcrescimoDesconto: String; ValorAcrescimoDesconto: String; ValorFormaPagto: String; Mensagem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FIR_FechaCupomResumidoRestaurante( FormaPagamento: String; Mensagem: String ): Integer; StdCall; External 'BEMAFI32.DLL';
-
-// Função para a Impressora Bilhete de Passagem
-function Bematech_FI_AbreBilhetePassagem( ImprimeValorFinal: string; ImprimeEnfatizado: string; Embarque: string; Destino: string; Linha: string; Prefixo: string; Agente: string; Agencia: string; Data: string; Hora: string; Poltrona: string; Plataforma: string ): Integer; StdCall; External 'BEMAFI32.DLL';
 
 // Funções de Impressão de Cheques
 function Bematech_FI_ProgramaMoedaSingular( MoedaSingular: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -165,9 +145,7 @@ function Bematech_FI_VerificaTotalizadoresNaoFiscaisMFD(Totalizadores : string):
 function Bematech_FI_VerificaFormasPagamentoMFD(FormasPagamento : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaRecebimentoNaoFiscalMFD(Recebimentos : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaRelatorioGerencialMFD(Relatorios : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_ContadorComprovantesCreditoMFD(Comprovantes : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorOperacoesNaoFiscaisCanceladasMFD(OperacoesCanceladas : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_ContadorRelatoriosGerenciaisMFD (Relatorios : String): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorCupomFiscalMFD(CuponsEmitidos : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorFitaDetalheMFD(ContadorFita : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ComprovantesNaoFiscaisNaoEmitidosMFD(Comprovantes : string): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -190,7 +168,6 @@ function Bematech_FI_CancelaAcrescimoDescontoSubtotalRecebimentoMFD( cFlag: stri
 function Bematech_FI_TotalizaCupomMFD: integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_TotalizaRecebimentoMFD: integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_PercentualLivreMFD( cMemoriaLivre: string ): integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_DataHoraUltimoDocumentoMFD( cDataHora: string ): integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_MapaResumoMFD:Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_MapaResumoMFD';
 function Bematech_FI_RelatorioTipo60AnaliticoMFD: Integer; StdCall; External 'BEMAFI32.DLL' Name 'Bematech_FI_RelatorioTipo60AnaliticoMFD';
 function Bematech_FI_ValorFormaPagamentoMFD( FormaPagamento: String; Valor: String ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -244,6 +221,7 @@ type
   TBematech_FI_NumeroCupom = function( NumeroCupom: String ): Integer; StdCall;
   TBematech_FI_FlagsFiscais = function( Var Flag: Integer ): Integer; StdCall;
   TBematech_FI_DataHoraReducao = function( Data: String; Hora: String ): Integer; StdCall;
+  TBematech_FI_DataMovimento = function(Data: String): Integer; StdCall;
   TBematech_FI_RetornoAliquotas = function( Aliquotas: String ): Integer; StdCall;
   TBematech_FI_AbrePortaSerial = function: Integer; StdCall;
   TBematech_FI_RetornoImpressora = function( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer; StdCall;
@@ -301,7 +279,13 @@ type
   TBematech_FI_VersaoFirmwareMFD = function(VersaoFirmware: String ): Integer; StdCall;
   TBematech_FI_CGC_IE = function(CGC: String; IE: String ): Integer; StdCall;
   TBematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional = function(DataHoraUsuario, DataHoraSWBasico, MFAdicional: string): integer; StdCall;
-
+  TBematech_FI_Sangria = function( Valor: String ): Integer; StdCall;
+  TBematech_FI_Suprimento = function( Valor: String; FormaPagamento: String ): Integer; StdCall;
+  TBematech_FI_DataHoraUltimoDocumentoMFD = function(cDataHora: string): integer; StdCall;
+  TBematech_FI_ContadorRelatoriosGerenciaisMFD = function(Relatorios : String): Integer; StdCall;
+  TBematech_FI_NumeroOperacoesNaoFiscais = function(NumeroOperacoes: String): Integer; StdCall;
+  TBematech_FI_ContadorComprovantesCreditoMFD = function(Comprovantes : string): Integer; StdCall;
+  TBematech_FI_VerificaAliquotasIss = function(Flag: String): Integer; StdCall;
 
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
@@ -322,6 +306,7 @@ var
   Bematech_FI_NumeroCupom: TBematech_FI_NumeroCupom;
   Bematech_FI_FlagsFiscais: TBematech_FI_FlagsFiscais;
   Bematech_FI_DataHoraReducao: TBematech_FI_DataHoraReducao;
+  Bematech_FI_DataMovimento: TBematech_FI_DataMovimento;
   Bematech_FI_RetornoAliquotas: TBematech_FI_RetornoAliquotas;
   Bematech_FI_AbrePortaSerial: TBematech_FI_AbrePortaSerial;
   Bematech_FI_RetornoImpressora: TBematech_FI_RetornoImpressora;
@@ -366,6 +351,13 @@ var
   Bematech_FI_CGC_IE: TBematech_FI_CGC_IE;
   Bematech_FI_GrandeTotal: TBematech_FI_GrandeTotal;
   Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional: TBematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional;
+  Bematech_FI_Sangria: TBematech_FI_Sangria;
+  Bematech_FI_Suprimento: TBematech_FI_Suprimento;
+  Bematech_FI_DataHoraUltimoDocumentoMFD: TBematech_FI_DataHoraUltimoDocumentoMFD;
+  Bematech_FI_ContadorRelatoriosGerenciaisMFD: TBematech_FI_ContadorRelatoriosGerenciaisMFD;
+  Bematech_FI_NumeroOperacoesNaoFiscais: TBematech_FI_NumeroOperacoesNaoFiscais;
+  Bematech_FI_ContadorComprovantesCreditoMFD: TBematech_FI_ContadorComprovantesCreditoMFD;
+  Bematech_FI_VerificaAliquotasIss: TBematech_FI_VerificaAliquotasIss;
 
 implementation
 
@@ -394,6 +386,7 @@ begin
   @Bematech_FI_NumeroCupom := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroCupom');
   @Bematech_FI_FlagsFiscais := GetProcAddress(DLLHandle, 'Bematech_FI_FlagsFiscais');
   @Bematech_FI_DataHoraReducao := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraReducao');
+  @Bematech_FI_DataMovimento := GetProcAddress(DLLHandle, 'Bematech_FI_DataMovimento');
   @Bematech_FI_RetornoAliquotas := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoAliquotas');
   @Bematech_FI_AbrePortaSerial := GetProcAddress(DLLHandle, 'Bematech_FI_AbrePortaSerial');
   @Bematech_FI_RetornoImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoImpressora');
@@ -439,6 +432,13 @@ begin
   @Bematech_FI_CGC_IE := GetProcAddress(DLLHandle, 'Bematech_FI_CGC_IE');
   @Bematech_FI_GrandeTotal := GetProcAddress(DLLHandle, 'Bematech_FI_GrandeTotal');
   @Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraGravacaoUsuarioSWBasicoMFAdicional');
+  @Bematech_FI_Sangria := GetProcAddress(DLLHandle, 'Bematech_FI_Sangria');
+  @Bematech_FI_Suprimento := GetProcAddress(DLLHandle, 'Bematech_FI_Suprimento');
+  @Bematech_FI_DataHoraUltimoDocumentoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraUltimoDocumentoMFD');
+  @Bematech_FI_ContadorRelatoriosGerenciaisMFD := GetProcAddress(DLLHandle, 'Bematech_FI_ContadorRelatoriosGerenciaisMFD');
+  @Bematech_FI_NumeroOperacoesNaoFiscais := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroOperacoesNaoFiscais');
+  @Bematech_FI_ContadorComprovantesCreditoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_ContadorComprovantesCreditoMFD');
+  @Bematech_FI_VerificaAliquotasIss := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaAliquotasIss');
 end;
 
 end.

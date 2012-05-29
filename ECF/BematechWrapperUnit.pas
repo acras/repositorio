@@ -37,6 +37,7 @@ type
     function VerificaImpressoraLigada: Integer;
 
     function DataHoraReducao(var DataReducao, HoraReducao: string): Integer;
+    function DataMovimento(var DataMovimento: string): Integer;
     function DataHoraImpressora(var Data, Hora: string): Integer;
     function ImprimeConfiguracoesImpressora: Integer;
     function RetornoAliquotas(var Aliquotas: string): Integer;
@@ -76,6 +77,12 @@ type
     function CGC_IE(var CGC: String; var IE: String): Integer;
     function GrandeTotal(var GrandeTotal: String): Integer;
     function DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string): integer;
+    function Sangria(Valor: String): Integer;
+    function Suprimento(Valor, FormaPagamento: String): Integer;
+    function DataHoraUltimoDocumentoMFD(var dataHora: string): integer;
+    function ContadorRelatoriosGerenciaisMFD(var contador: string): integer;
+    function NumeroOperacoesNaoFiscais(var numOper: string): integer;
+    function ContadorComprovantesCreditoMFD(var contador: string): integer;
   end;
 
 implementation
@@ -165,6 +172,16 @@ end;
 function TBematechWrapper.FechamentoDoDia: Integer;
 begin
   Result := Bematech_FI_FechamentoDoDia;
+end;
+
+function TBematechWrapper.Sangria( Valor: String ): Integer;
+begin
+  result := Bematech_FI_Sangria(valor);
+end;
+
+function TBematechWrapper.Suprimento( Valor: String; FormaPagamento: String ): Integer;
+begin
+  result := Bematech_FI_Suprimento(Valor, FormaPagamento);
 end;
 
 function TBematechWrapper.FlagsFiscais(var flag: integer): integer;
@@ -390,6 +407,49 @@ begin
   dataHoraUsuario := du;
   dataHoraSWBasico := ds;
   MFAdicional := mf;
+end;
+
+
+function TBematechWrapper.DataHoraUltimoDocumentoMFD(var dataHora: string): integer;
+var
+  r: string;
+begin
+  setLength(r, 12);
+  result := Bematech_FI_DataHoraUltimoDocumentoMFD(r);
+  dataHora := r;
+end;
+
+function TBematechWrapper.ContadorRelatoriosGerenciaisMFD(var contador: string): integer;
+var
+  r: string;
+begin
+  setLength(r, 7);
+  result := Bematech_FI_ContadorRelatoriosGerenciaisMFD(r);
+  contador := r;
+end;
+
+function TBematechWrapper.NumeroOperacoesNaoFiscais(var numOper: string): integer;
+var
+  r: string;
+begin
+  setLength(r, 6);
+  result := Bematech_FI_NumeroOperacoesNaoFiscais(r);
+  numOper := r;
+end;
+
+function TBematechWrapper.ContadorComprovantesCreditoMFD(var contador: string): integer;
+var
+  r: string;
+begin
+  setLength(r, 4);
+  result := Bematech_FI_ContadorComprovantesCreditoMFD(r);
+  contador := r;
+end;
+
+function TBematechWrapper.DataMovimento(
+  var DataMovimento: string): Integer;
+begin
+  Result := Bematech_FI_DataMovimento(DataMovimento);
 end;
 
 end.

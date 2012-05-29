@@ -76,7 +76,7 @@ type
     function TerminarFechamento(const OperacaoPDV: IOperacaoPDV; mensagem: string): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;
-        const Codigo, Descricao, Unidade: string; AliquotaICMS, Quantidade, PrecoUnitario,
+        const Codigo, Descricao, Unidade, tipoTributacao: string; AliquotaICMS, Quantidade, PrecoUnitario,
         Desconto: Currency): IPDVTransactionState;
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;

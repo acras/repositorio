@@ -50,6 +50,7 @@ type
   TInfoReducaoZ = record
     modo: string;
     dataMovimento: TDateTime;
+    dataHoraReducao: TDateTime;
     contReinicioOperacao: string;
     contReducaoZ: string;
     contOrdemOperacao: string;
@@ -104,6 +105,7 @@ type
     procedure FecharDia;
     procedure EfetuarReducaoZ(DateTime: TDateTime = 0);
     procedure EfetuarLeituraX;
+    function dataUltimoMovimento: TDateTime;
 
     procedure ImprimirConfiguracoes;
     function VerifyDataUltimaReducaoZ(out DateTime: TDateTime): Boolean;
@@ -134,7 +136,7 @@ type
     function TerminarFechamento(const OperacaoPDV: IOperacaoPDV; mensagem: string = ''): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;
-        const Codigo, Descricao, Unidade: string; AliquotaICMS, Quantidade, PrecoUnitario,
+        const Codigo, Descricao, Unidade, tipoTributacao: string; AliquotaICMS, Quantidade, PrecoUnitario,
         Desconto: Currency): IPDVTransactionState;
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
         SenhaSupervisor: string): IPDVTransactionState;
@@ -171,6 +173,12 @@ type
     procedure CGC_IE(var CGC, IE: String);
     function GrandeTotal: Double;
     procedure DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
+    function Sangria(Valor: Currency): Integer;
+    function Suprimento(Valor: Currency; FormaPagamento: String): Integer;
+    function DataHoraUltimoDocumentoMFD: TDateTime;
+    function ContadorRelatoriosGerenciaisMFD: integer;
+    function NumeroOperacoesNaoFiscais: integer;
+    function ContadorComprovantesCreditoMFD: integer;
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -388,11 +396,11 @@ begin
 end;
 
 function TBematechPrinter.InserirItem(const OperacaoPDV: IOperacaoPDV;
-  MercadoriaId: Integer; const Codigo, Descricao, Unidade: string;
+  MercadoriaId: Integer; const Codigo, Descricao, Unidade, tipoTributacao: string;
   AliquotaICMS, Quantidade, PrecoUnitario,
   Desconto: Currency): IPDVTransactionState;
 var
-  DescImpressao: string;
+  DescImpressao, strAliquota: string;
   Acrescimo: Currency;
 begin
   Acrescimo := 0;
@@ -403,10 +411,21 @@ begin
     Acrescimo := - Desconto;
     Desconto := 0;
   end;
+  
+  strAliquota := 'NN';
+
+  if tipoTributacao = 'I' then
+    strAliquota := 'II';
+  if tipoTributacao = 'N' then
+    strAliquota := 'NN';
+  if tipoTributacao = 'F' then
+    strAliquota := 'FF';
+  if tipoTributacao = 'T' then
+    strAliquota := FormatFloat('0000', AliquotaICMS * 100);
 
   CheckStatus(
       FBematech.VendeItemDepartamento(Codigo, DescImpressao,
-          'NN', Format('%.3f', [PrecoUnitario]),
+          PChar(strAliquota), Format('%.3f', [PrecoUnitario]),
           Format('%.3f', [Quantidade]), Format('%.2f', [Acrescimo]),
           Format('%.2f', [Desconto]), '00', Copy(Unidade, 1, 2)));
 end;
@@ -760,6 +779,74 @@ procedure TBematechPrinter.DataHoraGravacaoUsuarioSWBasicoMFAdicional(
   var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
 begin
   checkStatus(FBematech.DataHoraGravacaoUsuarioSWBasicoMFAdicional(DataHoraUsuario, DataHoraSWBasico, MFAdicional));
+end;
+
+function TBematechPrinter.Sangria(Valor: Currency): Integer;
+var
+  valorStr: string;
+begin
+  valorStr := FormatFloat('000', Valor * 100);
+  checkStatus(FBematech.Sangria(valorStr));
+end;
+
+function TBematechPrinter.Suprimento(Valor: Currency;
+  FormaPagamento: String): Integer;
+var
+  valorStr: String;
+begin
+  valorStr := FormatFloat('000', Valor * 100);
+  CheckStatus(FBematech.Suprimento(valorStr, FormaPagamento));
+end;
+
+function TBematechPrinter.ContadorComprovantesCreditoMFD: integer;
+var
+  r: string;
+begin
+  CheckStatus(FBematech.ContadorComprovantesCreditoMFD(r));
+  result := StrToInt(r);
+end;
+
+function TBematechPrinter.ContadorRelatoriosGerenciaisMFD: integer;
+var
+  r: string;
+begin
+  CheckStatus(FBematech.ContadorRelatoriosGerenciaisMFD(r));
+  result := StrToInt(r);
+end;
+
+function TBematechPrinter.DataHoraUltimoDocumentoMFD: TDateTime;
+var
+  r: string;
+  a, m, d, h, n, s: word;
+begin
+  CheckStatus(FBematech.DataHoraUltimoDocumentoMFD(r));
+  a := StrToInt('20' + copy(r, 5, 2));
+  m := StrToInt(copy(r, 3, 2));
+  d := StrToInt(copy(r, 1, 2));
+  h := StrToInt(copy(r, 7, 2));
+  n := StrToInt(copy(r, 9, 2));
+  s := StrToInt(copy(r, 11, 2));
+  result := EncodeDateTime(a, m, d, h, n, s, 0);
+end;
+
+function TBematechPrinter.NumeroOperacoesNaoFiscais: integer;
+var
+  r: string;
+begin
+  CheckStatus(FBematech.NumeroOperacoesNaoFiscais(r));
+  result := StrToInt(r);
+end;
+
+function TBematechPrinter.dataUltimoMovimento: TDateTime;
+var
+  r: string;
+  a, m, d: word;
+begin
+  CheckStatus(FBematech.DataHoraUltimoDocumentoMFD(r));
+  a := StrToInt('20' + copy(r, 5, 2));
+  m := StrToInt(copy(r, 3, 2));
+  d := StrToInt(copy(r, 1, 2));
+  result := EncodeDate(a, m, d);
 end;
 
 { TBematechAliquotaList }

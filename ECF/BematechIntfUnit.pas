@@ -49,6 +49,7 @@ type
 
     // Funções de informações da impressora
     function DataHoraReducao(var DataReducao, HoraReducao: string): Integer;
+    function DataMovimento(var dataMovimento: string): Integer;
     function DataHoraImpressora(var Data, hora: string): Integer;
     function ImprimeConfiguracoesImpressora: Integer;
     function RetornoAliquotas(var Aliquotas: string): Integer;
@@ -62,6 +63,14 @@ type
     // Outras funções
     function AberturaDoDia(var Valor, FormaPagamento: string): Integer;
     function FechamentoDoDia: Integer;
+    function Sangria(Valor: String): Integer;
+    function Suprimento(Valor, FormaPagamento: String): Integer;
+
+    function DataHoraUltimoDocumentoMFD(var dataHora: string): integer;
+    function ContadorRelatoriosGerenciaisMFD(var contador: string): integer;
+    function NumeroOperacoesNaoFiscais(var numOper: string): integer;
+    function ContadorComprovantesCreditoMFD(var contador: string): integer;
+
     function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
     function VerificaImpressoraLigada: Integer;
 

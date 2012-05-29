@@ -25,6 +25,8 @@ type
     procedure AbrirDia;
     procedure FecharDia;
     procedure EfetuarReducaoZ(DateTime: TDateTime = 0);
+    function Sangria(Valor: Currency): Integer;
+    function Suprimento(Valor: Currency; FormaPagamento: String): Integer;
 
     procedure ImprimirConfiguracoes;
     function FlagsFiscais: TFlagsFiscais; 
@@ -37,6 +39,7 @@ type
     function getNumSerie: string;
 
     function dataHoraImpressora: TDateTime;
+    function dataUltimoMovimento: TDateTime;
 
     function SubTotal: double;
     procedure LeituraXSerial;
@@ -45,6 +48,12 @@ type
     procedure CGC_IE(var CGC, IE: String);
     function GrandeTotal: Double;
     procedure DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
+
+    function DataHoraUltimoDocumentoMFD: TDateTime;
+    function ContadorRelatoriosGerenciaisMFD: integer;
+    function NumeroOperacoesNaoFiscais: integer;
+    function ContadorComprovantesCreditoMFD: integer;
+
 
     // Esse método será usado apenas internamente pelo controller, mas é muito conveniente para
     // os test-cases ele ser público
