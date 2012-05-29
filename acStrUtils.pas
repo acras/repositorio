@@ -200,17 +200,6 @@ begin
   result := strL;
 end;
 
-{-------------------------------------------------------------------------
- Objetivo   > Substituir todas as ocorrências de fromText por ocorrências
-                de toText sem perder a formatação RTF. 
- Parâmetros > rtf: Componente RichEdit que contém o texto a ser substituído
-              fromText: trecho de texto a ser substituído
-              toText: trecho de texto a substituir
- Retorno    >
- Criação    > 11/03/2006 - Ricardo N. Acras
- Observações>
- Atualização>
- ------------------------------------------------------------------------}
 procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
 var
   index: integer;
@@ -226,17 +215,6 @@ begin
   end;
 end;
 
-{-------------------------------------------------------------------------
- Objetivo   > Substituir todas as ocorrências de fromText por ocorrências
-                de toText sem perder a formatação RTF.
- Parâmetros > rtf: Componente RichEdit que contém o texto a ser substituído
-              fromText: trecho de texto a ser substituído
-              toText: trecho de texto a substituir
- Retorno    >
- Criação    > 11/03/2006 - Ricardo N. Acras
- Observações>
- Atualização>
- ------------------------------------------------------------------------}
 procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
 var
   index: integer;
@@ -255,11 +233,6 @@ end;
 procedure stringListSubstText(strl: TStringList; fromText, toText: string);
 begin
   strl.Text := FastReplace(strl.Text, fromText, toText);
-{  for i :
-  while strl.Find(fromText) do
-  begin
-    strl.IndexOf()
-  end;}
 end;
 
 function strip(value: string; delimiter: string = ' '): TStringList;
@@ -309,9 +282,7 @@ var
 begin
   result := '';
   for i := 1 to length(str) do
-  begin
     result := result + FormatFloat('0000', ord(str[i]) + i);
-  end;
 end;
 
 function simpleDecrypt(str: string): string;
@@ -425,6 +396,7 @@ function underscorize(const str: string): string;
 begin
   result := FastReplace(str, '-', '_');
 end;
+
 
 end.
 
