@@ -92,7 +92,7 @@ ExeDescription=
 [Directories]
 OutputDir=
 UnitOutputDir=..\..\delphi\repositorio
-PackageDLLOutputDir=
+PackageDLLOutputDir=..\..\delphi\repositorio
 PackageDCPOutputDir=..\..\delphi\repositorio
 SearchPath=
 Packages=
@@ -134,16 +134,17 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-[Excluded Packages]
-C:\Windows\system32\rbIBE107.bpl=ReportBuilder Data Access for Interbase Express
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlUnitOutputDirectory]
 Count=2
-Item0=..\..\delphi\repositorio
-Item1=P:\delphi\repositorio
-[HistoryLists\hlDCPOutput]
+Item0=P:\delphi
+Item1=..\..\delphi\repositorio
+[HistoryLists\hlBPLOutput]
 Count=2
+Item0=P:\delphi
+Item1=..\..\delphi\repositorio
+[HistoryLists\hlDCPOutput]
+Count=1
 Item0=..\..\delphi\repositorio
-Item1=P:\delphi\repositorio
