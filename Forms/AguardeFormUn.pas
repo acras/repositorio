@@ -1,12 +1,3 @@
-{-------------------------------------------------------------------------------
-                             AGUARDE FORM
-
- OBJETIVO:    Pequena janela de aguarde
- CRIACAO:     Ricardo N. Acras
- OBSERVACOES:
- ATUALIZACOES:
--------------------------------------------------------------------------------}
-
 unit AguardeFormUn;
 
 interface
@@ -24,10 +15,7 @@ type
     Fcurrent: integer;
     procedure Settotal(const Value: integer);
     procedure Setcurrent(const Value: integer);
-  private
-    { Private declarations }
   public
-    { Public declarations }
     property total: integer read Ftotal write Settotal;
     property current: integer read Fcurrent write Setcurrent;
     procedure mostrar(aviso: TCaption; height: integer=0;
@@ -98,6 +86,7 @@ begin
   ProgressBar.Position := value;
   if total <> 0 then
     self.caption := 'Aguarde... ('+ formatFloat('0.00%',(value/total)*100) +')';
+  Application.ProcessMessages;
 end; //TAguardeForm.Setcurrent
 
 {-------------------------------------------------------------------------

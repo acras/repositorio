@@ -1,6 +1,6 @@
 object AguardeForm: TAguardeForm
-  Left = 447
-  Top = 305
+  Left = 883
+  Top = 603
   BorderIcons = []
   BorderStyle = bsToolWindow
   Caption = 'Aguarde...'
