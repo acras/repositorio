@@ -7,6 +7,7 @@ uses SysUtils;
 function CalcDV_CNPJ(PCNPJ: string): integer;
 function CalcDV_CPF(PCPF: string): string;
 function check_CPF(PCPF: string): boolean;
+function check_CNPJ(PCNPJ: string): boolean;
 
 function CharToInt(PChar: char): integer;
 function CalcDV_Modulo11(PNumero: integer): integer;
@@ -118,6 +119,13 @@ begin
   result := false;
   if Length(PCPF)=11 then
     result := CalcDV_CPF(copy(PCPF,1,9)) = copy(PCPF,10,2)
+end;
+
+function check_CNPJ(PCNPJ: string): boolean;
+begin
+  result := false;
+  if Length(PCNPJ)=14 then
+    result := FormatFloat('00', CalcDV_CNPJ(copy(PCNPJ,1,14))) = copy(PCNPJ,13,2);
 end;
 
 function CalcDV_Modulo11(PNumero: integer): integer;
