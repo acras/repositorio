@@ -28,7 +28,7 @@ const
   nomePAF = 'FOCUS LOJAS                                       ';
   versao = '4         ';
 
-  nomeExecutavel = 'SGL.EXE                                           ';
+  nomeExecutavel = 'FOCUSLOJAS.EXE                                           ';
 
 implementation
 
@@ -58,7 +58,7 @@ var
   ead: String;
   nomeArqLocal: string;
   hash: string;
-  arqHash: TStringList;
+  arqHash: TextFile;
   _paf_cpb_local, _paf_cpv_local: string;
 begin
   addN1Contents;
@@ -73,13 +73,10 @@ begin
   _paf_cpb_local := _paf_cpb;
   generateEAD(nomeArqLocal, _paf_cpb_local, _paf_cpv_local, PChar(ead), flagTipoSalvamento);
   hash := MD5(nomeArq);
-  arqHash := TStringList.Create;
-  try
-    arqHash.Add(simpleCrypt(hash));
-    arqHash.SaveToFile(getFileNameHashPAF);
-  finally
-    FreeAndNil(arqHash);
-  end;
+  AssignFile(arqHash, getFileNameHashPAF);
+  Rewrite(arqHash);
+  Write(arqHash, simpleCrypt(hash));
+  CloseFile(arqHash);
 end;
 
 function TPAFFile.addN2Contents: string;
@@ -88,8 +85,15 @@ begin
 end;
 
 function TPAFFile.addN3Contents: string;
+var
+  f: TSearchRec;
+  i: integer;
 begin
-  contents.add('N3' + nomeExecutavel + MD5(getSGLPath + 'produto\sgl.exe'));
+  contents.add('N3' + nomeExecutavel + MD5(getSGLPath + 'produto\focuslojas.exe'));
+  i := FindFirst(getSGLPath + 'produto\DLLs\*.dll', faAnyFile, f);
+  if (i = 0) then repeat
+    contents.add('N3' + f.Name + MD5(getSGLPath + 'produto\DLLs\' + f.Name));
+  until (FindNext(f) <> 0);
 end;
 
 function TPAFFile.addN9Contents: string;
