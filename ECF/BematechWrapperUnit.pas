@@ -258,7 +258,7 @@ end;
 
 function TBematechWrapper.NumeroSerie(var num: string): Integer;
 begin
-  result := Bematech_FI_NumeroSerie(num);
+  result := Bematech_FI_NumeroSerieMFD(num);
 end;
 
 function TBematechWrapper.numeroCupom(var numeroCupom: string): integer;

@@ -132,8 +132,6 @@ function Bematech_FI_AbreRelatorioGerencialMFD(Indice : string): Integer; StdCal
 function Bematech_FI_UsaRelatorioGerencialMFD(Texto : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_UsaRelatorioGerencialMFDTEF(Texto : string): Integer; StdCall; External 'BEMAFI32.DLL';
 
-
-function Bematech_FI_NumeroSerieMFD(NumeroSerie : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VersaoFirmwareMFD(VersaoFirmware : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CNPJMFD(CNPJ : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_InscricaoEstadualMFD(InscricaoEstadual : string): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -217,6 +215,7 @@ type
   TBematech_FI_LeituraX = function: Integer; StdCall;
   TBematech_FI_ReducaoZ = function( Data: String; Hora: String ): Integer; StdCall;
   TBematech_FI_NumeroSerie = function( NumeroSerie: String ): Integer; StdCall;
+  TBematech_FI_NumeroSerieMFD = function(NumeroSerie : string): Integer; StdCall; 
   TBematech_FI_NumeroCupom = function( NumeroCupom: String ): Integer; StdCall;
   TBematech_FI_FlagsFiscais = function( Var Flag: Integer ): Integer; StdCall;
   TBematech_FI_DataHoraReducao = function( Data: String; Hora: String ): Integer; StdCall;
@@ -304,6 +303,7 @@ var
   Bematech_FI_LeituraX: TBematech_FI_LeituraX;
   Bematech_FI_ReducaoZ: TBematech_FI_ReducaoZ;
   Bematech_FI_NumeroSerie: TBematech_FI_NumeroSerie;
+  Bematech_FI_NumeroSerieMFD: TBematech_FI_NumeroSerieMFD;
   Bematech_FI_NumeroCupom: TBematech_FI_NumeroCupom;
   Bematech_FI_FlagsFiscais: TBematech_FI_FlagsFiscais;
   Bematech_FI_DataHoraReducao: TBematech_FI_DataHoraReducao;
@@ -385,6 +385,7 @@ begin
   @Bematech_FI_LeituraX := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraX');
   @Bematech_FI_ReducaoZ := GetProcAddress(DLLHandle, 'Bematech_FI_ReducaoZ');
   @Bematech_FI_NumeroSerie := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroSerie');
+  @Bematech_FI_NumeroSerieMFD := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroSerieMFD');
   @Bematech_FI_NumeroCupom := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroCupom');
   @Bematech_FI_FlagsFiscais := GetProcAddress(DLLHandle, 'Bematech_FI_FlagsFiscais');
   @Bematech_FI_DataHoraReducao := GetProcAddress(DLLHandle, 'Bematech_FI_DataHoraReducao');
