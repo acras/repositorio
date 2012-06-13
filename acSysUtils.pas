@@ -21,6 +21,7 @@ function getWindowsProgramDataDir(subdir: string = ''): string;
 procedure bloqueiaTecladoMouse;
 procedure desbloqueiaTecladoMouse;
 function FuncAvail(dllName, funcName: string; var p: pointer): boolean;
+function GetWindowsTempFolder: string;
 
 implementation
 
@@ -284,5 +285,14 @@ begin
     if p <> nil then Result := true;
   end;
 end;
+
+function GetWindowsTempFolder: string;
+var
+  tempFolder: array[0..MAX_PATH] of Char;
+begin
+  GetTempPath(MAX_PATH, @tempFolder);
+  result := StrPas(tempFolder);
+end;
+
 
 end.
