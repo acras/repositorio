@@ -177,6 +177,7 @@ type
     function Suprimento(Valor: Currency; FormaPagamento: String): Integer;
     function DataHoraUltimoDocumentoMFD: TDateTime;
     function ContadorRelatoriosGerenciaisMFD: integer;
+    function ContadorCupomFiscalMFD: integer;
     function NumeroOperacoesNaoFiscais: integer;
     function ContadorComprovantesCreditoMFD: integer;
   end;
@@ -811,6 +812,14 @@ var
   r: string;
 begin
   CheckStatus(FBematech.ContadorRelatoriosGerenciaisMFD(r));
+  result := StrToInt(r);
+end;
+
+function TBematechPrinter.ContadorCupomFiscalMFD: integer;
+var
+  r: string;
+begin
+  CheckStatus(FBematech.ContadorCupomFiscalMFD(r));
   result := StrToInt(r);
 end;
 

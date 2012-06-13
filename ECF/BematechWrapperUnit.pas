@@ -83,6 +83,7 @@ type
     function ContadorRelatoriosGerenciaisMFD(var contador: string): integer;
     function NumeroOperacoesNaoFiscais(var numOper: string): integer;
     function ContadorComprovantesCreditoMFD(var contador: string): integer;
+    function ContadorCupomFiscalMFD(var contador: string): integer;
   end;
 
 implementation
@@ -443,6 +444,15 @@ var
 begin
   setLength(r, 4);
   result := Bematech_FI_ContadorComprovantesCreditoMFD(r);
+  contador := r;
+end;
+
+function TBematechWrapper.ContadorCupomFiscalMFD(var contador: string): integer;
+var
+  r: string;
+begin
+  setLength(r, 6);
+  result := Bematech_FI_ContadorCupomFiscalMFD(r);
   contador := r;
 end;
 

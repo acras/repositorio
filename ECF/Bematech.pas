@@ -146,7 +146,6 @@ function Bematech_FI_VerificaFormasPagamentoMFD(FormasPagamento : string): Integ
 function Bematech_FI_VerificaRecebimentoNaoFiscalMFD(Recebimentos : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaRelatorioGerencialMFD(Relatorios : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorOperacoesNaoFiscaisCanceladasMFD(OperacoesCanceladas : string): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_ContadorCupomFiscalMFD(CuponsEmitidos : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorFitaDetalheMFD(ContadorFita : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ComprovantesNaoFiscaisNaoEmitidosMFD(Comprovantes : string): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroSerieMemoriaMFD(NumeroSerieMFD : string): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -286,6 +285,8 @@ type
   TBematech_FI_NumeroOperacoesNaoFiscais = function(NumeroOperacoes: String): Integer; StdCall;
   TBematech_FI_ContadorComprovantesCreditoMFD = function(Comprovantes : string): Integer; StdCall;
   TBematech_FI_VerificaAliquotasIss = function(Flag: String): Integer; StdCall;
+  TBematech_FI_ContadorCupomFiscalMFD = function (CuponsEmitidos : string): Integer; StdCall;
+
 
 var
   Bematech_FI_ProgramaAliquota: TBematech_FI_ProgramaAliquota;
@@ -358,6 +359,7 @@ var
   Bematech_FI_NumeroOperacoesNaoFiscais: TBematech_FI_NumeroOperacoesNaoFiscais;
   Bematech_FI_ContadorComprovantesCreditoMFD: TBematech_FI_ContadorComprovantesCreditoMFD;
   Bematech_FI_VerificaAliquotasIss: TBematech_FI_VerificaAliquotasIss;
+  Bematech_FI_ContadorCupomFiscalMFD: TBematech_FI_ContadorCupomFiscalMFD;
 
 implementation
 
@@ -439,6 +441,7 @@ begin
   @Bematech_FI_NumeroOperacoesNaoFiscais := GetProcAddress(DLLHandle, 'Bematech_FI_NumeroOperacoesNaoFiscais');
   @Bematech_FI_ContadorComprovantesCreditoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_ContadorComprovantesCreditoMFD');
   @Bematech_FI_VerificaAliquotasIss := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaAliquotasIss');
+  @Bematech_FI_ContadorCupomFiscalMFD := GetProcAddress(DLLHandle, 'Bematech_FI_ContadorCupomFiscalMFD');
 end;
 
 end.

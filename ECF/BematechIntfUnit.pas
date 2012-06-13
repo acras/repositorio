@@ -70,6 +70,7 @@ type
     function ContadorRelatoriosGerenciaisMFD(var contador: string): integer;
     function NumeroOperacoesNaoFiscais(var numOper: string): integer;
     function ContadorComprovantesCreditoMFD(var contador: string): integer;
+    function ContadorCupomFiscalMFD(var contador: string): integer;
 
     function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
     function VerificaImpressoraLigada: Integer;
