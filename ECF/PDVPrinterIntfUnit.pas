@@ -40,6 +40,9 @@ type
 
     function dataHoraImpressora: TDateTime;
     function dataUltimoMovimento: TDateTime;
+    procedure acionaGaveta;
+    procedure habilitaRetornoEstendido;
+    procedure desabilitaRetornoEstendido;
 
     function SubTotal: double;
     procedure LeituraXSerial;

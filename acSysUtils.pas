@@ -22,6 +22,7 @@ procedure bloqueiaTecladoMouse;
 procedure desbloqueiaTecladoMouse;
 function FuncAvail(dllName, funcName: string; var p: pointer): boolean;
 function GetWindowsTempFolder: string;
+function isCtrlDown: boolean;
 
 implementation
 
@@ -292,6 +293,14 @@ var
 begin
   GetTempPath(MAX_PATH, @tempFolder);
   result := StrPas(tempFolder);
+end;
+
+function isCtrlDown: boolean;
+var
+  s: TKeyboardState;
+begin
+  GetKeyboardState(s);
+  result := ((s[VK_CONTROL] and 128)<>0);
 end;
 
 

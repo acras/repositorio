@@ -34,6 +34,7 @@ type
     function AberturaDoDia(var Valor, FormaPagamento: string): Integer;
     function FechamentoDoDia: Integer;
     function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
+    function RetornoImpressoraMFD(var Ack, St1, St2, St3: Integer): Integer;
     function VerificaImpressoraLigada: Integer;
 
     function DataHoraReducao(var DataReducao, HoraReducao: string): Integer;
@@ -62,7 +63,6 @@ type
       FlagLeitura: string): Integer;
     function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal,
       FlagLeitura, chavePublica, chavePrivada: string): Integer;
-    function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
     function ArquivoMFD(ArquivoOrigem, DataOuCOOInicial, DataOuCOOFinal, TipoDownload,
       Usuario: string; TipoGeracao: integer; ChavePublica, ChavePrivada: string; UnicoArquivo: integer): integer;
     function EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
@@ -84,6 +84,8 @@ type
     function NumeroOperacoesNaoFiscais(var numOper: string): integer;
     function ContadorComprovantesCreditoMFD(var contador: string): integer;
     function ContadorCupomFiscalMFD(var contador: string): integer;
+    function AcionaGaveta: integer;
+    function habilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
   end;
 
 implementation
@@ -301,11 +303,6 @@ begin
   result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura));
 end;
 
-function TBematechWrapper.HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
-begin
-  result := Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(flag);
-end;
-
 function TBematechWrapper.LeituraMemoriaFiscalSerialDataPAFECF(DataInicial,
   DataFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
 begin
@@ -332,8 +329,8 @@ end;
 function TBematechWrapper.EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
   TipoDownload, Usuario, ChavePublica, ChavePrivada: string): integer;
 begin
-  result := Bematech_FI_EspelhoMFD(PChar(NomeArquivo), PChar(dataOuCOOInicial), PChar(dataOuCOOFinal),
-    PChar(TipoDownload), PChar(Usuario), PChar(ChavePublica), PChar(ChavePrivada));
+  result := Bematech_FI_EspelhoMFD(NomeArquivo, dataOuCOOInicial, dataOuCOOFinal,
+    TipoDownload, Usuario, ChavePublica, ChavePrivada);
 end;
 
 function TBematechWrapper.DownloadMF(Arquivo: String): Integer;
@@ -460,6 +457,23 @@ function TBematechWrapper.DataMovimento(
   var DataMovimento: string): Integer;
 begin
   Result := Bematech_FI_DataMovimento(DataMovimento);
+end;
+
+function TBematechWrapper.AcionaGaveta: integer;
+begin
+  Result := Bematech_FI_AcionaGaveta;
+end;
+
+function TBematechWrapper.RetornoImpressoraMFD(var Ack, St1, St2,
+  St3: Integer): Integer;
+begin
+  Result := Bematech_FI_RetornoImpressoraMFD(Ack, St1, St2, St3);
+end;
+
+function TBematechWrapper.habilitaDesabilitaRetornoEstendidoMFD(
+  flag: string): integer;
+begin
+  result := Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(flag));
 end;
 
 end.

@@ -96,9 +96,12 @@ type
     FBematech: IBematech;
     function GetMessageFromRetVal(RetVal: Integer): string;
     function GetMessageFromAckByte(Ack: Integer): string;
-    function GetMessageFromStatusBytes(St1, St2: Integer): string;
+    function GetMessageFromStatusBytes(St1, St2, st3: Integer): string;
   public
+    erros, alertas: string;
     constructor Create(const ABematech: IBematech);
+
+    function mensagemUltimoErro: string;
 
     { IPDVPrinter }
     procedure AbrirDia;
@@ -161,7 +164,6 @@ type
       TipoGeracao, UnicoArquivo: integer): integer;
     function EspelhoMFD(NomeArquivo, DataOuCOOInicial,
       DataOuCOOFinal,  TipoDownload, Usuario: string): integer;
-    procedure HabilitaDesabilitaRetornoEstendidoMFD(habilita: boolean);
     function DownloadMF( Arquivo: String ): Integer;
     function DownloadMFD( Arquivo: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
     function FormatoDadosMFD( ArquivoOrigem: String; ArquivoDestino: String; TipoFormato: String; TipoDownload: String; ParametroInicial: String; ParametroFinal: String; UsuarioECF: String ): Integer;
@@ -180,6 +182,9 @@ type
     function ContadorCupomFiscalMFD: integer;
     function NumeroOperacoesNaoFiscais: integer;
     function ContadorComprovantesCreditoMFD: integer;
+    procedure acionaGaveta;
+    procedure habilitaRetornoEstendido;
+    procedure desabilitaRetornoEstendido;    
   end;
 
   TBematechAliquotaList = class(TInterfacedObject, IAliquotaList)
@@ -243,27 +248,34 @@ end;
 
 procedure TBematechPrinter.CheckStatus(RetVal: Integer);
 var
-  Ack, St1, St2: Integer;
+  Ack, St1, St2, st3: Integer;
   v: Integer;
 begin
+  erros := '';
+  alertas := '';
   if RetVal <> 1 then
-     raise EBematechPrinter.Create(GetMessageFromRetVal(RetVal));
-
-  Ack := 0;
-  St1 := 0;
-  St2 := 0;
-  v := FBematech.RetornoImpressora(Ack, St1, St2);
-  if v <> 1 then
-    raise EBematechPrinter.Create(GetMessageFromRetVal(v));
-  if Ack <> 6 then
-    raise EBematechPrinter.Create(GetMessageFromAckByte(Ack));
-
-  //se for somente o aviso de pouco papel
-  if (St1 = 64) and (St2 = 0) then
-    //
+    erros := erros + GetMessageFromRetVal(RetVal)
   else
-    if not ((St1 = 0) and (St2 = 0)) then
-      raise EBematechPrinter.Create(GetMessageFromStatusBytes(St1, St2));
+  begin
+    Ack := 0;
+    St1 := 0;
+    St2 := 0;
+    st3 := 0;
+    v := FBematech.RetornoImpressoraMFD(Ack, St1, St2, st3);
+    if v <> 1 then
+      erros := erros + GetMessageFromRetVal(v);
+    if Ack <> 6 then
+      erros := erros + GetMessageFromAckByte(Ack);
+
+    //se for somente o aviso de pouco papel
+    if (St1 = 64) and (St2 = 0) then
+      alertas := alertas + 'Pouco papel'
+    else
+      if not ((St1 = 0) and (St2 = 0) and (st3 = 0)) then
+        erros := erros + GetMessageFromStatusBytes(St1, St2, st3);
+  end;
+  if erros <> '' then
+    raise exception.Create(erros);
 end;
 
 constructor TBematechPrinter.Create(const ABematech: IBematech);
@@ -357,7 +369,7 @@ begin
 end;
 
 function TBematechPrinter.GetMessageFromStatusBytes(St1,
-  St2: Integer): string;
+  St2, st3: Integer): string;
   function GetMessagesFromSingleByte(St: Integer; MsgList: array of string): string;
   var
     i: Integer;
@@ -372,6 +384,11 @@ function TBematechPrinter.GetMessageFromStatusBytes(St1,
 begin
   Result := GetMessagesFromSingleByte(St1, MsgSt1) + GetMessagesFromSingleByte(St2, MsgSt2);
   SetLength(Result, Length(Result) - 2);
+  if st3 <> 0 then
+  begin
+    if st3 = 63 then
+      result := 'ECF Bloqueado por que já foi realizada uma Redução Z.';
+  end;
 end;
 
 procedure TBematechPrinter.ImprimirConfiguracoes;
@@ -665,18 +682,6 @@ begin
   ));
 end;
 
-procedure TBematechPrinter.HabilitaDesabilitaRetornoEstendidoMFD(
-  habilita: boolean);
-var
-  flag: string;
-begin
-  if habilita then
-    flag := '1'
-  else
-    flag := '0';
-  checkStatus(FBematech.HabilitaDesabilitaRetornoEstendidoMFD(PChar(flag)));
-end;
-
 function TBematechPrinter.ArquivoMFD(ArquivoOrigem, DadoInicial, DadoFinal,
   TipoDownload, Usuario: string; TipoGeracao, UnicoArquivo: integer): integer;
 begin
@@ -856,6 +861,34 @@ begin
   m := StrToInt(copy(r, 3, 2));
   d := StrToInt(copy(r, 1, 2));
   result := EncodeDate(a, m, d);
+end;
+
+procedure TBematechPrinter.acionaGaveta;
+begin
+  CheckStatus(FBematech.AcionaGaveta);
+end;
+
+procedure TBematechPrinter.desabilitaRetornoEstendido;
+var
+  flag: string;
+begin
+  flag := '0';
+  if FBematech.habilitaDesabilitaRetornoEstendidoMFD(flag) <> 1 then
+    MessageDlg('Não foi possível habilitar o retorno estendido da impressora fiscal.'+#13+#10+'Contate o suporte técnico.', mtError, [mbOK], 0);
+end;
+
+procedure TBematechPrinter.habilitaRetornoEstendido;
+var
+  flag: string;
+begin
+  flag := '1';
+  if FBematech.habilitaDesabilitaRetornoEstendidoMFD(flag) <> 1 then
+    MessageDlg('Não foi possível habilitar o retorno estendido da impressora fiscal.'+#13+#10+'Contate o suporte técnico.', mtError, [mbOK], 0);
+end;
+
+function TBematechPrinter.mensagemUltimoErro: string;
+begin
+  
 end;
 
 { TBematechAliquotaList }

@@ -20,15 +20,17 @@ type
 
 const
   CNPJ = '07504505000132';
-  IE = '00000000000000';
-  IM = '00000000000000';
-  razaoSocial = 'ACRAS TECNOLOGIA DA INFORMAÇÃO LTDA               ';
+  IE = '              ';
+  IM = '010704940940  ';
+  razaoSocial = 'ACRAS TECNOLOGIA DA INFORMAÇÃO LTDA - ME          ';
 
-  numLaudo = '0000000000';
   nomePAF = 'FOCUS LOJAS                                       ';
   versao = '4         ';
 
-  nomeExecutavel = 'FOCUSLOJAS.EXE                                           ';
+  nomeExecutavel = 'FOCUSLOJAS.EXE';
+
+var
+  totalRegistros: integer;
 
 implementation
 
@@ -40,6 +42,7 @@ uses sglRegistry, acCryptoUtils, signBema, sglConsts, TypInfo, UtilsEnne,
 constructor TPAFFile.Create;
 begin
   contents := TStringList.create;
+  totalRegistros := 0;
 end;
 
 destructor TPAFFile.Destroy;
@@ -71,7 +74,7 @@ begin
   setlength(ead, 256);
   _paf_cpv_local := _paf_cpv;
   _paf_cpb_local := _paf_cpb;
-  generateEAD(nomeArqLocal, _paf_cpb_local, _paf_cpv_local, PChar(ead), flagTipoSalvamento);
+  generateEAD(nomeArqLocal, _paf_cpb_local, _paf_cpv_local, ead, flagTipoSalvamento);
   hash := MD5(nomeArq);
   AssignFile(arqHash, getFileNameHashPAF);
   Rewrite(arqHash);
@@ -81,7 +84,7 @@ end;
 
 function TPAFFile.addN2Contents: string;
 begin
-  contents.add('N2' + numLaudo + nomePAF + versao);
+  contents.add('N2' + _paf_laudo + nomePAF + versao);
 end;
 
 function TPAFFile.addN3Contents: string;
@@ -89,16 +92,18 @@ var
   f: TSearchRec;
   i: integer;
 begin
-  contents.add('N3' + nomeExecutavel + MD5(getSGLPath + 'produto\focuslojas.exe'));
+  totalRegistros := 1;
+  contents.add('N3' + rtoTxtField(nomeExecutavel, 50) + MD5(getSGLPath + 'produto\focuslojas.exe'));
   i := FindFirst(getSGLPath + 'produto\DLLs\*.dll', faAnyFile, f);
   if (i = 0) then repeat
-    contents.add('N3' + f.Name + MD5(getSGLPath + 'produto\DLLs\' + f.Name));
+    totalRegistros := totalRegistros + 1;
+    contents.add('N3' + rtoTxtField(f.Name, 50) + MD5(getSGLPath + 'produto\DLLs\' + f.Name));
   until (FindNext(f) <> 0);
 end;
 
 function TPAFFile.addN9Contents: string;
 begin
-  contents.Add('N9' + CNPJ + IE + '000001');
+  contents.Add('N9' + CNPJ + IE + FormatFloat('000000', totalRegistros));
 end;
 
 end.

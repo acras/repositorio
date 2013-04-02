@@ -4,7 +4,7 @@ interface
 
 
 uses
-  classes, StrUtils, SysUtils, ComCTrls, wwriched;
+  classes, StrUtils, SysUtils, ComCTrls;
 
 Type
   TInfoPalavra = class
@@ -21,13 +21,14 @@ function RemoveSimbolo(str: String): String;
 function extraiPalavras(texto: string): TStringList;
 function achaPalavra(texto, palavra: string): integer;
 procedure RTFsubstText(rtf: TRichEdit; fromText, toText: string);
-procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
+//procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
 function strip(value: string; delimiter: string = ' '): TStringList;
 function numeroIncluidoNaRegra(numero: integer; regra: string): boolean;
 function strVezes(str: string; vezes: integer): string;
 procedure stringListSubstText(strl: TStringList; fromText, toText: string);
 function simpleCrypt(str: string): string;
 function simpleDecrypt(str: string): string;
+function rToTxtField(value: string; size: integer): string;
 function toTxtField(value: string; size: integer): string; overload;
 function toTxtField(value: integer; size: integer): string; overload;
 function currencyToTxtField(value: double; size: integer): string;
@@ -37,6 +38,8 @@ function prepareIdsForIn(strIds: string): TStringList;
 function EnsureTrailingSlash(const path: string): string;
 function dasherize(const str: string): string;
 function underscorize(const str: string): string;
+procedure writeTextFile(fileName, text: string);
+function readTextFile(fileName: string): string;
 
 implementation
 
@@ -215,7 +218,7 @@ begin
   end;
 end;
 
-procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
+{procedure wwRTFsubstText(rtf: TwwDBRichEdit; fromText, toText: string);
 var
   index: integer;
 begin
@@ -228,11 +231,11 @@ begin
 
     index := rtf.FindText(fromText, index+1, length(rtf.Lines.GetText), []);
   end;
-end;
+end;}
 
 procedure stringListSubstText(strl: TStringList; fromText, toText: string);
 begin
-  strl.Text := FastReplace(strl.Text, fromText, toText);
+//  strl.Text := FastReplace(strl.Text, fromText, toText);
 end;
 
 function strip(value: string; delimiter: string = ' '): TStringList;
@@ -306,6 +309,17 @@ begin
   tam := length(value);
   if tam < size then
     result := strVezes(' ', size - tam) + value;
+  if tam >= size then
+    result := copy(value, 1, size);
+end;
+
+function rToTxtField(value: string; size: integer): string;
+var
+  tam: integer;
+begin
+  tam := length(value);
+  if tam < size then
+    result := value + strVezes(' ', size - tam);
   if tam >= size then
     result := copy(value, 1, size);
 end;
@@ -397,6 +411,30 @@ begin
   result := FastReplace(str, '-', '_');
 end;
 
+procedure writeTextFile(fileName, text: string);
+var
+  tf: TextFile;
+begin
+  AssignFile(tf, fileName);
+  Rewrite(tf);
+  Writeln(tf, text);
+  CloseFile(tf);
+end;
+
+function readTextFile(fileName: string): string;
+var
+  tf: TextFile;
+  text: string;
+begin
+  if FileExists(fileName) then
+  begin
+    AssignFile(tf, fileName);
+    Reset(tf);
+    Readln(tf, text);
+    CloseFile(tf);
+    Result := text;
+  end;
+end;
 
 end.
 

@@ -37,7 +37,6 @@ type
     function LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
     function LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura: string): Integer;
     function LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada: string): Integer;
-    function HabilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
     function ArquivoMFD(ArquivoOrigem, DadoInicial, DadoFinal, TipoDownload, Usuario: string;
       TipoGeracao: integer; ChavePublica, ChavePrivada: string; UnicoArquivo: integer): integer;
     function EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
@@ -60,6 +59,8 @@ type
     function numeroSerie(var num: string): integer;
     function numeroCupom(var num: string): integer;
 
+    function habilitaDesabilitaRetornoEstendidoMFD(flag: string): integer;
+
     // Outras funções
     function AberturaDoDia(var Valor, FormaPagamento: string): Integer;
     function FechamentoDoDia: Integer;
@@ -73,7 +74,9 @@ type
     function ContadorCupomFiscalMFD(var contador: string): integer;
 
     function RetornoImpressora(var Ack, St1, St2: Integer): Integer;
+    function RetornoImpressoraMFD(var Ack, St1, St2, st3: Integer): Integer;
     function VerificaImpressoraLigada: Integer;
+    function AcionaGaveta: Integer;
 
     function SubTotal(var SubTotal: String): Integer;
     function LeituraXSerial: Integer;
