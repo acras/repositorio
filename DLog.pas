@@ -19,7 +19,7 @@ type
     paused: boolean;
     property baseDir: string read FbaseDir write SetbaseDir;
     procedure log(mensagem: string; classe: string = ''; newLine: boolean = true);
-    procedure step;
+    procedure step(text: string = '.');
     procedure newLine;
     procedure pause;
     procedure resume;
@@ -53,9 +53,9 @@ begin
   LeaveCriticalSection(CritSectLog);
 end;
 
-procedure TDataLog.step;
+procedure TDataLog.step(text: string = '.');
 begin
-  Write(logFile, '.');
+  Write(logFile, text);
   Flush(logFile);
 end;
 
@@ -95,9 +95,7 @@ end;
 procedure TDataLog.DataModuleCreate(Sender: TObject);
 begin
   baseDir := getWindowsTempPath;
-  paused := false;
-  openLogFile;
-  log('Log Class Created');
+  paused := true;
 end;
 
 procedure TDataLog.newLine;
@@ -109,6 +107,7 @@ end;
 procedure TDataLog.SetbaseDir(const Value: string);
 begin
   FbaseDir := EnsureTrailingSlash(Value);
+  resume;
 end;
 
 initialization
