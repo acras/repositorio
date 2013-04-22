@@ -482,8 +482,13 @@ const
     '0123456789' //###0.940
   + 'abcdefghijklmnopqrstuvwxyz'
   + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
-  RegExprLineSeparators : RegExprString =// default value for LineSeparators
-   #$d#$a{$IFDEF UniCode}#$b#$c#$2028#$2029#$85{$ENDIF};
+  {$IFDEF UniCode}
+    RegExprLineSeparators : RegExprString =// default value for LineSeparators
+      #$d#$a#$b#$c#$2028#$2029#$85;
+  {$ELSE}
+    RegExprLineSeparators : RegExprString =// default value for LineSeparators
+      #$d#$a;
+  {$ENDIF}
   RegExprLinePairedSeparator : RegExprString =// default value for LinePairedSeparator
    #$d#$a;
   { if You need Unix-styled line separators (only \n), then use:
@@ -2718,7 +2723,7 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
       dec (regparse);
       if ((fCompModifiers and MaskModX) <> 0) and // check for eXtended syntax
           ((regparse^ = '#')
-           or ({$IFDEF UniCode}StrPos (regparse^, XIgnoredChars) <> nil
+           or ({$IFDEF UniCode}StrPos (PWideChar(regparse^), PWideChar(XIgnoredChars)) <> nil
                {$ELSE}regparse^ in XIgnoredChars{$ENDIF})) then begin //###0.941 \x
          if regparse^ = '#' then begin // Skip eXtended comment
             // find comment terminator (group of \n and/or \r)
@@ -2728,7 +2733,7 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
              do inc (regparse); // attempt to support different type of line separators
            end
           else begin // Skip the blanks!
-            while {$IFDEF UniCode}StrPos (regparse^, XIgnoredChars) <> nil
+            while {$IFDEF UniCode}StrPos (PWideChar(regparse^), PWideChar(XIgnoredChars)) <> nil
                   {$ELSE}regparse^ in XIgnoredChars{$ENDIF}
              do inc (regparse);
            end;
@@ -2755,7 +2760,7 @@ function TRegExpr.ParseAtom (var flagp : integer) : PRegExprChar;
          while (len > 0)
           and (((fCompModifiers and MaskModX) = 0) or (regparse^ <> '#')) do begin
            if ((fCompModifiers and MaskModX) = 0) or not ( //###0.941
-              {$IFDEF UniCode}StrPos (regparse^, XIgnoredChars) <> nil
+              {$IFDEF UniCode}StrPos (PWideChar(regparse^), PWideChar(XIgnoredChars)) <> nil
               {$ELSE}regparse^ in XIgnoredChars{$ENDIF} )
             then EmitC (regparse^);
            inc (regparse);
