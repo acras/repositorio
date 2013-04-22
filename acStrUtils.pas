@@ -4,7 +4,13 @@ interface
 
 
 uses
-  classes, StrUtils, SysUtils, ComCTrls;
+  classes, StrUtils, SysUtils, ComCTrls
+
+  {$IFDEF VER150}
+  , fastString
+  {$ENDIF}
+
+  ;
 
 Type
   TInfoPalavra = class
@@ -42,8 +48,6 @@ procedure writeTextFile(fileName, text: string);
 function readTextFile(fileName: string): string;
 
 implementation
-
-uses fastString;
 
 function strVezes(str: string; vezes: integer): string;
 var
@@ -403,12 +407,20 @@ end;
 
 function dasherize(const str: string): string;
 begin
-  result := FastReplace(str, '_', '-');
+  {$IFDEF VER150}
+    result := FastReplace(str, '_', '-');
+  {$ELSE}
+    result := ReplaceStr(str, '_', '-');
+  {$ENDIF}
 end;
 
 function underscorize(const str: string): string;
 begin
-  result := FastReplace(str, '-', '_');
+  {$IFDEF VER150}
+    result := FastReplace(str, '-', '_');
+  {$ELSE}
+    result := ReplaceStr(str, '-', '_');
+  {$ENDIF}
 end;
 
 procedure writeTextFile(fileName, text: string);
