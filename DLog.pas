@@ -13,11 +13,10 @@ type
     FbaseDir: string;
     procedure openLogFile;
     procedure SetbaseDir(const Value: string);
-  protected
-    function getLogFileName: string;
   public
     paused: boolean;
     property baseDir: string read FbaseDir write SetbaseDir;
+    function getLogFileName(logDate: TDateTime = -1): string;
     procedure log(mensagem: string; classe: string = ''; newLine: boolean = true);
     procedure step(text: string = '.');
     procedure newLine;
@@ -59,11 +58,13 @@ begin
   Flush(logFile);
 end;
 
-function TDataLog.getLogFileName: string;
+function TDataLog.getLogFileName(logDate: TDateTime = -1): string;
 begin
+  if logDate = -1 then
+    logDate := date;
   if not(DirectoryExists(baseDir)) then
     CreateDir(baseDir);
-  result := baseDir + FormatDateTime('yyyy_mm_dd', date) + '.log';
+  result := baseDir + FormatDateTime('yyyy_mm_dd', logDate) + '.log';
 end;
 
 procedure TDataLog.pause;
