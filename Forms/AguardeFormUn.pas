@@ -15,11 +15,14 @@ type
     Fcurrent: integer;
     procedure Settotal(const Value: integer);
     procedure Setcurrent(const Value: integer);
+    function getAviso: string;
+    procedure setAviso(aviso: string);
   public
     property total: integer read Ftotal write Settotal;
     property current: integer read Fcurrent write Setcurrent;
     procedure mostrar(aviso: TCaption; height: integer=0;
       width:integer = 0; mostrarProgress: boolean = false);
+    property aviso: string read getAviso write setAviso;
     procedure esconder;
   end;
 
@@ -30,14 +33,8 @@ implementation
 
 {$R *.dfm}
 
-{-------------------------------------------------------------------------
- Objetivo   > Esconde a janela de aguarde
- Parâmetros > Conforme documentação
- Retorno    >
- Criação    > Ricardo N. Acras
- Observações>
- Atualização>
- ------------------------------------------------------------------------}
+
+
 procedure TAguardeForm.esconder;
 begin
   screen.Cursor := crArrow;
@@ -89,18 +86,22 @@ begin
   Application.ProcessMessages;
 end; //TAguardeForm.Setcurrent
 
-{-------------------------------------------------------------------------
- Objetivo   >
- Parâmetros > Value: Integer com o valor a ser mostrado
- Retorno    >
- Criação    > Ricardo N. Acras
- Observações>
- Atualização>
- ------------------------------------------------------------------------}
 procedure TAguardeForm.Settotal(const Value: integer);
 begin
   Ftotal := Value;
   ProgressBar.Max := value;
-end; //TAguardeForm.Settotal
+end;
+
+function TAguardeForm.getAviso: string;
+begin
+  result := lblAviso.caption;
+end;
+
+procedure TAguardeForm.setAviso(aviso: string);
+begin
+  lblAviso.Caption := aviso;
+  Application.ProcessMessages;
+end;
+
 
 end.
