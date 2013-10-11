@@ -28,12 +28,8 @@ var
 begin
   md5 := TIdHashMessageDigest5.Create;
   s.Seek(0,0);
-  {$IFDEF VER150}
-    hash := md5.HashValue(s);
-    result := TIdHashMessageDigest5.AsHex(hash);
-  {$ELSE}
-    result := md5.HashStreamAsHex(s);
-  {$ENDIF}
+  hash := md5.HashValue(s);
+  result := TIdHashMessageDigest5.AsHex(hash);
 end;
 
 end.

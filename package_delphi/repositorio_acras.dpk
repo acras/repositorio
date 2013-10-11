@@ -31,8 +31,7 @@ requires
   dsnap,
   vcldb,
   bdertl,
-  ip4000v7,
-  indy;
+  ip4000v7;
 
 contains
   acStrUtils in '..\acStrUtils.pas',
@@ -50,10 +49,6 @@ contains
   Md5 in '..\md5.pas',
   Sha1 in '..\sha1.pas',
   U_Cipher in '..\u_cipher.pas',
-  ValidaDocumentos in '..\ValidaDocumentos.pas',
-  RegExpr in '..\RegExpr.pas',
-  DLog in '..\DLog.pas',
-  acNetUtils in '..\acNetUtils.pas',
-  AguardeFormUn in '..\Forms\AguardeFormUn.pas';
+  ValidaDocumentos in '..\ValidaDocumentos.pas';
 
 end.

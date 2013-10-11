@@ -138,13 +138,7 @@ begin
       FIDesktopFolder.GetDisplayNameOf(I, SHGDN_FORPARSING, StrRet);
       case StrRet.uType of
         STRRET_CSTR:
-        begin
-          {$IFDEF VER150}
-            SetString(Result, StrRet.cStr, lStrLen(StrRet.cStr));
-          {$ELSE}
-            SetString(Result, StrRet.cStr, StrLen(StrRet.cStr));
-          {$ENDIF}
-        end;
+          SetString(Result, StrRet.cStr, lStrLen(StrRet.cStr));
         STRRET_OFFSET:
           begin
             P := @I.mkid.abID[StrRet.uOffset - SizeOf(I.mkid.cb)];
