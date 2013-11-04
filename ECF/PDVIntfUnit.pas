@@ -71,15 +71,15 @@ type
 
     function IniciarFechamento(const OperacaoPDV: IOperacaoPDV; ValorDesconto,
         PorcentualDesconto: Currency; const NomeSupervisor,
-        SenhaSupervisor: string): IPDVTransactionState;
-    procedure EfetuarPagamento(forma: string; valor: currency);
-    function TerminarFechamento(const OperacaoPDV: IOperacaoPDV; mensagem: string): IPDVTransactionState;
+        SenhaSupervisor: AnsiString): IPDVTransactionState;
+    procedure EfetuarPagamento(forma: AnsiString; valor: currency);
+    function TerminarFechamento(const OperacaoPDV: IOperacaoPDV; mensagem: AnsiString): IPDVTransactionState;
 
     function InserirItem(const OperacaoPDV: IOperacaoPDV; MercadoriaId: Integer;
-        const Codigo, Descricao, Unidade, tipoTributacao: string; AliquotaICMS, Quantidade, PrecoUnitario,
+        const Codigo, Descricao, Unidade, tipoTributacao: AnsiString; AliquotaICMS, Quantidade, PrecoUnitario,
         Desconto: Currency): IPDVTransactionState;
     function RemoverItem(const Item: IItemPDV; const NomeSupervisor,
-        SenhaSupervisor: string): IPDVTransactionState;
+        SenhaSupervisor: AnsiString): IPDVTransactionState;
     function numeroUltimoCupom: integer;
   end;
 

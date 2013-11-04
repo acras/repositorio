@@ -26,7 +26,7 @@ type
     procedure FecharDia;
     procedure EfetuarReducaoZ(DateTime: TDateTime = 0);
     function Sangria(Valor: Currency): Integer;
-    function Suprimento(Valor: Currency; FormaPagamento: String): Integer;
+    function Suprimento(Valor: Currency; FormaPagamento: AnsiString): Integer;
 
     procedure ImprimirConfiguracoes;
     function FlagsFiscais: TFlagsFiscais; 
@@ -36,7 +36,7 @@ type
 
     procedure ProgramarAliquotaICMS(Aliquota: Currency);
     function GetAliquotaList: IAliquotaList;
-    function getNumSerie: string;
+    function getNumSerie: AnsiString;
 
     function dataHoraImpressora: TDateTime;
     function dataUltimoMovimento: TDateTime;
@@ -46,11 +46,11 @@ type
 
     function SubTotal: double;
     procedure LeituraXSerial;
-    function VersaoFirmware: string;
-    function VersaoFirmwareMFD: string;
-    procedure CGC_IE(var CGC, IE: String);
+    function VersaoFirmware: AnsiString;
+    function VersaoFirmwareMFD: AnsiString;
+    procedure CGC_IE(var CGC, IE: AnsiString);
     function GrandeTotal: Double;
-    procedure DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: string);
+    procedure DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: AnsiString);
 
     function DataHoraUltimoDocumentoMFD: TDateTime;
     function ContadorRelatoriosGerenciaisMFD: integer;
