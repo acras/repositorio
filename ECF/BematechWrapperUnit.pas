@@ -169,7 +169,7 @@ end;
 
 function TBematechWrapper.EfetuaFormaPagamento(Forma, Valor: AnsiString): Integer;
 begin
-  Result := Bematech_FI_EfetuaFormaPagamento(PChar(Forma), PChar(Valor));
+  Result := Bematech_FI_EfetuaFormaPagamento(Forma, Valor);
 end;
 
 function TBematechWrapper.FechamentoDoDia: Integer;

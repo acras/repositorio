@@ -292,7 +292,7 @@ end;
 procedure TBematechPrinter.EfetuarPagamento(forma: AnsiString; valor: currency);
 begin
   CheckStatus(
-    FBematech.EfetuaFormaPagamento(forma, PChar(formatFloat(',0.00', valor))));
+    FBematech.EfetuaFormaPagamento(forma, formatFloat(',0.00', valor)));
 end;
 
 //procedure TBematechPrinter.AbreComprovanteNaoFiscalVinculado((forma: AnsiString; valor: currency);
@@ -484,7 +484,7 @@ end;
 function TBematechPrinter.TerminarFechamento(
   const OperacaoPDV: IOperacaoPDV; mensagem: AnsiString = ''): IPDVTransactionState;
 begin
-  CheckStatus(FBematech.TerminaFechamentoCupom(PChar(mensagem)));
+  CheckStatus(FBematech.TerminaFechamentoCupom(mensagem));
 end;
 
 function TBematechPrinter.VerifyDataUltimaReducaoZ(
