@@ -4,11 +4,11 @@ interface
 
 uses idHTTP, SysUtils;
 
-function getRemoteXmlContent(pUrl: string): string;
+function getRemoteXmlContent(pUrl: string): String;
 
 implementation
 
-function getRemoteXmlContent(pUrl: string): string;
+function getRemoteXmlContent(pUrl: string): String;
 var
   xmlContent: string;
   http: TIDHTTP;
@@ -17,7 +17,7 @@ begin
   try
     http.HandleRedirects := true;
     try
-      result := UTF8Decode(http.Get(pUrl));
+      result := http.Get(pUrl);
     except
       result := '';
     end;

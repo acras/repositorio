@@ -5,6 +5,7 @@ interface
 uses
   Classes, Printers, SysUtils, Windows, ShlObj, ActiveX, Forms, dialogs;
 
+procedure ensureDirOnWindowsPath(dir: string);
 procedure getPrinterList(PList: TStrings);
 procedure deltree(dir: string);
 procedure listdirectorycontents(basedir: string; s: TStrings);
@@ -307,6 +308,14 @@ var
 begin
   GetKeyboardState(s);
   result := ((s[VK_CONTROL] and 128)<>0);
+end;
+
+procedure ensureDirOnWindowsPath(dir: string);
+var
+  newPath: String;
+begin
+  newPath := dir + ';' + GetEnvironmentVariable('PATH');
+  //SetEnvironmentVariable(PWideChar('PATH'), PwideChar(newPath));
 end;
 
 
