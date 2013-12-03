@@ -48,9 +48,9 @@ begin
   try
     ftp := TIdFTP.Create(nil);
     try
-      ftp.Host := 'ftp.acras.net';
-      ftp.Username := 'sglftp';
-      ftp.Password := 'sgl7766';
+      ftp.Host := FFTPServer;
+      ftp.Username := FFTPUsername;
+      ftp.Password := FFTPPassword;
       ftp.Passive := true;
       ftp.Connect;
       DataLog.log('Conectado FTP','DLL');
