@@ -24,7 +24,6 @@ type
       width:integer = 0; mostrarProgress: boolean = false);
     property aviso: string read getAviso write setAviso;
     procedure esconder;
-    procedure step;
   end;
 
 var
@@ -91,11 +90,6 @@ procedure TAguardeForm.Settotal(const Value: integer);
 begin
   Ftotal := Value;
   ProgressBar.Max := value;
-end;
-
-procedure TAguardeForm.step;
-begin
-  Setcurrent(current + 1);
 end;
 
 function TAguardeForm.getAviso: string;

@@ -195,6 +195,7 @@ function Bematech_FI_CodigoBarrasPDF417MFD( NivelCorrecaoErros: Integer; Altura:
 
 
 procedure loadAllBematechFunctions;
+procedure unloadBematechFunctions;
 
 type
   TBematech_FI_ProgramaAliquota = function( Aliquota: AnsiString; ICMS_ISS: Integer ): integer; stdcall;
@@ -364,12 +365,12 @@ var
   Bematech_FI_VerificaEstadoImpressora: TBematech_FI_VerificaEstadoImpressora;
   Bematech_FI_VerificaEstadoImpressoraMFD: TBematech_FI_VerificaEstadoImpressoraMFD;
   Bematech_FI_AcionaGaveta: TBematech_FI_AcionaGaveta;
+var
+  DLLHandle: THandle;
 
 implementation
 
 procedure loadAllBematechFunctions;
-var
-  DLLHandle: THandle;
 begin
   DLLHandle := LoadLibrary('BEMAFI32.DLL');
   if DLLHandle = 0 then
@@ -450,6 +451,11 @@ begin
   @Bematech_FI_VerificaEstadoImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaEstadoImpressora');
   @Bematech_FI_VerificaEstadoImpressoraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaEstadoImpressoraMFD');
   @Bematech_FI_AcionaGaveta := GetProcAddress(DLLHandle, 'Bematech_FI_AcionaGaveta');
+end;
+
+procedure unloadBematechFunctions;
+begin
+  FreeLibrary(DLLHandle);
 end;
 
 end.

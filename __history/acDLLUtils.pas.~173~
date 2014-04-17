@@ -160,14 +160,13 @@ begin
   end;
 end;
 
-function TDLLChecker.locateDLLAPI(name: string): string;
+function TDLLChecker.locateDLLAPI(name: string): String;
 var
   fn: PWideChar;
   h: THandle;
   p: array[0..MAX_PATH-1] of char;
 begin
   result := '';
-  fn := PWideChar(name);
   h := LoadLibrary(fn);
   if h <> 0 then
   begin

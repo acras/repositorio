@@ -107,7 +107,7 @@ end;
 
 procedure TDataLog.SetbaseDir(const Value: string);
 begin
-  FbaseDir := IncludeTrailingPathDelimiter(Value);
+  FbaseDir := EnsureTrailingSlash(Value);
   resume;
 end;
 

@@ -167,7 +167,7 @@ var
   p: array[0..MAX_PATH-1] of char;
 begin
   result := '';
-  fn := PWideChar(name);
+  fn := name[0];
   h := LoadLibrary(fn);
   if h <> 0 then
   begin

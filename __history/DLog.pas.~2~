@@ -87,6 +87,11 @@ var
 begin
   fn := getLogFileName;
   AssignFile(logFile, fn);
+
+
+
+
+
   if FileExists(fn) then
     Append(logFile)
   else
@@ -107,7 +112,7 @@ end;
 
 procedure TDataLog.SetbaseDir(const Value: string);
 begin
-  FbaseDir := IncludeTrailingPathDelimiter(Value);
+  FbaseDir := EnsureTrailingSlash(Value);
   resume;
 end;
 

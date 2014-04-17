@@ -130,7 +130,7 @@ type
     function CriarOperacao(VendedorId, ClienteId,
         TipoOperacaoId: Integer;
         const NomeCliente, Documento, Endereco: AnsiString): IPDVTransactionState;
-    function CancelarOperacao(const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
+    function CancelarOperacao(const OperacaoPDV: IOperacaoPDV): boolean;
 
     function IniciarFechamento(const OperacaoPDV: IOperacaoPDV; ValorDesconto,
         PorcentualDesconto: Currency; const NomeSupervisor,
@@ -241,7 +241,7 @@ begin
 end;
 
 function TBematechPrinter.CancelarOperacao(
-  const OperacaoPDV: IOperacaoPDV): IPDVTransactionState;
+  const OperacaoPDV: IOperacaoPDV): boolean;
 begin
   CheckStatus(FBematech.CancelaCupom);
 end;
