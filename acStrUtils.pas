@@ -9,7 +9,6 @@ uses
   {$IFDEF VER150}
   , fastString
   {$ENDIF}
-
   ;
 
 Type

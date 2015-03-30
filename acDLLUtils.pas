@@ -12,18 +12,18 @@ type
     FFTPServer, FFTPUsername, FFTPPassword: string;
     FRootPath: string;
     procedure downloadDLL(name: string);
-    function DLLNeedUpdate(name: string; version: TFileVersion): boolean;
   public
     property FTPServer: string read FFTPServer write FFTPServer;
     property FTPUserName: string read FFTPServer write FFTPUserName;
     property FTPPassword: string read FFTPServer write FFTPPassword;
     property rootPath: string read FRootPath write FRootPath;
     constructor create;
+    function DLLNeedUpdate(name: string; version: TFileVersion): boolean;
     procedure ensureDLLVersion(name: string; version: TFileVersion); overload;
     procedure ensureDLLVersion(name: string; version: string); overload;
-    function compareVersion(a, b: string): integer; overload;
-    function compareVersion(a, b: TFileVersion): integer; overload;
-    function compareVersion(a: string; b: TFileVersion): integer; overload;
+    class function compareVersion(a, b: string): integer; overload;
+    class function compareVersion(a, b: TFileVersion): integer; overload;
+    class function compareVersion(a: string; b: TFileVersion): integer; overload;
     function locateDLLEmpirically(name: string): string;
     function locateDLLAPI(name: string): string;
     class function getFileVersion(const fn: string): TFileVersion;
@@ -109,7 +109,7 @@ class function TDLLChecker.parseVersion(v: string): TFileVersion;
   result[tam-1] := strToInt(rest);
 end;
 
-function TDLLChecker.compareVersion(a, b: string): integer;
+class function TDLLChecker.compareVersion(a, b: string): integer;
 var
   versionA, versionB: TFileVersion;
 begin
@@ -118,7 +118,7 @@ begin
   result := compareVersion(versionA, versionB);
 end;
 
-function TDLLChecker.compareVersion(a, b: TFileVersion): integer;
+class function TDLLChecker.compareVersion(a, b: TFileVersion): integer;
 var
   n, i: integer;
 begin
@@ -134,7 +134,7 @@ begin
   end;
 end;
 
-function TDLLChecker.compareVersion(a: string; b: TFileVersion): integer;
+class function TDLLChecker.compareVersion(a: string; b: TFileVersion): integer;
 var
   versionA: TFileVersion;
 begin

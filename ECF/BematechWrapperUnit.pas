@@ -86,6 +86,9 @@ type
     function ContadorCupomFiscalMFD(var contador: AnsiString): integer;
     function AcionaGaveta: integer;
     function habilitaDesabilitaRetornoEstendidoMFD(flag: AnsiString): integer;
+
+    function UltimoItemVendido(var num: integer): Integer;
+
   end;
 
 implementation
@@ -117,6 +120,16 @@ end;
 function TBematechWrapper.AumentaDescricaoItem(Descricao: AnsiString): Integer;
 begin
   Result := Bematech_FI_AumentaDescricaoItem(Descricao);
+end;
+
+function TBematechWrapper.UltimoItemVendido(var num: integer): Integer;
+var
+  n: AnsiString;
+begin
+  SetLength(n, 4);
+  num := 0;
+  result := Bematech_FI_UltimoItemVendido(n);
+  num := strToInt(String(n));
 end;
 
 function TBematechWrapper.AbrePortaSerial: integer;
@@ -282,48 +295,48 @@ end;
 function TBematechWrapper.LeituraMemoriaFiscalDataMFD(
   DataInicial, DataFinal, FlagLeitura : AnsiString): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalDataMFD(Pchar(dataInicial), PChar(dataFinal), PChar(FlagLeitura));
+  result := Bematech_FI_LeituraMemoriaFiscalDataMFD(dataInicial, dataFinal, FlagLeitura);
 end;
 
 function TBematechWrapper.LeituraMemoriaFiscalReducaoMFD(
   ReducaoInicial, ReducaoFinal, FlagLeitura : AnsiString): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalReducaoMFD(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura));
+  result := Bematech_FI_LeituraMemoriaFiscalReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura);
 end;
 
 function TBematechWrapper.LeituraMemoriaFiscalSerialDataMFD(
   DataInicial, DataFinal, FlagLeitura : AnsiString): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(Pchar(dataInicial), PChar(dataFinal), PChar(FlagLeitura));
+  result := Bematech_FI_LeituraMemoriaFiscalSerialDataMFD(dataInicial, dataFinal, FlagLeitura);
 end;
 
 function TBematechWrapper.LeituraMemoriaFiscalSerialReducaoMFD(
   ReducaoInicial, ReducaoFinal, FlagLeitura : AnsiString): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(Pchar(ReducaoInicial), PChar(ReducaoFinal), PChar(FlagLeitura));
+  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoMFD(ReducaoInicial, ReducaoFinal, FlagLeitura);
 end;
 
 function TBematechWrapper.LeituraMemoriaFiscalSerialDataPAFECF(DataInicial,
   DataFinal, FlagLeitura, chavePublica, chavePrivada: AnsiString): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalSerialDataPAFECF(Pchar(dataInicial), PChar(dataFinal), PChar(FlagLeitura), PCHar(chavePublica), PChar(chavePrivada));
+  result := Bematech_FI_LeituraMemoriaFiscalSerialDataPAFECF(dataInicial, dataFinal, FlagLeitura, chavePublica, chavePrivada);
 end;
 
 function TBematechWrapper.LeituraMemoriaFiscalSerialReducaoPAFECF(
   ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica,
   chavePrivada: AnsiString): Integer;
 begin
-  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF(Pchar(ReducaoInicial),
-    PChar(ReducaoFinal), PChar(FlagLeitura), PCHar(chavePublica), PChar(chavePrivada));
+  result := Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF(ReducaoInicial, ReducaoFinal, FlagLeitura,
+    chavePublica, chavePrivada);
 end;
 
 function TBematechWrapper.ArquivoMFD(ArquivoOrigem, DataOuCOOInicial, DataOuCOOFinal,
   TipoDownload, Usuario: AnsiString; TipoGeracao: integer; ChavePublica, ChavePrivada: AnsiString;
   UnicoArquivo: integer): integer;
 begin
-  result := Bematech_FI_ArquivoMFD(PChar(ArquivoOrigem), PChar(DataOuCOOInicial),
-    PChar(DataOuCOOFinal), PChar(TipoDownload), PChar(Usuario), TipoGeracao,
-    PChar(ChavePublica), PChar(ChavePrivada), UnicoArquivo);
+  result := Bematech_FI_ArquivoMFD(ArquivoOrigem, DataOuCOOInicial,
+    DataOuCOOFinal, TipoDownload, Usuario, TipoGeracao,
+    ChavePublica, ChavePrivada, UnicoArquivo);
 end;
 
 function TBematechWrapper.EspelhoMFD(NomeArquivo, DataOuCOOInicial, DataOuCOOFinal,
@@ -335,22 +348,22 @@ end;
 
 function TBematechWrapper.DownloadMF(Arquivo: AnsiString): Integer;
 begin
-  result := Bematech_FI_DownloadMF(PChar(Arquivo));
+  result := Bematech_FI_DownloadMF(Arquivo);
 end;
 
 function TBematechWrapper.DownloadMFD(Arquivo, TipoDownload,
   ParametroInicial, ParametroFinal, UsuarioECF: AnsiString): Integer;
 begin
-  result := Bematech_FI_DownloadMFD(PChar(Arquivo), PChar(TipoDownload), PChar(ParametroInicial),
-    PChar(ParametroFinal), PChar(UsuarioECF));
+  result := Bematech_FI_DownloadMFD(Arquivo, TipoDownload, ParametroInicial,
+    ParametroFinal, UsuarioECF);
 end;
 
 function TBematechWrapper.FormatoDadosMFD(ArquivoOrigem, ArquivoDestino,
   TipoFormato, TipoDownload, ParametroInicial, ParametroFinal,
   UsuarioECF: AnsiString): Integer;
 begin
-  result := Bematech_FI_FormatoDadosMFD(PChar(ArquivoOrigem), PChar(ArquivoDestino), PChar(TipoFormato),
-    PChar(TipoDownload), PChar(ParametroInicial), PChar(ParametroFinal), PChar(UsuarioECF));
+  result := Bematech_FI_FormatoDadosMFD(ArquivoOrigem, ArquivoDestino, TipoFormato,
+    TipoDownload, ParametroInicial, ParametroFinal, UsuarioECF);
 end;
 
 function TBematechWrapper.CGC_IE(var CGC, IE: AnsiString): Integer;
@@ -473,7 +486,7 @@ end;
 function TBematechWrapper.habilitaDesabilitaRetornoEstendidoMFD(
   flag: AnsiString): integer;
 begin
-  result := Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(pchar(flag));
+  result := Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD(flag);
 end;
 
 end.

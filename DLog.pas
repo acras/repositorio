@@ -17,7 +17,10 @@ type
     paused: boolean;
     property baseDir: string read FbaseDir write SetbaseDir;
     function getLogFileName(logDate: TDateTime = -1): string;
-    procedure log(mensagem: string; classe: string = ''; newLine: boolean = true);
+    procedure log(mensagem: string; classe: string = ''; newLine: boolean = true; timestamp: boolean = true);
+    procedure print(mensagem: string);
+    procedure printL(mensagem: string);
+    procedure printLine;
     procedure step(text: string = '.');
     procedure newLine;
     procedure pause;
@@ -34,12 +37,14 @@ implementation
 
 { TDataLog }
 
-procedure TDataLog.log(mensagem: string; classe: string = ''; newLine: boolean = true);
+procedure TDataLog.log(mensagem: string; classe: string = ''; newLine: boolean = true; timestamp: boolean = true);
 var
   linha: string;
 begin
   if paused then exit;
-  linha := '[' + FormatDateTime('yyyy-dd-mm hh:nn:ss,zzz', now) + ']';
+  linha := '';
+  if timestamp then
+    linha := '[' + FormatDateTime('yyyy-dd-mm hh:nn:ss,zzz', now) + ']';
   if classe <> '' then
     linha := linha + '[' + classe + ']';
   linha := linha + ' ' + mensagem;
@@ -72,6 +77,21 @@ begin
   log('Pausing Log');
   paused := true;
   CloseFile(logFile);
+end;
+
+procedure TDataLog.print(mensagem: string);
+begin
+  log(mensagem, '', false, false);
+end;
+
+procedure TDataLog.printL(mensagem: string);
+begin
+  log(mensagem, '', true, false);
+end;
+
+procedure TDataLog.printLine;
+begin
+  printL('======================================');
 end;
 
 procedure TDataLog.resume;

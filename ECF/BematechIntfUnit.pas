@@ -85,6 +85,9 @@ type
     function CGC_IE(var CGC: AnsiString; var IE: AnsiString): Integer;
     function GrandeTotal(var GrandeTotal: AnsiString): Integer;
     function DataHoraGravacaoUsuarioSWBasicoMFAdicional(var DataHoraUsuario, DataHoraSWBasico, MFAdicional: AnsiString): integer;
+
+    function UltimoItemVendido(var num: integer): Integer;
+
   end;
 
 implementation

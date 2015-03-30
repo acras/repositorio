@@ -40,7 +40,6 @@ function Bematech_FI_LeituraMemoriaFiscalSerialData( DataInicial: AnsiString; Da
 {
 // Funções de Informações da Impressora
 function Bematech_FI_ModeloImpressora( Modelo: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_SubTotal( SubTotal: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_LeituraXSerial: Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VersaoFirmware( VersaoFirmware: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CGC_IE( CGC: AnsiString; IE: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -51,7 +50,6 @@ function Bematech_FI_NumeroCuponsCancelados( NumeroCancelamentos: AnsiString ): 
 function Bematech_FI_NumeroIntervencoes( NumeroIntervencoes: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroReducoes( NumeroReducoes: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroSubstituicoesProprietario( NumeroSubstituicoes: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_UltimoItemVendido( NumeroItem: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ClicheProprietario( Cliche: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroCaixa( NumeroCaixa: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_NumeroLoja( NumeroLoja: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -66,7 +64,7 @@ function Bematech_FI_VerificaTotalizadoresNaoFiscais( Totalizadores: AnsiString 
 function Bematech_FI_VerificaTruncamento( Flag: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_Acrescimos( ValorAcrescimos: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ContadorBilhetePassagem( ContadorPassagem: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_VerificaFormasPagamento( Formas: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
+
 function Bematech_FI_VerificaRecebimentoNaoFiscal( Recebimentos: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaDepartamentos( Departamentos: AnsiString ): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_VerificaTipoImpressora( Var TipoImpressora: Integer ): Integer; StdCall; External 'BEMAFI32.DLL';
@@ -285,7 +283,9 @@ type
   TBematech_FI_ContadorCupomFiscalMFD = function (CuponsEmitidos : AnsiString): Integer; StdCall;
   TBematech_FI_VerificaEstadoImpressora = function ( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer ): Integer; StdCall;
   TBematech_FI_VerificaEstadoImpressoraMFD = function ( Var ACK: Integer; Var ST1: Integer; Var ST2: Integer; Var ST3: Integer ): Integer; StdCall;
-  TBematech_FI_AcionaGaveta = function : Integer;
+  TBematech_FI_AcionaGaveta = function : Integer; StdCall;
+  TBematech_FI_VerificaFormasPagamento = function(Formas: AnsiString): Integer; StdCall;
+  TBematech_FI_UltimoItemVendido = function( NumeroItem: AnsiString ): Integer; StdCall;
 
 
 
@@ -365,6 +365,9 @@ var
   Bematech_FI_VerificaEstadoImpressora: TBematech_FI_VerificaEstadoImpressora;
   Bematech_FI_VerificaEstadoImpressoraMFD: TBematech_FI_VerificaEstadoImpressoraMFD;
   Bematech_FI_AcionaGaveta: TBematech_FI_AcionaGaveta;
+  Bematech_FI_VerificaFormasPagamento: TBematech_FI_VerificaFormasPagamento;
+  Bematech_FI_UltimoItemVendido: TBematech_FI_UltimoItemVendido;
+
 var
   DLLHandle: THandle;
 
@@ -451,6 +454,8 @@ begin
   @Bematech_FI_VerificaEstadoImpressora := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaEstadoImpressora');
   @Bematech_FI_VerificaEstadoImpressoraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaEstadoImpressoraMFD');
   @Bematech_FI_AcionaGaveta := GetProcAddress(DLLHandle, 'Bematech_FI_AcionaGaveta');
+  @Bematech_FI_VerificaFormasPagamento := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaFormasPagamento');
+  @Bematech_FI_UltimoItemVendido := GetProcAddress(DLLHandle, 'Bematech_FI_UltimoItemVendido');
 end;
 
 procedure unloadBematechFunctions;

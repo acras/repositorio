@@ -117,8 +117,21 @@ end;
 function check_CPF(PCPF: string): boolean;
 begin
   result := false;
-  if Length(PCPF)=11 then
-    result := CalcDV_CPF(copy(PCPF,1,9)) = copy(PCPF,10,2)
+  if Length(PCPF)=11 then begin
+    if (PCPF = '00000000000') or
+       (PCPF = '11111111111') or
+       (PCPF = '22222222222') or
+       (PCPF = '33333333333') or
+       (PCPF = '44444444444') or
+       (PCPF = '55555555555') or
+       (PCPF = '66666666666') or
+       (PCPF = '77777777777') or
+       (PCPF = '88888888888') or
+       (PCPF = '99999999999') then
+       result := false
+    else
+      result := CalcDV_CPF(copy(PCPF,1,9)) = copy(PCPF,10,2)
+  end;
 end;
 
 function check_CNPJ(PCNPJ: string): boolean;

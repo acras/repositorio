@@ -25,8 +25,8 @@ type
     procedure AbrirDia;
     procedure FecharDia;
     procedure EfetuarReducaoZ(DateTime: TDateTime = 0);
-    function Sangria(Valor: Currency): Integer;
-    function Suprimento(Valor: Currency; FormaPagamento: AnsiString): Integer;
+    procedure Sangria(Valor: Currency);
+    procedure Suprimento(Valor: Currency; FormaPagamento: AnsiString);
 
     procedure ImprimirConfiguracoes;
     function FlagsFiscais: TFlagsFiscais; 
@@ -56,6 +56,7 @@ type
     function ContadorRelatoriosGerenciaisMFD: integer;
     function NumeroOperacoesNaoFiscais: integer;
     function ContadorComprovantesCreditoMFD: integer;
+    function UltimoItemVendido: integer;
 
 
     // Esse método será usado apenas internamente pelo controller, mas é muito conveniente para
