@@ -19,6 +19,7 @@ Type
 
 function getStrField(str: string; delimiter: char; index: integer): string;
 function getStrField2(str: string; delimiter: char; index: integer): string;
+function getintField2(str: string; delimiter: char; index: integer): integer;
 function retiraEspacos(str: String): String;
 function tiraPontos(str: String): String;
 function removeAcento(str: String): String;
@@ -75,6 +76,18 @@ begin
       result := strL[index-1];
   finally
     FreeAndNil(strL);
+  end;
+end;
+
+function getIntField2(str: string; delimiter: char; index: integer): integer;
+var
+  strValue: string;
+begin
+  strValue := getStrfield2(str, delimiter, index);
+  try
+    result := strToInt(strValue);
+  except
+    result := 0;
   end;
 end;
 
