@@ -4,12 +4,7 @@ interface
 
 
 uses
-  classes, StrUtils, SysUtils, ComCTrls
-
-  {$IFDEF VER150}
-  , fastString
-  {$ENDIF}
-  ;
+  classes, StrUtils, SysUtils, ComCTrls;
 
 Type
   TInfoPalavra = class
@@ -20,6 +15,7 @@ Type
 function getStrField(str: string; delimiter: char; index: integer): string;
 function getStrField2(str: string; delimiter: char; index: integer): string;
 function getintField2(str: string; delimiter: char; index: integer): integer;
+function getfloatField2(str: string; delimiter: char; index: integer): integer;
 function retiraEspacos(str: String): String;
 function tiraPontos(str: String): String;
 function removeAcento(str: String): String;
@@ -46,6 +42,7 @@ function dasherize(const str: string): string;
 function underscorize(const str: string): string;
 procedure writeTextFile(fileName, text: string);
 function readTextFile(fileName: string): string;
+function fillSpaces(str: string; size: integer): string;
 
 implementation
 
@@ -84,8 +81,27 @@ var
   strValue: string;
 begin
   strValue := getStrfield2(str, delimiter, index);
+  if Trim(strValue) = '' then
+    result := 0
+  else
+    try
+      result := strToInt(strValue);
+    except
+      result := 0;
+    end;
+end;
+
+function getFloatField2(str: string; delimiter: char; index: integer): integer;
+var
+  strValue: string;
+  fl: double;
+  fs: TFormatSettings;
+begin
+  strValue := getStrfield2(str, delimiter, index);
   try
-    result := strToInt(strValue);
+    fs.DecimalSeparator := '.';
+    fl := StrToFloat(strValue, fs);
+    result := Trunc(fl);
   except
     result := 0;
   end;
@@ -458,6 +474,16 @@ begin
     CloseFile(tf);
     Result := text;
   end;
+end;
+
+function fillSpaces(str: string; size: integer): string;
+var
+  i, l: integer;
+begin
+  result := str;
+  l := length(str);
+  for i := 1 to size-l do
+    result := ' ' + result;
 end;
 
 end.

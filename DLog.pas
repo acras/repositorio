@@ -43,10 +43,8 @@ var
 begin
   if paused then exit;
   linha := '';
-  if timestamp then
-    linha := '[' + FormatDateTime('yyyy-dd-mm hh:nn:ss,zzz', now) + ']';
-  if classe <> '' then
-    linha := linha + '[' + classe + ']';
+  linha := '[' + FormatDateTime('yyyy-mm-dd hh:nn:ss,zzz', now) + ']';
+  linha := linha + '[' + fillSpaces(classe, 20) + ']';
   linha := linha + ' ' + mensagem;
   EnterCriticalSection(CritSectLog);
   if newLine then
