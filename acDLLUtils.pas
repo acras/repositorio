@@ -248,7 +248,11 @@ begin
       FreeMem(verBuf);
     end;
   end;
-  result := parseVersion(r);
+  try
+    result := parseVersion(r);
+  except
+    result := [0];
+  end;
 end;
 
 

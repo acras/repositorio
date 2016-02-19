@@ -84,7 +84,6 @@ begin
   ProgressBar.Position := value;
   if total <> 0 then
     self.caption := 'Aguarde... ('+ formatFloat('0.00%',(value/total)*100) +')';
-  Application.ProcessMessages;
 end; //TAguardeForm.Setcurrent
 
 procedure TAguardeForm.Settotal(const Value: integer);
@@ -106,7 +105,6 @@ end;
 procedure TAguardeForm.setAviso(aviso: string);
 begin
   lblAviso.Caption := aviso;
-  Application.ProcessMessages;
 end;
 
 

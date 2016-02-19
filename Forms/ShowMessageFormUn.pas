@@ -66,7 +66,6 @@ end;
 
 procedure TShowMessageForm.TimerTimer(Sender: TObject);
 begin
-  application.processMessages;
   remaning := remaning - 1;
   if remaning > 0 then
     updateLabel

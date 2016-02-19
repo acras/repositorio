@@ -22,7 +22,6 @@ end;
 
 function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String;
 var
-  xmlContent: string;
   criouHTTP: boolean;
 begin
   criouHttp := false;
