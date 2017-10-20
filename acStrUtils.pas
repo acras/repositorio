@@ -289,22 +289,30 @@ var
 begin
   result := false;
   faixas := strip(regra, ',');
-  for j := 0 to faixas.Count - 1 do
-  begin
-    if Pos('-', faixas[j]) <> 0 then
+  try
+    for j := 0 to faixas.Count - 1 do
     begin
-      intervalos := strip(faixas[j], '-');
-      baseFaixa := StrToInt(intervalos[0]);
-      topoFaixa := StrToInt(intervalos[1]);
-      if ((numero >= baseFaixa) or (numero <= topoFaixa)) then
-        result := true;
-    end
-    else
-    begin
-      baseFaixa := strToInt(faixas[j]);
-      if numero = baseFaixa then
-        result := true;
+      if Pos('-', faixas[j]) <> 0 then
+      begin
+        intervalos := strip(faixas[j], '-');
+        try
+          baseFaixa := StrToInt(intervalos[0]);
+          topoFaixa := StrToInt(intervalos[1]);
+          if ((numero >= baseFaixa) or (numero <= topoFaixa)) then
+            result := true;
+        finally
+          intervalos.Free;
+        end;
+      end
+      else
+      begin
+        baseFaixa := strToInt(faixas[j]);
+        if numero = baseFaixa then
+          result := true;
+      end;
     end;
+  finally
+    Faixas.Free;
   end;
 end;
 
