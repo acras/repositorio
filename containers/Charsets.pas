@@ -98,7 +98,7 @@ begin
 {$ENDIF}
   Letters := LowerCaseLetters + UpperCaseLetters;
   FloatChars := IntegerChars;
-  Include(FloatChars, AnsiChar(DecimalSeparator));
+  Include(FloatChars, AnsiChar(FormatSettings.DecimalSeparator));
   SciFloatChars := FloatChars + ['e', 'E'];
 end; { SetupCharsets }
 
@@ -117,3 +117,4 @@ end;
 initialization
   SetupCharsets;
 end { Unit Charsets }.
+
