@@ -16,7 +16,8 @@ function getStrField(str: string; delimiter: char; index: integer): string;
 function getStrField2(str: string; delimiter: char; index: integer): string;
 function getintField2(str: string; delimiter: char; index: integer): integer;
 function getfloatField2(str: string; delimiter: char; index: integer): integer;
-function retiraEspacos(str: String): String;
+function retiraEspacosDuplicados(str: String): String;
+function removeEspacos(str: String): String;
 function tiraPontos(str: String): String;
 function removeAcento(str: String): String;
 function RemoveSimbolo(str: String): String;
@@ -43,6 +44,9 @@ function underscorize(const str: string): string;
 procedure writeTextFile(fileName, text: string);
 function readTextFile(fileName: string): string;
 function fillSpaces(str: string; size: integer): string;
+function parseRailsDate(str: string): TDateTime;
+function Mod10(Num : String) : Integer;
+function valorPorExtenso(vlr: real): string;
 
 implementation
 
@@ -147,7 +151,20 @@ begin
       result := result + str[i];
 end;
 
-function retiraEspacos(str: string): String;
+
+function removeEspacos(str: String): String;
+var
+  i: integer;
+begin
+  result := '';
+  for i := 1 to length(str) do
+  begin
+    if (str[i]<>' ') and (str[i]<> #13) and (str[i]<> #10) then
+      result := result + str[i];
+  end;
+end;
+
+function retiraEspacosDuplicados(str: string): String;
 var
   i: integer;
   adicionouEspaco: boolean;
@@ -485,6 +502,187 @@ begin
   for i := 1 to size-l do
     result := ' ' + result;
 end;
+
+function parseRailsDate(str: string): TDateTime;
+var
+  year, month, day, hour, minute, second: word;
+begin
+  year := StrToInt(copy(str, 1, 4));
+  month := StrToInt(copy(str, 6, 2));
+  day := StrToInt(copy(str, 9, 2));
+  hour := StrToInt(copy(str, 12, 2));
+  minute := StrToInt(copy(str, 15, 2));
+  second := StrToInt(copy(str, 18, 2));
+  result := EncodeDate(year, month, day) + EncodeTime(hour, minute, second, 0);
+end;
+
+function Mod10(Num : String) : Integer;
+var
+  tamanho, soma : Integer;
+  resultado : Array [1..100] of Integer;
+  fator, resto, i: Byte;
+begin
+  Tamanho := Length(Num);
+  Fator := 2;
+  for i := Tamanho Downto 1 Do
+  begin
+    resultado[I] := StrToInt(Copy(Num,I,1)) * Fator;
+    if Fator = 2 then
+      fator := 1
+    else
+      fator := 2;
+  end;
+  soma := 0;
+  for i := 1 To tamanho do
+    if Resultado[I] > 9 then
+      soma := soma + StrToInt(Copy(IntToStr(Resultado[I]),1,1)) + StrToInt(Copy(IntToStr(Resultado[I]),2,1))
+    else
+      soma := soma + resultado[I];
+  resto := Soma mod 10;
+  if resto = 0 Then
+    Mod10 := 0
+  else
+    Mod10 := 10 - Resto;
+end;
+
+function valorPorExtenso(vlr: real): string;
+const
+  unidade: array[1..19] of string = ('um', 'dois', 'três', 'quatro', 'cinco',
+             'seis', 'sete', 'oito', 'nove', 'dez', 'onze',
+             'doze', 'treze', 'quatorze', 'quinze', 'dezesseis',
+             'dezessete', 'dezoito', 'dezenove');
+  centena: array[1..9] of string = ('cento', 'duzentos', 'trezentos',
+             'quatrocentos', 'quinhentos', 'seiscentos',
+             'setecentos', 'oitocentos', 'novecentos');
+  dezena: array[2..9] of string = ('vinte', 'trinta', 'quarenta', 'cinquenta',
+             'sessenta', 'setenta', 'oitenta', 'noventa');
+  qualificaS: array[0..4] of string = ('', 'mil', 'milhão', 'bilhão', 'trilhão');
+  qualificaP: array[0..4] of string = ('', 'mil', 'milhões', 'bilhões', 'trilhões');
+var
+                        inteiro: Int64;
+                          resto: real;
+  vlrS, s, saux, vlrP, centavos: string;
+     n, unid, dez, cent, tam, i: integer;
+                    umReal, tem: boolean;
+begin
+  if (vlr = 0)
+     then begin
+            valorPorExtenso := 'zero';
+            exit;
+          end;
+
+  inteiro := trunc(vlr); // parte inteira do valor
+  resto := vlr - inteiro; // parte fracionária do valor
+  vlrS := inttostr(inteiro);
+  if (length(vlrS) > 15)
+     then begin
+            valorPorExtenso := 'Erro: valor superior a 999 trilhões.';
+            exit;
+          end;
+
+  s := '';
+  centavos := inttostr(round(resto * 100));
+
+// definindo o extenso da parte inteira do valor
+  i := 0;
+  umReal := false; tem := false;
+  while (vlrS <> '0') do
+  begin
+    tam := length(vlrS);
+// retira do valor a 1a. parte, 2a. parte, por exemplo, para 123456789:
+// 1a. parte = 789 (centena)
+// 2a. parte = 456 (mil)
+// 3a. parte = 123 (milhões)
+    if (tam > 3)
+       then begin
+              vlrP := copy(vlrS, tam-2, tam);
+              vlrS := copy(vlrS, 1, tam-3);
+            end
+    else begin // última parte do valor
+           vlrP := vlrS;
+           vlrS := '0';
+         end;
+    if (vlrP <> '000')
+       then begin
+              saux := '';
+              if (vlrP = '100')
+                 then saux := 'cem'
+              else begin
+                     n := strtoint(vlrP);        // para n = 371, tem-se:
+                     cent := n div 100;          // cent = 3 (centena trezentos)
+                     dez := (n mod 100) div 10;  // dez  = 7 (dezena setenta)
+                     unid := (n mod 100) mod 10; // unid = 1 (unidade um)
+                     if (cent <> 0)
+                        then saux := centena[cent];
+                     if ((dez <> 0) or (unid <> 0))
+                        then begin
+                               if ((n mod 100) <= 19)
+                                  then begin
+                                         if (length(saux) <> 0)
+                                            then saux := saux + ' e ' + unidade[n mod 100]
+                                         else saux := unidade[n mod 100];
+                                       end
+                               else begin
+                                      if (length(saux) <> 0)
+                                         then saux := saux + ' e ' + dezena[dez]
+                                      else saux := dezena[dez];
+                                      if (unid <> 0)
+                                         then if (length(saux) <> 0)
+                                                 then saux := saux + ' e ' + unidade[unid]
+                                              else saux := unidade[unid];
+                                    end;
+                             end;
+                   end;
+              if ((vlrP = '1') or (vlrP = '001'))
+                 then begin
+                        if (i = 0) // 1a. parte do valor (um real)
+                           then umReal := true
+                        else saux := saux + ' ' + qualificaS[i];
+                      end
+              else if (i <> 0)
+                      then saux := saux + ' ' + qualificaP[i];
+              if (length(s) <> 0)
+                 then s := saux + ', ' + s
+              else s := saux;
+            end;
+    if (((i = 0) or (i = 1)) and (length(s) <> 0))
+       then tem := true; // tem centena ou mil no valor
+    i := i + 1; // próximo qualificador: 1- mil, 2- milhão, 3- bilhão, ...
+  end;
+
+  if (length(s) <> 0)
+     then begin
+            if (umReal)
+               then s := s + ' real'
+            else if (tem)
+                    then s := s + ' reais'
+                 else s := s + ' de reais';
+          end;
+// definindo o extenso dos centavos do valor
+  if (centavos <> '0') // valor com centavos
+     then begin
+            if (length(s) <> 0) // se não é valor somente com centavos
+               then s := s + ' e ';
+            if (centavos = '1')
+               then s := s + 'um centavo'
+            else begin
+                   n := strtoint(centavos);
+                   if (n <= 19)
+                      then s := s + unidade[n]
+                   else begin                 // para n = 37, tem-se:
+                          unid := n mod 10;   // unid = 37 % 10 = 7 (unidade sete)
+                          dez := n div 10;    // dez  = 37 / 10 = 3 (dezena trinta)
+                          s := s + dezena[dez];
+                          if (unid <> 0)
+                             then s := s + ' e ' + unidade[unid];
+                       end;
+                   s := s + ' centavos';
+                 end;
+          end;
+  valorPorExtenso := s;
+end;
+
+
 
 end.
 
