@@ -3,10 +3,10 @@ unit DLog;
 interface
 
 uses
-  SysUtils, Classes, Windows, acStrUtils, acSysUtils;
+  SysUtils, Classes, Windows, acStrUtils, acSysUtils, ISincronizacaoNotifierUnit;
 
 type
-  TDataLog = class(TDataModule)
+  TDataLog = class(TDataModule, ILog)
     procedure DataModuleCreate(Sender: TObject);
   private
     logFile: TextFile;
@@ -17,7 +17,7 @@ type
     paused: boolean;
     property baseDir: string read FbaseDir write SetbaseDir;
     function getLogFileName(logDate: TDateTime = -1): string;
-    procedure log(mensagem: string; classe: string = ''; newLine: boolean = true; timestamp: boolean = true);
+    procedure log(const mensagem: string; const classe: string = ''; newLine: boolean = true; timestamp: boolean = true);
     procedure print(mensagem: string);
     procedure printL(mensagem: string);
     procedure printLine;
@@ -37,7 +37,7 @@ implementation
 
 { TDataLog }
 
-procedure TDataLog.log(mensagem: string; classe: string = ''; newLine: boolean = true; timestamp: boolean = true);
+procedure TDataLog.log(const mensagem: string; const classe: string = ''; newLine: boolean = true; timestamp: boolean = true);
 var
   linha: string;
 begin
