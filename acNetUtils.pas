@@ -2,9 +2,9 @@ unit acNetUtils;
 
 interface
 
-uses idHTTP, SysUtils;
+uses idHTTP, SysUtils, System.Classes;
 
-function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String;
+function getRemoteXmlContent(const pUrl: string; http: TIdHTTP;var erro: string): String;
 function getHTTPInstance: TidHTTP;
 
 implementation
@@ -20,26 +20,34 @@ begin
   result := http;
 end;
 
-function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String;
+function getRemoteXmlContent(const pUrl: string; http: TIdHTTP;var erro: string): String;
 var
   criouHTTP: boolean;
+  retornoStream: TStringStream;
 begin
-  criouHttp := false;
-  if http = nil then
-  begin
-    criouHTTP := true;
-    http := getHTTPINstance;
-  end;
-
+  criouHTTP := False;
+  Result := EmptyStr;
+  erro := EmptyStr;
+  retornoStream := TStringStream.Create('');
   try
-    try
-      result := http.Get(pUrl);
-    except
-      result := '';
+    if http = nil then
+    begin
+      criouHTTP := true;
+      http := getHTTPINstance;
     end;
+
+    try
+      http.Get(pUrl, retornoStream);
+    except
+      on E: EIdHTTPProtocolException do
+        erro := E.ErrorMessage;
+    end;
+
+    Result := retornoStream.DataString;
   finally
     if criouHTTP and (http <> nil) then
       FreeAndNil(http);
+    FreeAndNil(retornoStream);
   end;
 end;
 
