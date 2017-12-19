@@ -28,7 +28,7 @@ begin
   criouHTTP := False;
   Result := EmptyStr;
   erro := EmptyStr;
-  retornoStream := TStringStream.Create('');
+  retornoStream := TStringStream.Create('', TEncoding.UTF8);
   try
     if http = nil then
     begin
