@@ -37,6 +37,8 @@ begin
     end;
 
     try
+      http.ConnectTimeout := 30000;
+      http.ReadTimeOut := 30000;
       http.Get(pUrl, retornoStream);
     except
       on E: EIdHTTPProtocolException do
