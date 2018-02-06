@@ -14,6 +14,7 @@ var
   http: TIdHTTP;
 begin
   http := TIdHTTP.Create(nil);
+  http.HandleRedirects := True;
   http.ProtocolVersion := pv1_1;
   http.HTTPOptions := http.HTTPOptions + [hoKeepOrigProtocol];
   http.Request.Connection := 'keep-alive';
