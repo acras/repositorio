@@ -4,7 +4,8 @@ interface
 
 uses idHTTP, SysUtils, System.Classes;
 
-function getRemoteXmlContent(const pUrl: string; http: TIdHTTP;var erro: string): String;
+function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String; overload
+function getRemoteXmlContent(const pUrl: string; http: TIdHTTP;var erro: string): String; overload
 function getHTTPInstance: TidHTTP;
 
 implementation
@@ -19,6 +20,29 @@ begin
   http.HTTPOptions := http.HTTPOptions + [hoKeepOrigProtocol];
   http.Request.Connection := 'keep-alive';
   result := http;
+end;
+
+function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String;
+var
+  criouHTTP: boolean;
+begin
+  criouHttp := false;
+  if http = nil then
+  begin
+    criouHTTP := true;
+    http := getHTTPINstance;
+  end;
+
+  try
+    try
+      result := http.Get(pUrl);
+    except
+      result := '';
+    end;
+  finally
+    if criouHTTP and (http <> nil) then
+      FreeAndNil(http);
+  end;
 end;
 
 function getRemoteXmlContent(const pUrl: string; http: TIdHTTP;var erro: string): String;
