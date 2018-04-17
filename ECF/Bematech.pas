@@ -115,7 +115,7 @@ function Bematech_FI_ProgramaFormaPagamentoMFD(FormaPagto, OperacaoTef: AnsiStri
 function Bematech_FI_EfetuaFormaPagamentoMFD(FormaPagamento, ValorFormaPagamento, Parcelas, DescricaoFormaPagto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_CupomAdicionalMFD(): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_AcrescimoDescontoItemMFD (Item, AcrescimoDesconto,TipoAcrescimoDesconto, ValorAcrescimoDesconto: AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
-function Bematech_FI_NomeiaRelatorioGerencialMFD (Indice, Descricao : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
+
 function Bematech_FI_AutenticacaoMFD(Linhas, Texto : AnsiString) : Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_AbreComprovanteNaoFiscalVinculadoMFD(FormaPagamento, Valor, NumeroCupom, CGC, nome, Endereco : AnsiString): Integer; StdCall; External 'BEMAFI32.DLL';
 function Bematech_FI_ReimpressaoNaoFiscalVinculadoMFD() : Integer; StdCall; External 'BEMAFI32.DLL';
@@ -261,6 +261,7 @@ type
   TBematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF = function(ReducaoInicial, ReducaoFinal, FlagLeitura, chavePublica, chavePrivada : AnsiString): Integer; StdCall;
   TBematech_FI_HabilitaDesabilitaRetornoEstendidoMFD = function(FlagRetorno : AnsiString): Integer; StdCall;
   TBematech_FI_ArquivoMFD = function(ArquivoOrigem, DadoInicial, DadoFinal, TipoDownload, Usuario: AnsiString; TipoGeracao: integer; ChavePublica, ChavePrivada: AnsiString; UnicoArquivo: integer): integer; StdCall;
+  TBematech_FI_ArquivoMFDPath = function(ArquivoOrigem, ArquivoDestino, DadoInicial, DadoFinal, TipoDownload, Usuario: AnsiString; TipoGeracao: integer; ChavePublica, ChavePrivada: AnsiString; UnicoArquivo: integer): integer; StdCall;
   TBematech_FI_EspelhoMFD = function(NomeArquivo, DataInicial, DataFinal, TipoDownload, Usuario, ChavePublica, ChavePrivada: AnsiString): integer; StdCall;
   TBematech_FI_DownloadMF = function ( Arquivo: AnsiString ): Integer; StdCall;
   TBematech_FI_DownloadMFD = function( Arquivo: AnsiString; TipoDownload: AnsiString; ParametroInicial: AnsiString; ParametroFinal: AnsiString; UsuarioECF: AnsiString ): Integer; StdCall;
@@ -286,6 +287,10 @@ type
   TBematech_FI_AcionaGaveta = function : Integer; StdCall;
   TBematech_FI_VerificaFormasPagamento = function(Formas: AnsiString): Integer; StdCall;
   TBematech_FI_UltimoItemVendido = function( NumeroItem: AnsiString ): Integer; StdCall;
+  TBematech_FI_NomeiaRelatorioGerencialMFD = function(Indice, Descricao : AnsiString): Integer; StdCall;
+  TBematech_FI_NomeiaRelatorioIdentificacaoPAFECF = function(): Integer; StdCall;
+  TBematech_FI_NomeiaRelatoriosPAFECF = function() : Integer; StdCall;
+  TBematech_FI_AbreRelatorioGerencialMFD = function(Indice : AnsiString): Integer; StdCall;
 
 
 
@@ -342,6 +347,7 @@ var
   Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF: TBematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF;
   Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD: TBematech_FI_HabilitaDesabilitaRetornoEstendidoMFD;
   Bematech_FI_ArquivoMFD: TBematech_FI_ArquivoMFD;
+  Bematech_FI_ArquivoMFDPath: TBematech_FI_ArquivoMFDPath;
   Bematech_FI_EspelhoMFD: TBematech_FI_EspelhoMFD;
   Bematech_FI_DownloadMF: TBematech_FI_DownloadMF;
   Bematech_FI_DownloadMFD: TBematech_FI_DownloadMFD;
@@ -367,6 +373,10 @@ var
   Bematech_FI_AcionaGaveta: TBematech_FI_AcionaGaveta;
   Bematech_FI_VerificaFormasPagamento: TBematech_FI_VerificaFormasPagamento;
   Bematech_FI_UltimoItemVendido: TBematech_FI_UltimoItemVendido;
+  Bematech_FI_NomeiaRelatorioGerencialMFD: TBematech_FI_NomeiaRelatorioGerencialMFD;
+  Bematech_FI_NomeiaRelatorioIdentificacaoPAFECF: TBematech_FI_NomeiaRelatorioIdentificacaoPAFECF;
+  Bematech_FI_NomeiaRelatoriosPAFECF: TBematech_FI_NomeiaRelatoriosPAFECF;
+  Bematech_FI_AbreRelatorioGerencialMFD: TBematech_FI_AbreRelatorioGerencialMFD;
 
 var
   DLLHandle: THandle;
@@ -430,6 +440,7 @@ begin
   @Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF := GetProcAddress(DLLHandle, 'Bematech_FI_LeituraMemoriaFiscalSerialReducaoPAFECF');
   @Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_HabilitaDesabilitaRetornoEstendidoMFD');
   @Bematech_FI_ArquivoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_ArquivoMFD');
+  @Bematech_FI_ArquivoMFDPath := GetProcAddress(DLLHandle, 'Bematech_FI_ArquivoMFDPath');
   @Bematech_FI_EspelhoMFD := GetProcAddress(DLLHandle, 'Bematech_FI_EspelhoMFD');
   @Bematech_FI_RetornoImpressoraMFD := GetProcAddress(DLLHandle, 'Bematech_FI_RetornoImpressoraMFD');
   @Bematech_FI_DownloadMF := GetProcAddress(DLLHandle, 'Bematech_FI_DownloadMF');
@@ -456,6 +467,11 @@ begin
   @Bematech_FI_AcionaGaveta := GetProcAddress(DLLHandle, 'Bematech_FI_AcionaGaveta');
   @Bematech_FI_VerificaFormasPagamento := GetProcAddress(DLLHandle, 'Bematech_FI_VerificaFormasPagamento');
   @Bematech_FI_UltimoItemVendido := GetProcAddress(DLLHandle, 'Bematech_FI_UltimoItemVendido');
+  @Bematech_FI_NomeiaRelatorioGerencialMFD := GetProcAddress(DLLHandle, 'Bematech_FI_NomeiaRelatorioGerencialMFD');
+  @Bematech_FI_NomeiaRelatorioIdentificacaoPAFECF := GetProcAddress(DLLHandle, 'Bematech_FI_NomeiaRelatorioIdentificacaoPAFECF');
+  @Bematech_FI_NomeiaRelatoriosPAFECF := GetProcAddress(DLLHandle, 'Bematech_FI_NomeiaRelatoriosPAFECF');
+  @Bematech_FI_AbreRelatorioGerencialMFD := GetProcAddress(DLLHandle, 'Bematech_FI_AbreRelatorioGerencialMFD');
+
 end;
 
 procedure unloadBematechFunctions;

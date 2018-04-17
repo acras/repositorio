@@ -25,7 +25,7 @@ const
   razaoSocial = 'ACRAS TECNOLOGIA DA INFORMAÇÃO LTDA - ME          ';
 
   nomePAF = 'FOCUS LOJAS                                       ';
-  versao = '4         ';
+  versao = '6         ';
 
   nomeExecutavel = 'FOCUSLOJAS.EXE';
 

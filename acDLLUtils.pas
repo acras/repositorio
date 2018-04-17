@@ -3,21 +3,21 @@ unit acDLLUtils;
 interface
 
 uses
-  IdFtp, System.SysUtils, Dialogs, Math, Winapi.Windows;
+  System.SysUtils, Dialogs, Math, Winapi.Windows, ShellAPI;
 
 type
   TFileVersion = array of integer;
   TDLLChecker = class
   private
-    FFTPServer, FFTPUsername, FFTPPassword: string;
     FRootPath: string;
+    FRootUrl: string;
     procedure downloadDLL(name: string);
   public
-    property FTPServer: string read FFTPServer write FFTPServer;
-    property FTPUserName: string read FFTPServer write FFTPUserName;
-    property FTPPassword: string read FFTPServer write FFTPPassword;
+    handle: HWND;
+    exePath: string;
+    property rootUrl: string read FRootUrl write FRootUrl;
     property rootPath: string read FRootPath write FRootPath;
-    constructor create;
+    constructor create; virtual;
     function DLLNeedUpdate(name: string; version: TFileVersion): boolean;
     procedure ensureDLLVersion(name: string; version: TFileVersion); overload;
     procedure ensureDLLVersion(name: string; version: string); overload;
@@ -36,52 +36,36 @@ implementation
 
 { TDLLChecker }
 
-uses DLog, acSysUtils;
+uses DLog, acSysUtils, Utils;
 
 procedure TDLLChecker.downloadDLL(name: string);
 var
-  ftp: TIdFtp;
   dest, tempFileName: string;
 begin
   tempFileName := getWindowsTempFileName(name);
   //dest será o diretório raiz + nome da DLL
   dest := IncludeTrailingPathDelimiter(rootPath) + name;
-  DataLog.log('Iniciando download da DLL no caminho: ' + dest,'DLL');
-  try
-    ftp := TIdFTP.Create(nil);
-    try
-      ftp.Host := FFTPServer;
-      ftp.Username := FFTPUsername;
-      ftp.Password := FFTPPassword;
-      ftp.Passive := true;
-      DataLog.log('Conectar ' + FFTPServer + '/' + FFTPUsername,'DLL');
-      ftp.Connect;
-      DataLog.log('Conectado FTP','DLL');
-      ftp.ChangeDir('sysenne/assets/dlls');
-      ftp.Get(name, tempFileName, true, false);
-      DataLog.log('Arquivo Baixado','DLL');
-      ftp.Disconnect;
-      if FileExists(dest) then
-      begin
-        DataLog.log('Arquivo já existe, tentar apagar.','DLL');
-        DeleteFile(PWideChar(dest));
-        if FileExists(dest) then
-        begin
-          DataLog.log('Não consegui apagar.','DLL');
-          exit;
-        end;
-      end;
-      if RenameFile(tempFileName, dest) then
-        DataLog.log('Arquivo salvo com sucesso', 'DLL')
-      else
-        DataLog.log('ERRO ao tentar salvar arquivo', 'DLL');
-    finally
-      FreeAndNil(ftp);
+  downloadArquivo(rootUrl + name, tempFileName);
+  if FileExists(dest) then
+  begin
+    DataLog.log('Arquivo já existe, tentar apagar.','DLL');
+    RenameFile(dest, dest + '_ASOF_' + FormatDateTime('yyyymmddhhnnss', now));
+    if FileExists(dest) then
+    begin
+      DataLog.log('Não consegui apagar.','DLL');
+      exit;
     end;
-  except
-    on e: Exception do
-      DataLog.log('Erro no download: ' + e.Message, 'Updater');
   end;
+  if RenameFile(tempFileName, dest) then
+  begin
+    MessageDlg('Uma biblioteca necessária para o funcionamento do Focus Lojas foi atualizada.'#13#10+
+      'Seu PDV será reiniciado.', mtInformation, [mbOK], 0);
+    ShellExecute(handle, nil, PChar(exePath), nil, nil, SW_SHOWNORMAL);
+    ExitProcess(0);
+    DataLog.log('Arquivo salvo com sucesso', 'DLL');
+  end
+  else
+    DataLog.log('ERRO ao tentar salvar arquivo', 'DLL');
 end;
 
 procedure TDLLChecker.ensureDLLVersion(name, version: string);

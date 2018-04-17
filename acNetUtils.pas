@@ -2,11 +2,12 @@ unit acNetUtils;
 
 interface
 
-uses idHTTP, SysUtils, System.Classes;
+uses idHTTP, SysUtils, System.Classes, IdSSL, IdIOHandler;
 
 function getRemoteXmlContent(pUrl: string; http: TIdHTTP = nil): String; overload
 function getRemoteXmlContent(const pUrl: string; http: TIdHTTP;var erro: string): String; overload
 function getHTTPInstance: TidHTTP;
+procedure downloadFile(url, filename: string);
 
 implementation
 
@@ -75,6 +76,27 @@ begin
     if criouHTTP and (http <> nil) then
       FreeAndNil(http);
     FreeAndNil(retornoStream);
+  end;
+end;
+
+
+procedure downloadFile(url, filename: string);
+
+var
+
+  http: TIdHTTP;
+
+  ms: TMemoryStream;
+
+begin
+
+  http := getHTTPInstance;
+  ms := TMemoryStream.Create;
+  try
+    http.Get(url, ms);
+    ms.SaveToFile(filename);
+  finally
+    FreeAndNil(http);
   end;
 end;
 

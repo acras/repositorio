@@ -3,7 +3,8 @@ unit acSysUtils;
 interface
 
 uses
-  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX, Forms, dialogs;
+  Classes, Printers, SysUtils, Windows, ShlObj, ActiveX, Forms, dialogs,
+  System.IOUtils;
 
 procedure ensureDirOnWindowsPath(dir: string);
 procedure getPrinterList(PList: TStrings);
@@ -11,7 +12,7 @@ procedure deltree(dir: string);
 procedure listdirectorycontents(basedir: string; s: TStrings);
 procedure listdirectories(basedir: string; s: TStrings);
 function GetSpecialFolderLocation(HWnd:HWnd; Index:integer):string;
-function GetTempDir: string;
+function GetTempDirectory: string;
 function getWindowsTempFileName(prefix: string): string;
 function getWindowsTempPath: string;
 procedure blockInput;
@@ -24,6 +25,8 @@ procedure desbloqueiaTecladoMouse;
 function FuncAvail(dllName, funcName: string; var p: pointer): boolean;
 function GetWindowsTempFolder: string;
 function isCtrlDown: boolean;
+function renameFileWithCounter(source, dest: string): string;
+function getNextFileNameAvailable(filename: string): string;
 
 implementation
 
@@ -163,10 +166,12 @@ begin
   end;
 end;
 
-function GetTempDir: string;
+function GetTempDirectory: string;
+var
+  tempFolder: array[0..MAX_PATH] of Char;
 begin
-  result := getSpecialFolderLocation(
-    Application.Handle, CSIDL_COMMON_APPDATA) + '\ACRASSGL\';
+  GetTempPath(MAX_PATH, @tempFolder);
+  result := StrPas(tempFolder);
 end;
 
 function getWindowsTempPath: string;
@@ -318,5 +323,30 @@ begin
   //SetEnvironmentVariable(PWideChar('PATH'), PwideChar(newPath));
 end;
 
+function renameFileWithCounter(source, dest: string): string;
+var
+  fn: string;
+begin
+  result := '';
+  fn := getNextFileNameAvailable(dest);
+  if RenameFile(source, fn) then
+    result := fn;
+end;
+
+function getNextFileNameAvailable(filename: string): string;
+var
+  counter: integer;
+  originalFN, originalEXT: string;
+begin
+  counter := 0;
+  originalFN := ExtractFilePath(filename) + TPath.getfilenameWithoutExtension(filename);
+  originalEXT := ExtractFileExt(filename);
+  while FileExists(filename) do
+  begin
+    counter := counter + 1;
+    filename := originalFN + ' (' + IntToStr(counter) + ')' + originalEXT;
+  end;
+  result := filename;
+end;
 
 end.

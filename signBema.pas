@@ -7,11 +7,11 @@ uses Windows, SysUtils;
 procedure loadAllSignBemaFunctions;
 
 type
-  Tgenkkey = function (ChavePublica: String; ChavePrivada: String): integer; stdcall;
+  Tgenkkey = function (ChavePublica: AnsiString; ChavePrivada: AnsiString): integer; stdcall;
   TsetLibType = function(Tipo: integer): integer; stdcall;
-  TgenerateEAD = function(NomeArq: String; ChavePublica: String; ChavePrivada: String; EAD:String; Sign: Integer): integer; stdcall;
-  TvalidateFile = function(NomeArq: String; ChavePublica: String; ChavePrivada: String): integer; stdcall; 
-  Tmd5FromFile = function (nomeArquivo: String; md5: String): integer; stdcall;
+  TgenerateEAD = function(NomeArq: AnsiString; ChavePublica: AnsiString; ChavePrivada: AnsiString; EAD: AnsiString; Sign: Integer): integer; stdcall;
+  TvalidateFile = function(NomeArq: AnsiString; ChavePublica: AnsiString; ChavePrivada: AnsiString): integer; stdcall;
+  Tmd5FromFile = function (nomeArquivo: AnsiString; md5: AnsiString): integer; stdcall;
 
 var
   genkkey: Tgenkkey;
